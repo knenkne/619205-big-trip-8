@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Максим Кузнецов](https://up.htmlacademy.ru/ecmascript/8/user/619205).
-* Наставник: `Неизвестно`.
+* Наставник: [Владимир Коршунов](https://htmlacademy.ru/profile/bekobou).
 
 ---
 
