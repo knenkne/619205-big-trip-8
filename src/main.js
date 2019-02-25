@@ -8,7 +8,7 @@ const getFilterElement = (name, isDisabled = false, isChecked = false) => {
   const idAttribute = name.toLowerCase();
   return `
         <input type="radio" id="filter-${idAttribute}" name="filter" value="${idAttribute}" ${checkedAttribute} ${disabledAttribute}>
-        <label class="trip-filter__item" for="filter-${name}">${name.toUpperCase()}</label>
+        <label class="trip-filter__item" for="filter-${idAttribute}">${name.toUpperCase()}</label>
       `;
 };
 
