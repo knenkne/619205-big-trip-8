@@ -1,5 +1,5 @@
 import {getRandomNumber} from './utils';
-import {EVENTS} from './const';
+let events = 7;
 
 // Блок эвентов
 const eventsBlock = document.querySelector(`.trip-day__items`);
@@ -28,11 +28,13 @@ const getEventElement = (icon, name, from, to, price, firstOffer = ``, secondOff
 };
 
 
-export const fillEventsBlock = (number) => {
+const fillEventsBlock = (number) => {
   eventsBlock.insertAdjacentHTML(`beforeend`, getEventElement(`🚕`, `Taxi to Airport`, `10:00`, `11:00`, `20`, `Order UBER +&euro;&nbsp;20`, `Upgrade to business +&euro;&nbsp;20`).repeat(number));
 };
 
-export const filtersBlockClickHandler = () => {
+const filtersBlockClickHandler = () => {
   eventsBlock.innerHTML = ``;
-  fillEventsBlock(getRandomNumber(0, EVENTS));
+  fillEventsBlock(getRandomNumber(0, events));
 };
+
+export {events, fillEventsBlock, filtersBlockClickHandler};

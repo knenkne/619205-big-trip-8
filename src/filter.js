@@ -1,5 +1,5 @@
 // Блок фильтров
-export const filtersBlock = document.querySelector(`.trip-filter`);
+const filtersBlock = document.querySelector(`.trip-filter`);
 
 // Генерируем отдельный фильтр
 const getFilterElement = (name, isDisabled = false, isChecked = false) => {
@@ -14,6 +14,8 @@ const getFilterElement = (name, isDisabled = false, isChecked = false) => {
 
 
 // Вставляем фильтр в блок
-export const pasteFilterElement = (name, isDisabled = false, isChecked = false) => {
+const pasteFilterElement = (name, isDisabled = false, isChecked = false) => {
   filtersBlock.insertAdjacentHTML(`beforeend`, getFilterElement(name, isDisabled, isChecked));
 };
+
+export {filtersBlock, pasteFilterElement};
