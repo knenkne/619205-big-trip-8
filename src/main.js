@@ -1,11 +1,14 @@
 import {filtersBlock, pasteFilterElement} from './filter';
-import {fillEventsBlock, filtersBlockClickHandler, events} from './events';
+import {fillEventsBlock, filtersBlockClickHandler, getEvents, eventsNumber, events} from './events';
 // Вставляем нужные фильтры
 pasteFilterElement(`Everything`, false, true);
 pasteFilterElement(`Future`);
 pasteFilterElement(`Past`);
 
-// Вставляем нужные эвенты
+// Генерируем нужное количество эвентов
+getEvents(eventsNumber);
+
+// Вставляем эвенты
 fillEventsBlock(events);
 
 filtersBlock.addEventListener(`click`, filtersBlockClickHandler);
