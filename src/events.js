@@ -19,8 +19,38 @@ let events = [];
 // Блок эвентов
 const eventsBlock = document.querySelector(`.trip-day__items`);
 
-// Генерируем отдельный эвент
-const getEventElement = (event) => {
+const fillEventsBlock = (array) => {
+  eventsBlock.insertAdjacentHTML(`beforeend`, array.join(``));
+};
+
+const filtersBlockClickHandler = () => {
+  eventsBlock.innerHTML = ``;
+  events = [];
+  getEvents(getRandomNumber(0, 7));
+  fillEventsBlock(events);
+};
+
+
+const getEvent = () => {
+  const event = {
+    type: getRandomMapElement(eventTypes),
+    destination: getRandomElement(EVENT_DESTINATIONS),
+    offers: getShuffledArray(EVENT_OFFERS).slice(0, getRandomNumber(0, 3)),
+    description: getRandomLengthArray(getShuffledArray(EVENT_DESCRIPTIONS)).slice(1, getRandomNumber(2, 5)).join(` `),
+    price: getRandomNumber(10, 500),
+    image: `http://picsum.photos/300/150?r=${Math.random()}`
+  };
+  return event;
+};
+
+const getEvents = (number) => {
+  for (let i = 0; i < number; i++) {
+    events.push(getEvent());
+  }
+};
+
+// Рендрим эвенты
+const renderEventElement = (events) => {
   // Генерируем офферы
   const getEventOffersElement = () => {
     let offerElements = [];
@@ -48,33 +78,5 @@ const getEventElement = (event) => {
     </ul>
     </article>
     `;
-};
-
-
-const fillEventsBlock = (array) => {
-  eventsBlock.insertAdjacentHTML(`beforeend`, array.join(``));
-};
-
-const filtersBlockClickHandler = () => {
-  eventsBlock.innerHTML = ``;
-  events = [];
-  getEvents(getRandomNumber(0, 7));
-  fillEventsBlock(events);
-};
-
-
-const getEvents = (number) => {
-  for (let i = 0; i < number; i++) {
-    const event = {
-      type: getRandomMapElement(eventTypes),
-      destination: getRandomElement(EVENT_DESTINATIONS),
-      offers: getShuffledArray(EVENT_OFFERS).slice(0, getRandomNumber(0, 3)),
-      description: getRandomLengthArray(getShuffledArray(EVENT_DESCRIPTIONS)).slice(1, getRandomNumber(2, 5)).join(` `),
-      price: getRandomNumber(10, 500),
-      image: `http://picsum.photos/300/150?r=${Math.random()}`
-    };
-    const eventCard = getEventElement(event);
-    events.push(eventCard);
-  }
 };
 export {events, fillEventsBlock, filtersBlockClickHandler, getEvents, eventsNumber};
