@@ -3,11 +3,13 @@ const getRandomElement = (array) => array[Math.floor(Math.random() * array.lengt
 const getRandomLengthArray = (array) => {
   return array.slice(Math.floor(Math.random() * array.length));
 };
-const getShuffledArray = (array) =>
-  array
-  .map((a) => [Math.random(), a])
-  .sort((a, b) => a[0] - b[0])
-  .map((a) => a[1]);
+const getShuffledArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
 const getRandomMapElement = (map) => {
   let items = Array.from(map);
   return items[Math.floor(Math.random() * items.length)];
