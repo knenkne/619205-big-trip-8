@@ -11,9 +11,9 @@ const eventTypes = new Map([
   [`Sightseeing`, `🏛️`],
   [`Restaurant`, `🍴`]
 ]);
-const eventDestinations = [`Paris`, `Rome`, `Tokio`, `Munich`, `New York`];
-const eventOffers = [`Add luggage`, `Switch to comfort class`, `Add meal`, `Choose seats`];
-const eventDescriptions = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`, `Cras aliquet varius magna, non porta ligula feugiat eget.`, `Fusce tristique felis at fermentum pharetra.`, `Aliquam id orci ut lectus varius viverra.`, `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`, `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`, `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`, `Sed sed nisi sed augue convallis suscipit in sed felis.`, `Aliquam erat volutpat.`, `Nunc fermentum tortor ac porta dapibus.`, `In rutrum ac purus sit amet tempus.`];
+const EVENT_DESTINATIONS = [`Paris`, `Rome`, `Tokio`, `Munich`, `New York`];
+const EVENT_OFFERS = [`Add luggage`, `Switch to comfort class`, `Add meal`, `Choose seats`];
+const EVENT_DESCRIPTIONS = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`, `Cras aliquet varius magna, non porta ligula feugiat eget.`, `Fusce tristique felis at fermentum pharetra.`, `Aliquam id orci ut lectus varius viverra.`, `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`, `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`, `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`, `Sed sed nisi sed augue convallis suscipit in sed felis.`, `Aliquam erat volutpat.`, `Nunc fermentum tortor ac porta dapibus.`, `In rutrum ac purus sit amet tempus.`];
 let eventsNumber = 7;
 let events = [];
 // Блок эвентов
@@ -67,9 +67,9 @@ const getEvents = (number) => {
   for (let i = 0; i < number; i++) {
     const event = {
       type: getRandomMapElement(eventTypes),
-      destination: getRandomElement(eventDestinations),
-      offers: getShuffledArray(eventOffers).slice(0, getRandomNumber(0, 3)),
-      description: getRandomLengthArray(getShuffledArray(eventDescriptions)).slice(1, getRandomNumber(2, 5)).join(` `),
+      destination: getRandomElement(EVENT_DESTINATIONS),
+      offers: getShuffledArray(EVENT_OFFERS).slice(0, getRandomNumber(0, 3)),
+      description: getRandomLengthArray(getShuffledArray(EVENT_DESCRIPTIONS)).slice(1, getRandomNumber(2, 5)).join(` `),
       price: getRandomNumber(10, 500),
       image: `http://picsum.photos/300/150?r=${Math.random()}`
     };
