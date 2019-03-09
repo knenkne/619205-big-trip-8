@@ -47,7 +47,7 @@ const getEventOffersHtml = (offers) => {
   for (const offer of offers) {
     const newOfferElement = `
     <li>
-    <button class="trip-point__offer">${offer} +&euro; ${getRandomNumber(0, 50)}</button>
+    <button class="trip-point__offer">${offer} +&euro; 15</button>
     </li>
     `;
     offerElements.push(newOfferElement);
@@ -73,7 +73,7 @@ const getEventElementsHtml = (events) => {
       </ul>
       </article>
       `;
-      eventElementsHtml.push(eventElementHtml);
+    eventElementsHtml.push(eventElementHtml);
   }
   return eventElementsHtml;
 };
@@ -91,4 +91,4 @@ const filtersBlockClickHandler = () => {
   fillEventsBlock(newEventsHtml);
 };
 
-export {fillEventsBlock, getEvents, eventsNumber, getEventElementsHtml, filtersBlockClickHandler};
+export {fillEventsBlock, getEvent, getEvents, eventsNumber, getEventOffersHtml, getEventElementsHtml, filtersBlockClickHandler, eventsBlock};
