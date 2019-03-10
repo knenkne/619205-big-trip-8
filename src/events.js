@@ -1,19 +1,66 @@
-import {getRandomNumber, getRandomElement, getRandomLengthArray, getShuffledArray, getRandomMapElement} from './utils';
-const eventTypes = new Map([
-  [`Taxi`, `🚕`],
-  [`Bus`, `🚌`],
-  [`Train`, `🚂`],
-  [`Ship`, `🛳️`],
-  [`Transport`, `🚊`],
-  [`Drive`, `🚗`],
-  [`Flight`, `✈️`],
-  [`Check`, `🏨`],
-  [`Sightseeing`, `🏛️`],
-  [`Restaurant`, `🍴`]
-]);
+import {getRandomNumber, getRandomElement, getRandomLengthArray, getShuffledArray} from './utils';
 const EVENT_DESTINATIONS = [`Paris`, `Rome`, `Tokio`, `Munich`, `New York`];
-const EVENT_OFFERS = [`Add luggage`, `Switch to comfort class`, `Add meal`, `Choose seats`];
 const EVENT_DESCRIPTIONS = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`, `Cras aliquet varius magna, non porta ligula feugiat eget.`, `Fusce tristique felis at fermentum pharetra.`, `Aliquam id orci ut lectus varius viverra.`, `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`, `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`, `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`, `Sed sed nisi sed augue convallis suscipit in sed felis.`, `Aliquam erat volutpat.`, `Nunc fermentum tortor ac porta dapibus.`, `In rutrum ac purus sit amet tempus.`];
+const eventTypes = [
+  {
+    name: `Taxi`,
+    icon: `🚕`
+  },
+  {
+    name: `Bus`,
+    icon: `🚌`
+  },
+  {
+    name: `Train`,
+    icon: `🚂`
+  },
+  {
+    name: `Ship`,
+    icon: `🛳️`
+  },
+  {
+    name: `Transport`,
+    icon: `🚊`
+  },
+  {
+    name: `Drive`,
+    icon: `🚗`
+  },
+  {
+    name: `Flight`,
+    icon: `✈️`
+  },
+  {
+    name: `Check`,
+    icon: `🏨`
+  },
+  {
+    name: `Sightseeing`,
+    icon: `🏛️`
+  },
+  {
+    name: `Restaurant`,
+    icon: `🍴`
+  }
+];
+const eventOffers = [
+  {
+    name: `Add luggage`,
+    price: getRandomNumber(0, 50)
+  },
+  {
+    name: `Switch to comfort class`,
+    price: getRandomNumber(0, 50)
+  },
+  {
+    name: `Add meal`,
+    price: getRandomNumber(0, 50)
+  },
+  {
+    name: `Choose seats`,
+    price: getRandomNumber(0, 50)
+  }
+];
 let eventsNumber = 7;
 
 // Блок эвентов
@@ -22,13 +69,17 @@ const eventsBlock = document.querySelector(`.trip-day__items`);
 // Получаем данные об одной точке маршрута
 const getEvent = () => {
   const event = {
-    type: getRandomMapElement(eventTypes),
+    type: getRandomElement(eventTypes),
     destination: getRandomElement(EVENT_DESTINATIONS),
-    offers: getShuffledArray(EVENT_OFFERS).slice(0, getRandomNumber(0, 3)),
+    offers: getShuffledArray(eventOffers).slice(0, getRandomNumber(0, 3)),
     description: getRandomLengthArray(getShuffledArray(EVENT_DESCRIPTIONS)).slice(1, getRandomNumber(2, 5)).join(` `),
     price: getRandomNumber(10, 500),
-    image: `http://picsum.photos/300/150?r=${Math.random()}`
+    image: `http://picsum.photos/300/150?r=${Math.random()}`,
+    startDate: new Date(),
+    endDate: new Date()
   };
+  event.endDate.setHours(event.startDate.getHours() + 1);
+  event.endDate.setMinutes(event.startDate.getMinutes() + 30);
   return event;
 };
 
@@ -44,10 +95,10 @@ const getEvents = (number) => {
 // Генерируем офферы
 const getEventOffersHtml = (offers) => {
   let offerElements = [];
-  for (const offer of offers) {
+  for (let offer of offers) {
     const newOfferElement = `
     <li>
-    <button class="trip-point__offer">${offer} +&euro; 15</button>
+    <button class="trip-point__offer">${offer.name} +&euro; ${offer.price}</button>
     </li>
     `;
     offerElements.push(newOfferElement);

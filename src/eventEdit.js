@@ -8,17 +8,27 @@ class EventEdit {
     this._description = data.description;
     this._price = data.price;
     this._image = data.image;
+    this._startDate = data.startDate;
+    this._endDate = data.endDate;
 
     this._element = null;
     this._onSubmit = null;
   }
 
-  getOffers() {
+  _getDateHtml() {
+    return `<input class="point__input" type="text" 
+    value="${this._startDate.getHours()}:${this._startDate.getMinutes() < 10 ? `0` : ``}${this._startDate.getMinutes()} — ${this._endDate.getHours()}:${this._endDate.getMinutes() < 10 ? `0` : ``}${this._endDate.getMinutes()}" 
+    name="time" 
+    placeholder="${this._startDate.getHours()}:${this._startDate.getMinutes() < 10 ? `0` : ``}${this._startDate.getMinutes()} — ${this._endDate.getHours()}:${this._endDate.getMinutes() < 10 ? `0` : ``}${this._endDate.getMinutes()}" 
+    >`;
+  }
+
+  _getOffers() {
     const offersHtml = [];
     for (const offer of this._offers) {
-      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="${offer}" name="offer" value="${offer}">
+      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="${offer.name}" name="offer" value="${offer.name}">
         <label for="add-luggage" class="point__offers-label">
-          <span class="point__offer-service">${offer}</span> + €<span class="point__offer-price">15</span>
+          <span class="point__offer-service">${offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
         </label>
         `;
       offersHtml.push(offerHtml);
@@ -51,7 +61,7 @@ class EventEdit {
       </label>
 
       <div class="travel-way">
-        <label class="travel-way__label" for="travel-way__toggle">${this._type[1]}</label>
+        <label class="travel-way__label" for="travel-way__toggle">${this._type.icon}</label>
 
         <input type="checkbox" class="travel-way__toggle visually-hidden" id="travel-way__toggle">
 
@@ -81,7 +91,7 @@ class EventEdit {
       </div>
 
       <div class="point__destination-wrap">
-        <label class="point__destination-label" for="destination">${this._type[0]} to</label>
+        <label class="point__destination-label" for="destination">${this._type.name} to</label>
         <input class="point__destination-input" list="destination-select" id="destination" value="${this._destination}" name="destination">
         <datalist id="destination-select">
           <option value="airport"></option>
@@ -93,7 +103,7 @@ class EventEdit {
 
       <label class="point__time">
         choose time
-        <input class="point__input" type="text" value="00:00 — 00:00" name="time" placeholder="00:00 — 00:00">
+       ${this._getDateHtml()}
       </label>
 
       <label class="point__price">
@@ -118,7 +128,7 @@ class EventEdit {
         <h3 class="point__details-title">offers</h3>
 
         <div class="point__offers-wrap">
-          ${this.getOffers()}
+          ${this._getOffers()}
         </div>
 
       </section>
@@ -132,7 +142,7 @@ class EventEdit {
       <input type="hidden" class="point__total-price" name="total-price" value="">
     </section>
   </form>
-</article>`;
+</article>`.trim();
   }
 
   bind() {
