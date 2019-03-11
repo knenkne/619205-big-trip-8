@@ -32,3 +32,4 @@ editEventComponent.onSubmit = () => {
   editEventComponent.unrender();
 };
 
+filtersBlock.addEventListener(`click`, filtersBlockClickHandler);

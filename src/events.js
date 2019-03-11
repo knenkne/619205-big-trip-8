@@ -1,4 +1,6 @@
 import {getRandomNumber, getRandomElement, getRandomLengthArray, getShuffledArray} from './utils';
+import {Event} from './event';
+import {EventEdit} from './eventEdit';
 const EVENT_DESTINATIONS = [`Paris`, `Rome`, `Tokio`, `Munich`, `New York`];
 const EVENT_DESCRIPTIONS = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`, `Cras aliquet varius magna, non porta ligula feugiat eget.`, `Fusce tristique felis at fermentum pharetra.`, `Aliquam id orci ut lectus varius viverra.`, `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`, `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`, `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`, `Sed sed nisi sed augue convallis suscipit in sed felis.`, `Aliquam erat volutpat.`, `Nunc fermentum tortor ac porta dapibus.`, `In rutrum ac purus sit amet tempus.`];
 const eventTypes = [
@@ -137,9 +139,26 @@ const fillEventsBlock = (eventsHtml) => {
 // Удаляем точки маршрута и вставляем новые
 const filtersBlockClickHandler = () => {
   eventsBlock.innerHTML = ``;
-  const newEvents = getEvents(getRandomNumber(0, 7));
-  const newEventsHtml = getEventElementsHtml(newEvents);
-  fillEventsBlock(newEventsHtml);
+  for (let i = 0; i < getRandomNumber(0, 7); i++) {
+    const event = getEvent();
+    const eventComponent = new Event(event);
+    const editEventComponent = new EventEdit(event);
+    eventsBlock.appendChild(eventComponent.render());
+
+    // Меняем состояние
+    eventComponent.onEdit = () => {
+      editEventComponent.render();
+      eventsBlock.replaceChild(editEventComponent.element, eventComponent.element);
+      eventComponent.unrender();
+    };
+
+    // Меняем состояние
+    editEventComponent.onSubmit = () => {
+      eventComponent.render();
+      eventsBlock.replaceChild(eventComponent.element, editEventComponent.element);
+      editEventComponent.unrender();
+    };
+  }
 };
 
 export {fillEventsBlock, getEvent, getEvents, eventsNumber, getEventOffersHtml, getEventElementsHtml, filtersBlockClickHandler, eventsBlock};
