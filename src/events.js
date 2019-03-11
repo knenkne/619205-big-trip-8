@@ -131,34 +131,59 @@ const getEventElementsHtml = (events) => {
   return eventElementsHtml;
 };
 
+
 // Вставляем разметку точек маршрута
 const fillEventsBlock = (eventsHtml) => {
   eventsBlock.insertAdjacentHTML(`beforeend`, eventsHtml.join(``));
 };
 
+// Создаем карточку на основании данных
+const createEventElement = (event) => {
+  // Создаем классы на основе данных
+  const eventComponent = new Event(event);
+  const editEventComponent = new EventEdit(event);
+
+  // Меняем состояние
+  eventComponent.onEdit = () => {
+    editEventComponent.render();
+    eventsBlock.replaceChild(editEventComponent.element, eventComponent.element);
+    eventComponent.unrender();
+  };
+
+  // Меняем состояние
+  editEventComponent.onSubmit = () => {
+    eventComponent.render();
+    eventsBlock.replaceChild(eventComponent.element, editEventComponent.element);
+    editEventComponent.unrender();
+  };
+
+  // Создаем карточку
+  const eventElement = eventComponent.render();
+
+  return eventElement;
+};
+
+// Создаем несколько элементов
+const createEventElements = (events) => {
+  const fragment = document.createDocumentFragment();
+  events.forEach((event) => {
+    const eventElement = createEventElement(event);
+    fragment.appendChild(eventElement);
+  });
+
+  return fragment;
+};
+
+// Рендрим элементы в нужном месте
+const renderEventElements = (container) => {
+  const events = getEvents(getRandomNumber(0, 7));
+  const eventElements = createEventElements(events);
+  container.appendChild(eventElements);
+};
 // Удаляем точки маршрута и вставляем новые
 const filtersBlockClickHandler = () => {
   eventsBlock.innerHTML = ``;
-  for (let i = 0; i < getRandomNumber(0, 7); i++) {
-    const event = getEvent();
-    const eventComponent = new Event(event);
-    const editEventComponent = new EventEdit(event);
-    eventsBlock.appendChild(eventComponent.render());
-
-    // Меняем состояние
-    eventComponent.onEdit = () => {
-      editEventComponent.render();
-      eventsBlock.replaceChild(editEventComponent.element, eventComponent.element);
-      eventComponent.unrender();
-    };
-
-    // Меняем состояние
-    editEventComponent.onSubmit = () => {
-      eventComponent.render();
-      eventsBlock.replaceChild(eventComponent.element, editEventComponent.element);
-      editEventComponent.unrender();
-    };
-  }
+  renderEventElements(eventsBlock);
 };
 
-export {fillEventsBlock, getEvent, getEvents, eventsNumber, getEventOffersHtml, getEventElementsHtml, filtersBlockClickHandler, eventsBlock};
+export {fillEventsBlock, getEvent, getEvents, eventsNumber, getEventOffersHtml, getEventElementsHtml, filtersBlockClickHandler, eventsBlock, renderEventElements};

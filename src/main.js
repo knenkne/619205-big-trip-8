@@ -1,35 +1,16 @@
 import {filtersBlock, pasteFilterElement} from './filter';
-import {fillEventsBlock, eventsBlock, getEvent, getEvents, eventsNumber, getEventElementsHtml, filtersBlockClickHandler} from './events';
+import {fillEventsBlock, eventsBlock, getEvent, getEvents, eventsNumber, getEventElementsHtml, renderEventElements, filtersBlockClickHandler} from './events';
 import {Event} from './event';
 import {EventEdit} from './eventEdit';
+import {getRandomNumber} from './utils';
 
 // Вставляем нужные фильтры
 pasteFilterElement(`Everything`, false, true);
 pasteFilterElement(`Future`);
 pasteFilterElement(`Past`);
 
-// Генерируем данные об одной точке маршрута
-const event = getEvent();
+// Рендрим карточки точек маршрута в нужно месте
+renderEventElements(eventsBlock);
 
-// Создаем карточку о точке маршрута
-const eventComponent = new Event(event);
-const editEventComponent = new EventEdit(event);
-
-// Вставляем карточку
-eventsBlock.appendChild(eventComponent.render());
-
-// Меняем состояние
-eventComponent.onEdit = () => {
-  editEventComponent.render();
-  eventsBlock.replaceChild(editEventComponent.element, eventComponent.element);
-  eventComponent.unrender();
-};
-
-// Меняем состояние
-editEventComponent.onSubmit = () => {
-  eventComponent.render();
-  eventsBlock.replaceChild(eventComponent.element, editEventComponent.element);
-  editEventComponent.unrender();
-};
-
+// Генерируем новые карточки по нажатию на клик
 filtersBlock.addEventListener(`click`, filtersBlockClickHandler);
