@@ -10,8 +10,9 @@ const getShuffledArray = (array) => {
   }
   return array;
 };
-const getRandomMapElement = (map) => {
-  let items = Array.from(map);
-  return items[Math.floor(Math.random() * items.length)];
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+  return newElement.firstChild;
 };
-export {getRandomNumber, getRandomElement, getRandomLengthArray, getShuffledArray, getRandomMapElement};
+export {getRandomNumber, getRandomElement, getRandomLengthArray, getShuffledArray, createElement};

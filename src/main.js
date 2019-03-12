@@ -1,20 +1,16 @@
 import {filtersBlock, pasteFilterElement} from './filter';
-import {fillEventsBlock, getEvents, eventsNumber, getEventElementsHtml, filtersBlockClickHandler} from './events';
+import {fillEventsBlock, eventsBlock, getEvent, getEvents, eventsNumber, getEventElementsHtml, renderEventElements, filtersBlockClickHandler} from './events';
+import {Event} from './event';
+import {EventEdit} from './eventEdit';
+import {getRandomNumber} from './utils';
+
 // Вставляем нужные фильтры
 pasteFilterElement(`Everything`, false, true);
 pasteFilterElement(`Future`);
 pasteFilterElement(`Past`);
 
-// Генерируем данные о нужном количестве маршрутов
-const events = getEvents(eventsNumber);
+// Рендрим карточки точек маршрута в нужно месте
+renderEventElements(eventsBlock);
 
-// Получаем разметку маршрутов
-const eventsHtml = getEventElementsHtml(events);
-
-// Вставляем разметку маршрутов
-fillEventsBlock(eventsHtml);
-
-// Удаляем точки маршрута и вставляем новые по клику на блок фильтров
+// Генерируем новые карточки по нажатию на клик
 filtersBlock.addEventListener(`click`, filtersBlockClickHandler);
-
-
