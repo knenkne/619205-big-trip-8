@@ -1,7 +1,9 @@
 import {createElement} from './utils';
+import {Component} from './component';
 
-class EventEdit {
+class EventEdit extends Component {
   constructor(data) {
+    super();
     this._type = data.type;
     this._destination = data.destination;
     this._offers = data.offers;
@@ -11,7 +13,6 @@ class EventEdit {
     this._startDate = data.startDate;
     this._endDate = data.endDate;
 
-    this._element = null;
     this._onSubmit = null;
   }
 
@@ -41,10 +42,6 @@ class EventEdit {
     if (typeof this._onSubmit === `function`) {
       this._onSubmit();
     }
-  }
-
-  get element() {
-    return this._element;
   }
 
   set onSubmit(fn) {
@@ -148,17 +145,6 @@ class EventEdit {
   bind() {
     this._element.querySelector(`.point__button--save`).addEventListener(`click`, this._onSubmitButtonClick.bind(this));
   }
-
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
-  unrender() {
-    this._element = null;
-  }
-
 }
 
 export {EventEdit};

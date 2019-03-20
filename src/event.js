@@ -1,8 +1,10 @@
 import {getEventOffersHtml} from './events';
 import {createElement} from './utils';
+import {Component} from './component';
 
-class Event {
+class Event extends Component {
   constructor(data) {
+    super();
     this._type = data.type;
     this._destination = data.destination;
     this._offers = data.offers;
@@ -12,7 +14,6 @@ class Event {
     this._startDate = data.startDate;
     this._endDate = data.endDate;
 
-    this._element = null;
     this._onEdit = null;
   }
 
@@ -28,10 +29,6 @@ class Event {
     if (typeof this._onEdit === `function`) {
       this._onEdit();
     }
-  }
-
-  get element() {
-    return this._element;
   }
 
   set onEdit(fn) {
@@ -55,16 +52,6 @@ class Event {
 
   bind() {
     this._element.addEventListener(`click`, this._onEventClick.bind(this));
-  }
-
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
-  unrender() {
-    this._element = null;
   }
 
 }
