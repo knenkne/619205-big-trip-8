@@ -234,23 +234,24 @@ class EventEdit extends Component {
           date = date.trim(` `);
           trimedDates.push(date);
         }
-        
+
         const startHour = trimedDates[0].split(`:`)[0];
         const startMinute = trimedDates[0].split(`:`)[1];
-        const endHour = trimedDates[1].split(`:`)[0];
-        const endMinute = trimedDates[1].split(`:`)[1];
-
         const startDate = moment({
           hour: startHour,
           minute: startMinute
         });
-        const endDate = moment({
-          hour: endHour,
-          minute: endMinute
-        });
-
         target.startDate = startDate;
-        target.endDate = endDate;
+
+        if (trimedDates.length > 1) {
+          const endHour = trimedDates[1].split(`:`)[0];
+          const endMinute = trimedDates[1].split(`:`)[1];
+          const endDate = moment({
+            hour: endHour,
+            minute: endMinute
+          });
+          target.endDate = endDate;
+        }
       }
     };
   }
