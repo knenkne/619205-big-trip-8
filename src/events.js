@@ -73,44 +73,6 @@ const getEvents = (number) => {
   return events;
 };
 
-// Генерируем офферы
-const getEventOffersHtml = (offers) => {
-  let offerElements = [];
-  for (let offer of offers) {
-    const newOfferElement = `
-    <li>
-    <button class="trip-point__offer">${offer.name} +&euro; ${offer.price}</button>
-    </li>
-    `;
-    offerElements.push(newOfferElement);
-  }
-  return offerElements.join(``);
-};
-
-// Создаем разметку точек маршрута
-const getEventElementsHtml = (events) => {
-  const eventElementsHtml = [];
-  for (const event of events) {
-    const eventElementHtml = `
-    <article class="trip-point">
-      <i class="trip-icon">${event.type[1]}</i>
-      <h3 class="trip-point__title">${event.destination}</h3>
-       <p class="trip-point__schedule">
-          <span class="trip-point__timetable">10:00&nbsp;&mdash;11:30</span>
-          <span class="trip-point__duration">1h 30m</span>
-       </p>
-       <p class="trip-point__price">&euro;&nbsp;${event.price}</p>
-       <ul class="trip-point__offers">
-          ${getEventOffersHtml(event.offers)}
-      </ul>
-      </article>
-      `;
-    eventElementsHtml.push(eventElementHtml);
-  }
-  return eventElementsHtml;
-};
-
-
 // Вставляем разметку точек маршрута
 const fillEventsBlock = (eventsHtml) => {
   eventsBlock.insertAdjacentHTML(`beforeend`, eventsHtml.join(``));
@@ -171,4 +133,4 @@ const filtersBlockClickHandler = () => {
   renderEventElements(eventsBlock);
 };
 
-export {eventTypes, fillEventsBlock, getEvent, getEvents, eventsNumber, getEventOffersHtml, getEventElementsHtml, filtersBlockClickHandler, eventsBlock, renderEventElements};
+export {eventTypes, fillEventsBlock, getEvent, getEvents, eventsNumber, filtersBlockClickHandler, eventsBlock, renderEventElements};

@@ -1,6 +1,5 @@
 import moment from 'moment';
 
-import {getEventOffersHtml} from './events';
 import {Component} from './component';
 import {eventTypes} from './events';
 
@@ -17,6 +16,19 @@ class Event extends Component {
     this._endDate = data.endDate;
 
     this._onEdit = null;
+  }
+
+  _getOffersHtml() {
+    let offerElements = [];
+    for (let offer of this._offers) {
+      const newOfferElement = `
+        <li>
+       <button class="trip-point__offer">${offer.name} +&euro; ${offer.price}</button>
+       </li>
+      `;
+      offerElements.push(newOfferElement);
+    }
+    return offerElements.join(``);
   }
 
   _getDateHtml() {
@@ -42,13 +54,13 @@ class Event extends Component {
   get template() {
     return `<article class="trip-point">
       <i class="trip-icon">${eventTypes[this._type]}</i>
-      <h3 class="trip-point__title">${this._destination}</h3>
+      <h3 class="trip-point__title">${this._type} to ${this._destination}</h3>
        <p class="trip-point__schedule">
           ${this._getDateHtml()}
        </p>
        <p class="trip-point__price">&euro;&nbsp;${this._price}</p>
        <ul class="trip-point__offers">
-          ${getEventOffersHtml(this._offers)}
+          ${this._getOffersHtml()}
       </ul>
       </article>`.trim();
   }

@@ -171,6 +171,7 @@ class EventEdit extends Component {
 
   bind() {
     const typeChoice = this._element.querySelector(`.travel-way__label`);
+    const destinationLabel = this._element.querySelector(`.point__destination-label`);
     this._element.querySelector(`.point__button--save`).addEventListener(`click`, this._onSubmitButtonClick.bind(this));
     this._element.querySelectorAll(`.travel-way__select-label`)
     // Обработчик для каждого типа точки маршрута
@@ -181,6 +182,7 @@ class EventEdit extends Component {
         const input = label.previousElementSibling;
         input.setAttribute(`checked`, `checked`);
         typeChoice.textContent = eventTypes[input.value];
+        destinationLabel.textContent = `${input.value} to`;
       });
     });
     this._element.querySelectorAll(`.point__offers-label`).forEach((label) => {
@@ -232,6 +234,7 @@ class EventEdit extends Component {
           date = date.trim(` `);
           trimedDates.push(date);
         }
+        
         const startHour = trimedDates[0].split(`:`)[0];
         const startMinute = trimedDates[0].split(`:`)[1];
         const endHour = trimedDates[1].split(`:`)[0];
@@ -248,7 +251,6 @@ class EventEdit extends Component {
 
         target.startDate = startDate;
         target.endDate = endDate;
-        console.log(target.startDate, target.endDate);
       }
     };
   }
