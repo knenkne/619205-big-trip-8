@@ -1,6 +1,8 @@
+import moment from 'moment';
+
 import {getEventOffersHtml} from './events';
-import {createElement} from './utils';
 import {Component} from './component';
+import {eventTypes} from './events';
 
 class Event extends Component {
   constructor(data) {
@@ -19,10 +21,12 @@ class Event extends Component {
 
   _getDateHtml() {
     return `<span class="trip-point__timetable">
-    ${this._startDate.getHours()}:${this._startDate.getMinutes() < 10 ? `0` : ``}${this._startDate.getMinutes()}
-    &nbsp;&mdash;
-    ${this._endDate.getHours()}:${this._endDate.getMinutes() < 10 ? `0` : ``}${this._endDate.getMinutes()}
-    </span>`;
+    ${moment(this._startDate).format(`HH:mm`)} &nbsp;&mdash; ${moment(this._endDate).format(`HH:mm`)}
+    </span>
+    <span class="trip-point__duration">
+    ${moment.utc(moment(this._endDate.diff(this._startDate, `HH:mm`))).format(`H`)}H:${moment.utc(moment(this._endDate.diff(this._startDate, `HH:mm`))).format(`mm`)}M
+    </span>
+    `;
   }
 
   _onEventClick() {
@@ -37,11 +41,10 @@ class Event extends Component {
 
   get template() {
     return `<article class="trip-point">
-      <i class="trip-icon">${this._type.icon}</i>
+      <i class="trip-icon">${eventTypes[this._type]}</i>
       <h3 class="trip-point__title">${this._destination}</h3>
        <p class="trip-point__schedule">
           ${this._getDateHtml()}
-          <span class="trip-point__duration">1h 30m</span>
        </p>
        <p class="trip-point__price">&euro;&nbsp;${this._price}</p>
        <ul class="trip-point__offers">
@@ -52,6 +55,17 @@ class Event extends Component {
 
   bind() {
     this._element.addEventListener(`click`, this._onEventClick.bind(this));
+  }
+
+  update(data) {
+    this._type = data.type;
+    this._destination = data.destination;
+    this._offers = data.offers;
+    this._description = data.description;
+    this._price = data.price;
+    this._image = data.image;
+    this._startDate = data.startDate;
+    this._endDate = data.endDate;
   }
 
 }

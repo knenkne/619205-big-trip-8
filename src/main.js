@@ -1,8 +1,6 @@
 import {filtersBlock, pasteFilterElement} from './filter';
-import {fillEventsBlock, eventsBlock, getEvent, getEvents, eventsNumber, getEventElementsHtml, renderEventElements, filtersBlockClickHandler} from './events';
-import {Event} from './event';
-import {EventEdit} from './eventEdit';
-import {getRandomNumber} from './utils';
+import {eventsBlock, renderEventElements, filtersBlockClickHandler} from './events';
+
 
 // Вставляем нужные фильтры
 pasteFilterElement(`Everything`, false, true);

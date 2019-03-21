@@ -28,6 +28,8 @@ class Component {
 
   unbind() {}
 
+  update() {}
+
   unrender() {
     this.unbind();
     this._element.remove();
