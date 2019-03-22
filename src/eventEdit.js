@@ -64,6 +64,11 @@ class EventEdit extends Component {
       endDate: this._endDate
     };
 
+    const offers = Object.keys(event.offers);
+    for (let offer of offers) {
+      event.offers[offer].isAdded = false;
+    }
+
     const eventEditMapper = EventEdit.createMapper(event);
 
     for (const pair of formData.entries()) {
@@ -220,8 +225,7 @@ class EventEdit extends Component {
   static createMapper(target) {
     return {
       "offer": (value) => {
-        
-
+        target.offers[value].isAdded = true;
       },
       "price": (value) => {
         target.price = value;
