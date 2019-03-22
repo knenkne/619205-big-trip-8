@@ -28,11 +28,12 @@ class EventEdit extends Component {
   }
 
   _getOffersHtml() {
+    const offers = Object.keys(this._offers);
     const offersHtml = [];
-    for (const offer of this._offers) {
-      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="${offer.name}" name="offer" value="${offer.name}" checked>
+    for (const offer of offers) {
+      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="${offer}" name="offer" value="${offer}" ${this._offers[offer].isAdded ? `checked` : ``}>
         <label for="add-luggage" class="point__offers-label">
-          <span class="point__offer-service">${offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
+          <span class="point__offer-service">${offer}</span> + €<span class="point__offer-price">${this._offers[offer].price}</span>
         </label>
         `;
       offersHtml.push(offerHtml);
@@ -218,6 +219,10 @@ class EventEdit extends Component {
 
   static createMapper(target) {
     return {
+      "offer": (value) => {
+        
+
+      },
       "price": (value) => {
         target.price = value;
       },

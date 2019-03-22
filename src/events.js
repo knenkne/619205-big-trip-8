@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import {getRandomNumber, getRandomElement, getRandomLengthArray, getShuffledArray} from './utils';
+import {getRandomNumber, getRandomElement, getRandomLengthArray, getShuffledArray, getRandomBoolean} from './utils';
 import {Event} from './event';
 import {EventEdit} from './eventEdit';
 
@@ -18,23 +18,28 @@ const eventTypes = {
   "Restaurant": `🍴`
 };
 const eventOffers = [
-  {
-    name: `Add luggage`,
-    price: getRandomNumber(0, 50)
-  },
-  {
-    name: `Switch to comfort class`,
-    price: getRandomNumber(0, 50)
-  },
-  {
-    name: `Add meal`,
-    price: getRandomNumber(0, 50)
-  },
-  {
-    name: `Choose seats`,
-    price: getRandomNumber(0, 50)
-  }
+  `Add lugage`,
+  `Switch to comfort class`,
+  `Add meal`,
+  `Choose seats`,
 ];
+
+const generateOffers = (offers) => {
+  const filledOffers = {};
+  for (let offer of offers) {
+    filledOffers[offer] = {};
+    filledOffers[offer].price = getRandomNumber(0, 50);
+    filledOffers[offer].isAdded = getRandomBoolean();
+  }
+
+  const slicedOffers = getShuffledArray(Object.keys(filledOffers)).slice(0, getRandomNumber(0, 3)).reduce((result, key) => {
+    result[key] = filledOffers[key];
+
+    return result;
+  }, {});
+  return slicedOffers;
+};
+
 let eventsNumber = 7;
 
 // Блок эвентов
@@ -45,7 +50,7 @@ const getEvent = () => {
   const event = {
     type: getRandomElement(Object.keys(eventTypes)),
     destination: getRandomElement(EVENT_DESTINATIONS),
-    offers: getShuffledArray(eventOffers).slice(0, getRandomNumber(0, 3)),
+    offers: generateOffers(eventOffers),
     description: getRandomLengthArray(getShuffledArray(EVENT_DESCRIPTIONS)).slice(1, getRandomNumber(2, 5)).join(` `),
     price: getRandomNumber(10, 500),
     image: `http://picsum.photos/300/150?r=${Math.random()}`,
@@ -133,4 +138,4 @@ const filtersBlockClickHandler = () => {
   renderEventElements(eventsBlock);
 };
 
-export {eventTypes, fillEventsBlock, getEvent, getEvents, eventsNumber, filtersBlockClickHandler, eventsBlock, renderEventElements};
+export {eventTypes, eventOffers, fillEventsBlock, getEvent, getEvents, eventsNumber, filtersBlockClickHandler, eventsBlock, renderEventElements};

@@ -19,14 +19,17 @@ class Event extends Component {
   }
 
   _getOffersHtml() {
+    const offers = Object.keys(this._offers);
     let offerElements = [];
-    for (let offer of this._offers) {
-      const newOfferElement = `
+    for (let offer of offers) {
+      if (this._offers[offer].isAdded) {
+        const newOfferElement = `
         <li>
-       <button class="trip-point__offer">${offer.name} +&euro; ${offer.price}</button>
+       <button class="trip-point__offer">${offer} +&euro; ${this._offers[offer].price}</button>
        </li>
       `;
-      offerElements.push(newOfferElement);
+        offerElements.push(newOfferElement);
+      }
     }
     return offerElements.join(``);
   }
