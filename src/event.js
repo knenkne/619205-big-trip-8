@@ -1,6 +1,7 @@
-import {getEventOffersHtml} from './events';
-import {createElement} from './utils';
+import moment from 'moment';
+
 import {Component} from './component';
+import {eventTypes} from './events';
 
 class Event extends Component {
   constructor(data) {
@@ -17,12 +18,30 @@ class Event extends Component {
     this._onEdit = null;
   }
 
+  _getOffersHtml() {
+    const offers = Object.keys(this._offers);
+    let offerElements = [];
+    for (let offer of offers) {
+      if (this._offers[offer].isAdded) {
+        const newOfferElement = `
+        <li>
+       <button class="trip-point__offer">${offer} +&euro; ${this._offers[offer].price}</button>
+       </li>
+      `;
+        offerElements.push(newOfferElement);
+      }
+    }
+    return offerElements.join(``);
+  }
+
   _getDateHtml() {
     return `<span class="trip-point__timetable">
-    ${this._startDate.getHours()}:${this._startDate.getMinutes() < 10 ? `0` : ``}${this._startDate.getMinutes()}
-    &nbsp;&mdash;
-    ${this._endDate.getHours()}:${this._endDate.getMinutes() < 10 ? `0` : ``}${this._endDate.getMinutes()}
-    </span>`;
+    ${moment(this._startDate).format(`HH:mm`)} &nbsp;&mdash; ${moment(this._endDate).format(`HH:mm`)}
+    </span>
+    <span class="trip-point__duration">
+    ${moment.utc(moment(this._endDate.diff(this._startDate, `HH:mm`))).format(`H`)}H:${moment.utc(moment(this._endDate.diff(this._startDate, `HH:mm`))).format(`mm`)}M
+    </span>
+    `;
   }
 
   _onEventClick() {
@@ -37,21 +56,31 @@ class Event extends Component {
 
   get template() {
     return `<article class="trip-point">
-      <i class="trip-icon">${this._type.icon}</i>
-      <h3 class="trip-point__title">${this._destination}</h3>
+      <i class="trip-icon">${eventTypes[this._type]}</i>
+      <h3 class="trip-point__title">${this._type} to ${this._destination}</h3>
        <p class="trip-point__schedule">
           ${this._getDateHtml()}
-          <span class="trip-point__duration">1h 30m</span>
        </p>
        <p class="trip-point__price">&euro;&nbsp;${this._price}</p>
        <ul class="trip-point__offers">
-          ${getEventOffersHtml(this._offers)}
+          ${this._getOffersHtml()}
       </ul>
       </article>`.trim();
   }
 
   bind() {
     this._element.addEventListener(`click`, this._onEventClick.bind(this));
+  }
+
+  update(data) {
+    this._type = data.type;
+    this._destination = data.destination;
+    this._offers = data.offers;
+    this._description = data.description;
+    this._price = data.price;
+    this._image = data.image;
+    this._startDate = data.startDate;
+    this._endDate = data.endDate;
   }
 
 }
