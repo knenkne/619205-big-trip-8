@@ -39,7 +39,7 @@ class Event extends Component {
     ${moment(this._startDate).format(`HH:mm`)} &nbsp;&mdash; ${moment(this._endDate).format(`HH:mm`)}
     </span>
     <span class="trip-point__duration">
-    ${moment.utc(moment(this._endDate.diff(this._startDate, `HH:mm`))).format(`H`)}H:${moment.utc(moment(this._endDate.diff(this._startDate, `HH:mm`))).format(`mm`)}M
+    ${moment(this._endDate.diff(this._startDate)).format(`D`)}D ${moment(this._endDate.diff(this._startDate)).format(`H`)}H ${moment(this._endDate.diff(this._startDate)).format(`m`)}M
     </span>
     `;
   }

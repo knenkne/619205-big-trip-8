@@ -52,20 +52,20 @@ const getEvent = () => {
     description: getRandomLengthArray(getShuffledArray(EVENT_DESCRIPTIONS)).slice(1, getRandomNumber(2, 5)).join(` `),
     price: getRandomNumber(10, 500),
     image: `http://picsum.photos/300/150?r=${Math.random()}`,
-    startDate: new Date(),
-    endDate: new Date()
+    startDate: moment(),
+    endDate: moment()
   };
 
-  event.startDate = moment(event.startDate).add({
-    "days": getRandomNumber(-3, 3),
-    "hours": getRandomNumber(-12, 12),
-    "minutes": getRandomNumber(-60, 60)
+  event.startDate.add({
+    day: getRandomNumber(-2, 0),
+    hour: getRandomNumber(-24, 0),
+    minute: getRandomNumber(-60, 0)
   });
 
-  event.endDate = moment(event.endDate).add({
-    "days": getRandomNumber(-3, 3),
-    "hours": getRandomNumber(-12, 12),
-    "minutes": getRandomNumber(-60, 60)
+  event.endDate.add({
+    day: getRandomNumber(0, 2),
+    hour: getRandomNumber(0, 24),
+    minute: getRandomNumber(0, 60)
   });
 
   return event;
