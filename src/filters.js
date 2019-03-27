@@ -17,7 +17,8 @@ const getFilterBlockData = (names) => {
   };
   for (const name of names) {
     const filter = {
-      name
+      name,
+      isChecked: false
     };
     filterBlockData.filters.push(filter);
   }

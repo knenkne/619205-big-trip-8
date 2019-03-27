@@ -10,7 +10,7 @@ class Filter extends Component {
     const filtersHtml = [];
     for (const filter of filters) {
       const filterHtml = `
-      <input type="radio" id="filter-${filter.name.toLowerCase()}" name="filter">
+      <input type="radio" id="filter-${filter.name.toLowerCase()}" name="filter" ${filter.name === `Everything` ? `checked` : ``}>
       <label class="trip-filter__item" for="filter-${filter.name.toLowerCase()}">${filter.name.toUpperCase()}</label>
     `.trim();
       filtersHtml.push(filterHtml);

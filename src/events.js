@@ -56,13 +56,13 @@ const getEvent = () => {
     endDate: new Date()
   };
 
-  event.startDate = moment(event.dueDate).add({
+  event.startDate = moment(event.startDate).add({
     "days": getRandomNumber(-3, 3),
     "hours": getRandomNumber(-12, 12),
     "minutes": getRandomNumber(-60, 60)
   });
 
-  event.endDate = moment(event.dueDate).add({
+  event.endDate = moment(event.endDate).add({
     "days": getRandomNumber(-3, 3),
     "hours": getRandomNumber(-12, 12),
     "minutes": getRandomNumber(-60, 60)
