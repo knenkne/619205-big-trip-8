@@ -97,6 +97,13 @@ const createEventElement = (event) => {
   };
 
   // Меняем состояние
+  editEventComponent.onDelete = () => {
+    editEventComponent.unrender();
+    const index = eventsData.indexOf(event);
+    eventsData.splice(index, 1);
+  };
+
+  // Меняем состояние
   editEventComponent.onSubmit = (newObject) => {
     event.price = newObject.price;
     event.destination = newObject.destination;
@@ -116,19 +123,17 @@ const createEventElement = (event) => {
 };
 
 // Создаем несколько элементов
-const createEventElements = (events) => {
+const createEventElements = (eventsData) => {
   const fragment = document.createDocumentFragment();
-  events.forEach((event) => {
-    const eventElement = createEventElement(event);
+  for (const eventData of eventsData) {
+    const eventElement = createEventElement(eventData);
     fragment.appendChild(eventElement);
-  });
-
+  }
   return fragment;
 };
 
 // Рендрим элементы в нужном месте
-const renderEventElements = (container) => {
-  const events = getEvents(getRandomNumber(0, 7));
+const renderEventElements = (events, container) => {
   const eventElements = createEventElements(events);
   container.appendChild(eventElements);
 };
@@ -138,4 +143,15 @@ const filtersBlockClickHandler = () => {
   renderEventElements(eventsBlock);
 };
 
-export {eventTypes, eventOffers, fillEventsBlock, getEvent, getEvents, eventsNumber, filtersBlockClickHandler, eventsBlock, renderEventElements};
+const eventsData = getEvents(7);
+
+export {eventsData};
+export {eventTypes};
+export {eventOffers};
+export {fillEventsBlock};
+export {getEvent};
+export {getEvents};
+export {eventsNumber};
+export {filtersBlockClickHandler};
+export {eventsBlock};
+export {renderEventElements};

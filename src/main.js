@@ -1,5 +1,5 @@
 import {filtersBlock, pasteFilterElement} from './filter';
-import {eventsBlock, renderEventElements, filtersBlockClickHandler} from './events';
+import {eventsBlock, renderEventElements, filtersBlockClickHandler, eventsData} from './events';
 
 
 // Вставляем нужные фильтры
@@ -8,7 +8,7 @@ pasteFilterElement(`Future`);
 pasteFilterElement(`Past`);
 
 // Рендрим карточки точек маршрута в нужно месте
-renderEventElements(eventsBlock);
+renderEventElements(eventsData, eventsBlock);
 
 // Генерируем новые карточки по нажатию на клик
 filtersBlock.addEventListener(`click`, filtersBlockClickHandler);
