@@ -40,8 +40,6 @@ const generateOffers = (offers) => {
   return slicedOffers;
 };
 
-let eventsNumber = 7;
-
 // Блок эвентов
 const eventsBlock = document.querySelector(`.trip-day__items`);
 
@@ -58,13 +56,17 @@ const getEvent = () => {
     endDate: new Date()
   };
 
-  event.startDate = moment(event.startDate)
-  .add(getRandomNumber(-60, 0), `minutes`)
-  .add(getRandomNumber(-2, 0), `hours`);
+  event.startDate = moment(event.dueDate).add({
+    "days": getRandomNumber(-3, 3),
+    "hours": getRandomNumber(-12, 12),
+    "minutes": getRandomNumber(-60, 60)
+  });
 
-  event.endDate = moment(event.endDate)
-  .add(getRandomNumber(0, 60), `minutes`)
-  .add(getRandomNumber(0, 2), `hours`);
+  event.endDate = moment(event.dueDate).add({
+    "days": getRandomNumber(-3, 3),
+    "hours": getRandomNumber(-12, 12),
+    "minutes": getRandomNumber(-60, 60)
+  });
 
   return event;
 };
@@ -133,8 +135,8 @@ const createEventElements = (eventsData) => {
 };
 
 // Рендрим элементы в нужном месте
-const renderEventElements = (events, container) => {
-  const eventElements = createEventElements(events);
+const renderEventElements = (eventsData, container) => {
+  const eventElements = createEventElements(eventsData);
   container.appendChild(eventElements);
 };
 // Удаляем точки маршрута и вставляем новые
@@ -143,7 +145,7 @@ const filtersBlockClickHandler = () => {
   renderEventElements(eventsBlock);
 };
 
-const eventsData = getEvents(7);
+const eventsData = getEvents(getRandomNumber(0, 7));
 
 export {eventsData};
 export {eventTypes};
@@ -151,7 +153,6 @@ export {eventOffers};
 export {fillEventsBlock};
 export {getEvent};
 export {getEvents};
-export {eventsNumber};
 export {filtersBlockClickHandler};
 export {eventsBlock};
 export {renderEventElements};

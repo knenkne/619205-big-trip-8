@@ -1,4 +1,6 @@
+import moment from 'moment';
 import {Filter} from './filter';
+import {eventsData, eventsBlock, renderEventElements} from './events';
 
 // Блок фильтров
 const controlsBlock = document.querySelector(`.trip-controls`);
@@ -25,10 +27,13 @@ const getFilterBlockData = (names) => {
 // Создаем блок фильтров
 const createFilterBlockElement = (filter) => {
   const filterComponent = new Filter(filter);
-  console.log(filterComponent);
+
+  // Фильтруем эвенты
   filterComponent.onFilter = (evt) => {
     const filterName = evt.target.id;
-    console.log(filterName);
+    const filteredEventsData = filterEvents(eventsData, filterName);
+    eventsBlock.innerHTML = ``;
+    renderEventElements(filteredEventsData, eventsBlock);
   };
 
   const filterBlockElement = filterComponent.render();
@@ -39,9 +44,24 @@ const createFilterBlockElement = (filter) => {
 const renderFilterBlockElement = (container) => {
   const filterBlockData = getFilterBlockData(filtersNames);
   const filterBlockElement = createFilterBlockElement(filterBlockData);
-  console.log(filterBlockElement);
   container.appendChild(filterBlockElement);
 };
+
+// Функция фильтрации
+const filterEvents = (events, filterName) => {
+  switch (filterName) {
+    case `filter-future`:
+      return events.filter((event) =>
+        moment(event.startDate).isAfter(moment()));
+
+    case `filter-past`:
+      return events.filter((event) =>
+        moment(event.endDate).isBefore(moment()));
+  }
+  return events;
+};
+
+console.log(eventsData);
 
 export {filtersBlock};
 export {renderFilterBlockElement};
