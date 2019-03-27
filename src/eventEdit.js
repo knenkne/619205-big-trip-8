@@ -20,14 +20,6 @@ class EventEdit extends Component {
     this._onDelete = null;
   }
 
-  _getDateHtml() {
-    return `<input class="point__input" type="text" 
-    value="${moment(this._startDate).format(`HH:mm`)} &nbsp;&mdash; ${moment(this._endDate).format(`HH:mm`)}" 
-    name="time" 
-    placeholder="${moment(this._startDate).format(`HH:mm`)} &nbsp;&mdash; ${moment(this._endDate).format(`HH:mm`)}"
-    >`;
-  }
-
   _getOffersHtml() {
     const offers = Object.keys(this._offers);
     const offersHtml = [];
@@ -145,10 +137,11 @@ class EventEdit extends Component {
         </datalist>
       </div>
 
-      <label class="point__time">
-        choose time
-       ${this._getDateHtml()}
-      </label>
+    <div class="point__time">
+      choose time
+      <input class="point__input" type="text" value="${moment(this._startDate).format(`HH:mm`)}" name="date-start" placeholder="${moment(this._startDate).format(`HH:mm`)}">
+      <input class="point__input" type="text" value="${moment(this.endDate).format(`HH:mm`)}" name="date-end" placeholder="${moment(this.endDate).format(`HH:mm`)}">
+    </div>
 
       <label class="point__price">
         write price
@@ -217,17 +210,22 @@ class EventEdit extends Component {
       });
     }
 
-    flatpickr(this._element.querySelector(`input[name=time]`), {
-      "locale": {
-        rangeSeparator: ` — `
-      },
-      "mode": `range`,
+    flatpickr(this._element.querySelector(`input[name=date-start]`), {
       "enableTime": true,
       "time_24hr": true,
       "noCalendar": false,
       "altInput": true,
       "altFormat": `H:i`,
-      "dateFormat": `H:i`
+      "dateFormat": `Y F d H i`
+    });
+
+    flatpickr(this._element.querySelector(`input[name=date-end]`), {
+      "enableTime": true,
+      "time_24hr": true,
+      "noCalendar": false,
+      "altInput": true,
+      "altFormat": `H:i`,
+      "dateFormat": `Y F d H i`
     });
   }
 
@@ -256,31 +254,11 @@ class EventEdit extends Component {
       "travel-way": (value) => {
         target.type = value;
       },
-      "time": (value) => {
-        const dates = value.split(`—`);
-        const trimedDates = [];
-        for (let date of dates) {
-          date = date.trim(` `);
-          trimedDates.push(date);
-        }
-
-        const startHour = trimedDates[0].split(`:`)[0];
-        const startMinute = trimedDates[0].split(`:`)[1];
-        const startDate = moment({
-          hour: startHour,
-          minute: startMinute
-        });
-        target.startDate = startDate;
-
-        if (trimedDates.length > 1) {
-          const endHour = trimedDates[1].split(`:`)[0];
-          const endMinute = trimedDates[1].split(`:`)[1];
-          const endDate = moment({
-            hour: endHour,
-            minute: endMinute
-          });
-          target.endDate = endDate;
-        }
+      "date-start": (value) => {
+        target.startDate = moment(value, `YYYY MMMM DD HH mm`);
+      },
+      "date-end": (value) => {
+        target.endDate = moment(value, `YYYY MMMM DD HH mm`);
       }
     };
   }
