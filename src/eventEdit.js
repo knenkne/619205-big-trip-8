@@ -140,7 +140,7 @@ class EventEdit extends Component {
     <div class="point__time">
       choose time
       <input class="point__input" type="text" value="${moment(this._startDate).format(`HH:mm`)}" name="date-start" placeholder="${moment(this._startDate).format(`HH:mm`)}">
-      <input class="point__input" type="text" value="${moment(this.endDate).format(`HH:mm`)}" name="date-end" placeholder="${moment(this.endDate).format(`HH:mm`)}">
+      <input class="point__input" type="text" value="${moment(this._endDate).format(`HH:mm`)}" name="date-end" placeholder="${moment(this._endDate).format(`HH:mm`)}">
     </div>
 
       <label class="point__price">
