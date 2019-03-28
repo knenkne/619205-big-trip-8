@@ -53,11 +53,11 @@ const filterEvents = (events, filterName) => {
   switch (filterName) {
     case `filter-future`:
       return events.filter((event) =>
-        moment(event.startDate).isAfter(moment()));
+        event.startDate.isAfter(moment()));
 
     case `filter-past`:
       return events.filter((event) =>
-        moment(event.endDate).isBefore(moment()));
+        event.startDate.isBefore(moment()));
   }
   return events;
 };
