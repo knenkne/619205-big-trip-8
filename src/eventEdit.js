@@ -255,10 +255,14 @@ class EventEdit extends Component {
         target.type = value;
       },
       "date-start": (value) => {
-        target.startDate = moment(value, `YYYY MMMM DD HH mm`);
+        if (value.length !== 5) {
+          target.startDate = moment(value, `YYYY MMMM DD HH mm`);
+        }
       },
       "date-end": (value) => {
-        target.endDate = moment(value, `YYYY MMMM DD HH mm`);
+        if (value.length !== 5) {
+          target.endDate = moment(value, `YYYY MMMM DD HH mm`);
+        }
       }
     };
   }

@@ -63,7 +63,7 @@ const getEvent = () => {
   });
 
   event.endDate.add({
-    day: getRandomNumber(0, 2),
+    day: getRandomNumber(2, 4),
     hour: getRandomNumber(0, 24),
     minute: getRandomNumber(0, 60)
   });
