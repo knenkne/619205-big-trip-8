@@ -1,21 +1,46 @@
-// Блок фильтров
-const filtersBlock = document.querySelector(`.trip-filter`);
+import {Component} from './component';
 
-// Генерируем отдельный фильтр
-const getFilterElement = (name, isDisabled = false, isChecked = false) => {
-  const checkedAttribute = isChecked ? ` checked` : ``;
-  const disabledAttribute = isDisabled ? ` disabled` : ``;
-  const idAttribute = name.toLowerCase();
-  return `
-        <input type="radio" id="filter-${idAttribute}" name="filter" value="${idAttribute}" ${checkedAttribute} ${disabledAttribute}>
-        <label class="trip-filter__item" for="filter-${idAttribute}">${name.toUpperCase()}</label>
-      `;
-};
+class Filter extends Component {
+  constructor(data) {
+    super();
+    this._filters = data.filters;
+  }
 
+  _getFilters(filters) {
+    const filtersHtml = [];
+    for (const filter of filters) {
+      const filterHtml = `
+      <input type="radio" id="filter-${filter.name.toLowerCase()}" name="filter" ${filter.name === `Everything` ? `checked` : ``}>
+      <label class="trip-filter__item" for="filter-${filter.name.toLowerCase()}">${filter.name.toUpperCase()}</label>
+    `.trim();
+      filtersHtml.push(filterHtml);
+    }
+    return filtersHtml.join(``);
+  }
 
-// Вставляем фильтр в блок
-const pasteFilterElement = (name, isDisabled = false, isChecked = false) => {
-  filtersBlock.insertAdjacentHTML(`beforeend`, getFilterElement(name, isDisabled, isChecked));
-};
+  _onFilter(evt) {
+    evt.preventDefault();
 
-export {filtersBlock, pasteFilterElement};
+    if (typeof this._onFilter === `function`) {
+      this._onFilter();
+    }
+  }
+
+  set onFilter(fn) {
+    this._onFilter = fn;
+  }
+
+  get template() {
+    return `
+    <form class="trip-filter">
+    ${this._getFilters(this._filters)}
+    </form>
+  `.trim();
+  }
+
+  bind() {
+    this._element.addEventListener(`change`, this._onFilter.bind(this));
+  }
+}
+
+export {Filter};

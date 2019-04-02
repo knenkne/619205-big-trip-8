@@ -17,14 +17,7 @@ class EventEdit extends Component {
     this._endDate = data.endDate;
 
     this._onSubmit = null;
-  }
-
-  _getDateHtml() {
-    return `<input class="point__input" type="text" 
-    value="${moment(this._startDate).format(`HH:mm`)} &nbsp;&mdash; ${moment(this._endDate).format(`HH:mm`)}" 
-    name="time" 
-    placeholder="${moment(this._startDate).format(`HH:mm`)} &nbsp;&mdash; ${moment(this._endDate).format(`HH:mm`)}"
-    >`;
+    this._onDelete = null;
   }
 
   _getOffersHtml() {
@@ -82,6 +75,15 @@ class EventEdit extends Component {
     return event;
   }
 
+  _onDeleteButtonClick(evt) {
+    evt.preventDefault();
+
+    if (typeof this._onSubmit === `function`) {
+      this._onDelete();
+    }
+
+  }
+
   _onSubmitButtonClick(evt) {
     evt.preventDefault();
 
@@ -97,6 +99,10 @@ class EventEdit extends Component {
 
   set onSubmit(fn) {
     this._onSubmit = fn;
+  }
+
+  set onDelete(fn) {
+    this._onDelete = fn;
   }
 
   get template() {
@@ -131,10 +137,11 @@ class EventEdit extends Component {
         </datalist>
       </div>
 
-      <label class="point__time">
-        choose time
-       ${this._getDateHtml()}
-      </label>
+    <div class="point__time">
+      choose time
+      <input class="point__input" type="text" value="${moment(this._startDate).format(`HH:mm`)}" name="date-start" placeholder="${moment(this._startDate).format(`HH:mm`)}">
+      <input class="point__input" type="text" value="${moment(this._endDate).format(`HH:mm`)}" name="date-end" placeholder="${moment(this._endDate).format(`HH:mm`)}">
+    </div>
 
       <label class="point__price">
         write price
@@ -175,39 +182,50 @@ class EventEdit extends Component {
 </article>`.trim();
   }
 
+  unbind() {
+    this._element.querySelector(`.point__button--save`).removeEventListener(`click`, this._onSubmitButtonClick.bind(this));
+    this._element.querySelector(`button[type="reset"]`).removeEventListener(`click`, this._onDeleteButtonClick.bind(this));
+  }
+
   bind() {
     const typeChoice = this._element.querySelector(`.travel-way__label`);
     const destinationLabel = this._element.querySelector(`.point__destination-label`);
     this._element.querySelector(`.point__button--save`).addEventListener(`click`, this._onSubmitButtonClick.bind(this));
-    this._element.querySelectorAll(`.travel-way__select-label`)
+    this._element.querySelector(`button[type="reset"]`).addEventListener(`click`, this._onDeleteButtonClick.bind(this));
+    for (const label of this._element.querySelectorAll(`.travel-way__select-label`)) {
     // Обработчик для каждого типа точки маршрута
-    .forEach((label) => {
       label.addEventListener(`click`, function () {
-
         // Получаем инпут относящийся к выбранному селекту
         const input = label.previousElementSibling;
         input.setAttribute(`checked`, `checked`);
         typeChoice.textContent = eventTypes[input.value];
         destinationLabel.textContent = `${input.value} to`;
       });
-    });
-    this._element.querySelectorAll(`.point__offers-label`).forEach((label) => {
+    }
+
+    for (const label of this._element.querySelectorAll(`.point__offers-label`)) {
       label.addEventListener(`click`, function () {
         const input = label.previousElementSibling;
         input.toggleAttribute(`checked`);
       });
-    });
-    flatpickr(this._element.querySelector(`input[name=time]`), {
-      "locale": {
-        rangeSeparator: ` — `
-      },
-      "mode": `range`,
+    }
+
+    flatpickr(this._element.querySelector(`input[name=date-start]`), {
       "enableTime": true,
       "time_24hr": true,
       "noCalendar": false,
       "altInput": true,
       "altFormat": `H:i`,
-      "dateFormat": `H:i`
+      "dateFormat": `Y F d H i`
+    });
+
+    flatpickr(this._element.querySelector(`input[name=date-end]`), {
+      "enableTime": true,
+      "time_24hr": true,
+      "noCalendar": false,
+      "altInput": true,
+      "altFormat": `H:i`,
+      "dateFormat": `Y F d H i`
     });
   }
 
@@ -236,30 +254,14 @@ class EventEdit extends Component {
       "travel-way": (value) => {
         target.type = value;
       },
-      "time": (value) => {
-        const dates = value.split(`—`);
-        const trimedDates = [];
-        for (let date of dates) {
-          date = date.trim(` `);
-          trimedDates.push(date);
+      "date-start": (value) => {
+        if (value.length !== 5) {
+          target.startDate = moment(value, `YYYY MMMM DD HH mm`);
         }
-
-        const startHour = trimedDates[0].split(`:`)[0];
-        const startMinute = trimedDates[0].split(`:`)[1];
-        const startDate = moment({
-          hour: startHour,
-          minute: startMinute
-        });
-        target.startDate = startDate;
-
-        if (trimedDates.length > 1) {
-          const endHour = trimedDates[1].split(`:`)[0];
-          const endMinute = trimedDates[1].split(`:`)[1];
-          const endDate = moment({
-            hour: endHour,
-            minute: endMinute
-          });
-          target.endDate = endDate;
+      },
+      "date-end": (value) => {
+        if (value.length !== 5) {
+          target.endDate = moment(value, `YYYY MMMM DD HH mm`);
         }
       }
     };

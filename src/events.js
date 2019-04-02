@@ -40,8 +40,6 @@ const generateOffers = (offers) => {
   return slicedOffers;
 };
 
-let eventsNumber = 7;
-
 // Блок эвентов
 const eventsBlock = document.querySelector(`.trip-day__items`);
 
@@ -54,17 +52,21 @@ const getEvent = () => {
     description: getRandomLengthArray(getShuffledArray(EVENT_DESCRIPTIONS)).slice(1, getRandomNumber(2, 5)).join(` `),
     price: getRandomNumber(10, 500),
     image: `http://picsum.photos/300/150?r=${Math.random()}`,
-    startDate: new Date(),
-    endDate: new Date()
+    startDate: moment(),
+    endDate: moment()
   };
 
-  event.startDate = moment(event.startDate)
-  .add(getRandomNumber(-60, 0), `minutes`)
-  .add(getRandomNumber(-2, 0), `hours`);
+  event.startDate.add({
+    day: getRandomNumber(-2, 2),
+    hour: getRandomNumber(-24, 24),
+    minute: getRandomNumber(-60, 24)
+  });
 
-  event.endDate = moment(event.endDate)
-  .add(getRandomNumber(0, 60), `minutes`)
-  .add(getRandomNumber(0, 2), `hours`);
+  event.endDate.add({
+    day: getRandomNumber(2, 4),
+    hour: getRandomNumber(0, 24),
+    minute: getRandomNumber(0, 60)
+  });
 
   return event;
 };
@@ -97,6 +99,13 @@ const createEventElement = (event) => {
   };
 
   // Меняем состояние
+  editEventComponent.onDelete = () => {
+    editEventComponent.unrender();
+    const index = eventsData.indexOf(event);
+    eventsData.splice(index, 1);
+  };
+
+  // Меняем состояние
   editEventComponent.onSubmit = (newObject) => {
     event.price = newObject.price;
     event.destination = newObject.destination;
@@ -116,20 +125,18 @@ const createEventElement = (event) => {
 };
 
 // Создаем несколько элементов
-const createEventElements = (events) => {
+const createEventElements = (eventsData) => {
   const fragment = document.createDocumentFragment();
-  events.forEach((event) => {
-    const eventElement = createEventElement(event);
+  for (const eventData of eventsData) {
+    const eventElement = createEventElement(eventData);
     fragment.appendChild(eventElement);
-  });
-
+  }
   return fragment;
 };
 
 // Рендрим элементы в нужном месте
-const renderEventElements = (container) => {
-  const events = getEvents(getRandomNumber(0, 7));
-  const eventElements = createEventElements(events);
+const renderEventElements = (eventsData, container) => {
+  const eventElements = createEventElements(eventsData);
   container.appendChild(eventElements);
 };
 // Удаляем точки маршрута и вставляем новые
@@ -138,4 +145,14 @@ const filtersBlockClickHandler = () => {
   renderEventElements(eventsBlock);
 };
 
-export {eventTypes, eventOffers, fillEventsBlock, getEvent, getEvents, eventsNumber, filtersBlockClickHandler, eventsBlock, renderEventElements};
+const eventsData = getEvents(getRandomNumber(0, 7));
+
+export {eventsData};
+export {eventTypes};
+export {eventOffers};
+export {fillEventsBlock};
+export {getEvent};
+export {getEvents};
+export {filtersBlockClickHandler};
+export {eventsBlock};
+export {renderEventElements};
