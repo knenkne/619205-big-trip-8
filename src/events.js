@@ -107,7 +107,7 @@ const createEventElement = (event) => {
 
   // Меняем состояние
   editEventComponent.onSubmit = (newObject) => {
-    event.price = newObject.price;
+    event.price = Number.parseInt(newObject.price, 10);
     event.destination = newObject.destination;
     event.type = newObject.type;
     event.startDate = newObject.startDate;
@@ -116,6 +116,7 @@ const createEventElement = (event) => {
     eventComponent.render();
     eventsBlock.replaceChild(eventComponent.element, editEventComponent.element);
     editEventComponent.unrender();
+    console.log(eventsData);
   };
 
   // Создаем карточку
