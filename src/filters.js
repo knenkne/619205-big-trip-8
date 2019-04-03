@@ -1,6 +1,7 @@
 import moment from 'moment';
 import {Filter} from './filter';
-import {eventsData, eventsBlock, renderEventElements} from './events';
+import {eventsBlock, renderEventElements} from './events';
+import {eventsData} from './main';
 
 // Блок фильтров
 const controlsBlock = document.querySelector(`.trip-controls`);
@@ -53,16 +54,14 @@ const filterEvents = (events, filterName) => {
   switch (filterName) {
     case `filter-future`:
       return events.filter((event) =>
-        event.startDate.isAfter(moment()));
+        moment(event.startDate).isAfter(moment()));
 
     case `filter-past`:
       return events.filter((event) =>
-        event.startDate.isBefore(moment()));
+        moment(event.startDate).isBefore(moment()));
   }
   return events;
 };
-
-console.log(eventsData);
 
 export {filtersBlock};
 export {renderFilterBlockElement};
