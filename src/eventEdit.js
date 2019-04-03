@@ -49,10 +49,6 @@ class EventEdit extends Component {
     return typesHtml.join(``);
   }
 
-  static parseEvent(data) {
-    return new EventEdit(data);
-  }
-
   _getPicturesHtml(pictures) {
     const picturesHtml = [];
     for (const picture of pictures) {
@@ -231,14 +227,6 @@ class EventEdit extends Component {
         typeChoice.textContent = eventTypes[input.value];
         destinationLabel.textContent = `${input.value.charAt(0).toUpperCase() + input.value.slice(1)} to`;
         typeOffers.innerHTML = ``;
-      });
-    }
-
-    for (const label of this._element.querySelectorAll(`.point__offers-label`)) {
-      label.addEventListener(`click`, () => {
-        console.log(`click`);
-        const input = label.previousElementSibling;
-        input.toggleAttribute(`checked`);
       });
     }
 

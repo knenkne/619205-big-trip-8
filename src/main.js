@@ -44,6 +44,7 @@ statsButton.addEventListener(`click`, function (evt) {
 api.getEvents()
   .then((events) => {
     eventsData = events;
+    console.log(eventsData);
     renderEventElements(eventsData, eventsBlock);
   });
 
