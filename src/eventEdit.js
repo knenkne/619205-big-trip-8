@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import {Component} from './component';
 import {eventTypes} from './events';
-import {destinationsData, offersData} from './main';
+import {destinationsData} from './main';
 
 class EventEdit extends Component {
   constructor(data) {
@@ -79,9 +79,11 @@ class EventEdit extends Component {
       price: this._price,
       image: this._image,
       startDate: this._startDate,
-      endDate: this._endDate
+      endDate: this._endDate,
+      isFavorite: this._isFavorite
     };
 
+    event.isFavorite = false;
 
     for (let offer of event.offers) {
       offer.accepted = false;
@@ -269,6 +271,7 @@ class EventEdit extends Component {
     this._image = data.image;
     this._startDate = data.startDate;
     this._endDate = data.endDate;
+    this._isFavorite = data.isFavorite;
   }
 
   static createMapper(target) {
@@ -295,6 +298,9 @@ class EventEdit extends Component {
         if (value.length !== 5) {
           target.endDate = moment(value, `YYYY MMMM DD HH mm`);
         }
+      },
+      "favorite": () => {
+        target.isFavorite = true;
       }
     };
   }

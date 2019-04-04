@@ -113,6 +113,7 @@ const createEventElement = (event) => {
     event.type = newObject.type;
     event.startDate = newObject.startDate;
     event.endDate = newObject.endDate;
+    event.isFavorite = newObject.isFavorite;
     eventComponent.update(event);
     eventComponent.render();
     eventsBlock.replaceChild(eventComponent.element, editEventComponent.element);
