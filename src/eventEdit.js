@@ -237,7 +237,8 @@ class EventEdit extends Component {
       // Проверяем есть ли город в списке, а затем узнаем его индекс
       if (destinationsData.some((destination) => destination.name === destinationChoice.value)) {
         destinationIndex = destinationsData.findIndex((desination) => desination.name === destinationChoice.value);
-        destinationDescription.textContent = destinationsData[destinationIndex].description;
+        this._description = destinationsData[destinationIndex].description;
+        destinationDescription.textContent = this._description;
         this._pictures = destinationsData[destinationIndex].pictures;
         destinationImages.innerHTML = `${this._getPicturesHtml(this._pictures)}`;
       }
