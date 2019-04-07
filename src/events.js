@@ -101,10 +101,42 @@ const createEventElement = (event) => {
 
   // Меняем состояние
   editEventComponent.onDelete = ({id}) => {
+    const saveButton = editEventComponent.element.querySelector(`.point__button[type="submit"]`);
+    const deleteButton = editEventComponent.element.querySelector(`.point__button[type="reset"]`);
+    const inputs = editEventComponent.element.querySelectorAll(`input`);
+
+    const block = () => {
+      for (const input of inputs) {
+        input.disabled = true;
+      }
+
+      saveButton.disabled = true;
+      deleteButton.textContent = `Deleting...`;
+      deleteButton.disabled = true;
+      editEventComponent.element.style.boxShadow = `0 11px 20px 0 rgba(0,0,0,0.22)`;
+    };
+
+    const unblock = () => {
+      for (const input of inputs) {
+        input.disabled = false;
+      }
+
+      saveButton.disabled = false;
+      deleteButton.textContent = `Delete`;
+      deleteButton.disabled = false;
+    };
+
+    block();
+
     api.deleteEvent({id})
     .then(() => {
+      unblock();
       editEventComponent.unrender();
       eventsData.splice(id, 1);
+    })
+    .catch(() => {
+      editEventComponent.shake();
+      unblock();
     });
   };
 
@@ -117,12 +149,44 @@ const createEventElement = (event) => {
     event.endDate = newObject.endDate;
     event.isFavorite = newObject.isFavorite;
 
+    const saveButton = editEventComponent.element.querySelector(`.point__button[type="submit"]`);
+    const deleteButton = editEventComponent.element.querySelector(`.point__button[type="reset"]`);
+    const inputs = editEventComponent.element.querySelectorAll(`input`);
+
+    const block = () => {
+      for (const input of inputs) {
+        input.disabled = true;
+      }
+
+      saveButton.disabled = true;
+      saveButton.textContent = `Saving...`;
+      deleteButton.disabled = true;
+      editEventComponent.element.style.boxShadow = `0 11px 20px 0 rgba(0,0,0,0.22)`;
+    };
+
+    const unblock = () => {
+      for (const input of inputs) {
+        input.disabled = false;
+      }
+
+      saveButton.disabled = false;
+      saveButton.textContent = `Save`;
+      deleteButton.disabled = false;
+    };
+
+    block();
+
     api.updateEvent({id: event.id, data: event.toRAW()})
     .then(() => {
+      unblock();
       eventComponent.update(event);
       eventComponent.render();
       eventsBlock.replaceChild(eventComponent.element, editEventComponent.element);
       editEventComponent.unrender();
+    })
+    .catch(() => {
+      editEventComponent.shake();
+      unblock();
     });
   };
 

@@ -205,6 +205,15 @@ class EventEdit extends Component {
   </form>
 </article>`.trim();
   }
+  shake() {
+    const ANIMATION_TIMEOUT = 600;
+    this._element.style.boxShadow = `0 0 20px 0 rgba(255,0,0,0.75)`;
+    this._element.style.animation = `shake ${ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._element.style.animation = ``;
+    }, ANIMATION_TIMEOUT);
+  }
 
   unbind() {
     this._element.querySelector(`.point__button--save`).removeEventListener(`click`, this._onSubmitButtonClick.bind(this));
