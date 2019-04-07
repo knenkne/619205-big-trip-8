@@ -56,9 +56,9 @@ api.getDestinations()
 api.getOffers()
   .then((offers) => {
     offersData = offers;
-    console.log(offersData);
   });
 
 export {eventsData};
 export {destinationsData};
-
+export {offersData};
+export {api};

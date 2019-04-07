@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import {Component} from './component';
 import {eventTypes} from './events';
-import {destinationsData} from './main';
+import {destinationsData, offersData} from './main';
 
 class EventEdit extends Component {
   constructor(data) {
@@ -106,7 +106,7 @@ class EventEdit extends Component {
     evt.preventDefault();
 
     if (typeof this._onSubmit === `function`) {
-      this._onDelete();
+      this._onDelete({id: this._id});
     }
 
   }
@@ -189,7 +189,7 @@ class EventEdit extends Component {
         <h3 class="point__details-title">offers</h3>
 
         <div class="point__offers-wrap">
-          ${this._getOffersHtml(this._offers)}
+          ${this._getOffersHtml()}
         </div>
 
       </section>
@@ -225,7 +225,7 @@ class EventEdit extends Component {
       label.addEventListener(`click`, () => {
         // Получаем инпут относящийся к выбранному селекту
         const input = label.previousElementSibling;
-        input.setAttribute(`checked`, `checked`);
+        input.setAttribute(`checked`, true);
         typeChoice.textContent = eventTypes[input.value];
         destinationLabel.textContent = `${input.value.charAt(0).toUpperCase() + input.value.slice(1)} to`;
         typeOffers.innerHTML = ``;

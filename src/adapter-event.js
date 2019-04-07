@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 class AdapterEvent {
   constructor(data) {
     this.id = data[`id`];
@@ -10,6 +12,23 @@ class AdapterEvent {
     this.isFavorite = Boolean(data[`is_favorite`]);
     this.type = data[`type`];
     this.offers = data[`offers`];
+  }
+
+  toRAW() {
+    return {
+      'id': this.id,
+      'base_price': this.price,
+      'date_from': moment(this.startDate).toDate().getTime(),
+      'date_to': moment(this.endDate).toDate().getTime(),
+      'destination': {
+        'name': this.destination,
+        'description': this.description,
+        'pictures': this.pictures
+      },
+      'is_favorite': this.isFavorite,
+      'type': this.type,
+      'offers': this.offers
+    };
   }
 
   static parseEvent(data) {

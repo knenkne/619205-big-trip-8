@@ -31,6 +31,12 @@ const API = class {
     .then(AdapterEvent.parseEvents);
   }
 
+  getServer() {
+    return this._load({url: `points`})
+    .then(toJSON)
+    .then((server) => console.log(server));
+  }
+
   createEvent({event}) {
     return this._load({
       url: `points`,

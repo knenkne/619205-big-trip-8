@@ -3,7 +3,7 @@ import moment from 'moment';
 import {getRandomNumber, getRandomElement, getRandomLengthArray, getShuffledArray, getRandomBoolean} from './utils';
 import {Event} from './event';
 import {EventEdit} from './eventEdit';
-import {eventsData} from './main';
+import {eventsData, api} from './main';
 
 const EVENT_DESTINATIONS = [`Paris`, `Rome`, `Tokio`, `Munich`, `New York`];
 const EVENT_DESCRIPTIONS = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`, `Cras aliquet varius magna, non porta ligula feugiat eget.`, `Fusce tristique felis at fermentum pharetra.`, `Aliquam id orci ut lectus varius viverra.`, `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`, `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`, `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`, `Sed sed nisi sed augue convallis suscipit in sed felis.`, `Aliquam erat volutpat.`, `Nunc fermentum tortor ac porta dapibus.`, `In rutrum ac purus sit amet tempus.`];
@@ -100,10 +100,12 @@ const createEventElement = (event) => {
   };
 
   // Меняем состояние
-  editEventComponent.onDelete = () => {
-    editEventComponent.unrender();
-    const index = eventsData.indexOf(event);
-    eventsData.splice(index, 1);
+  editEventComponent.onDelete = ({id}) => {
+    api.deleteEvent({id})
+    .then(() => {
+      editEventComponent.unrender();
+      eventsData.splice(id, 1);
+    });
   };
 
   // Меняем состояние
@@ -114,10 +116,14 @@ const createEventElement = (event) => {
     event.startDate = newObject.startDate;
     event.endDate = newObject.endDate;
     event.isFavorite = newObject.isFavorite;
-    eventComponent.update(event);
-    eventComponent.render();
-    eventsBlock.replaceChild(eventComponent.element, editEventComponent.element);
-    editEventComponent.unrender();
+
+    api.updateEvent({id: event.id, data: event.toRAW()})
+    .then(() => {
+      eventComponent.update(event);
+      eventComponent.render();
+      eventsBlock.replaceChild(eventComponent.element, editEventComponent.element);
+      editEventComponent.unrender();
+    });
   };
 
   // Создаем карточку
@@ -127,18 +133,18 @@ const createEventElement = (event) => {
 };
 
 // Создаем несколько элементов
-const createEventElements = (eventsData) => {
+const createEventElements = (events) => {
   const fragment = document.createDocumentFragment();
-  for (const eventData of eventsData) {
-    const eventElement = createEventElement(eventData);
+  for (const event of events) {
+    const eventElement = createEventElement(event);
     fragment.appendChild(eventElement);
   }
   return fragment;
 };
 
 // Рендрим элементы в нужном месте
-const renderEventElements = (eventsData, container) => {
-  const eventElements = createEventElements(eventsData);
+const renderEventElements = (events, container) => {
+  const eventElements = createEventElements(events);
   container.appendChild(eventElements);
 };
 // Удаляем точки маршрута и вставляем новые
