@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import {Component} from './component';
 import {eventTypes} from './events';
-import {destinationsData, offersData} from './main';
+import {destinationsData} from './main';
 
 class EventEdit extends Component {
   constructor(data) {
@@ -93,7 +93,6 @@ class EventEdit extends Component {
 
     for (const pair of formData.entries()) {
       const [property, value] = pair;
-      console.log(pair);
       if (eventEditMapper[property]) {
         eventEditMapper[property](value);
       }
@@ -234,7 +233,7 @@ class EventEdit extends Component {
       label.addEventListener(`click`, () => {
         // Получаем инпут относящийся к выбранному селекту
         const input = label.previousElementSibling;
-        input.setAttribute(`checked`, true);
+        input.setAttribute(`checked`, `checked`);
         typeChoice.textContent = eventTypes[input.value];
         destinationLabel.textContent = `${input.value.charAt(0).toUpperCase() + input.value.slice(1)} to`;
         typeOffers.innerHTML = ``;

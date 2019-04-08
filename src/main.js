@@ -3,7 +3,7 @@ import {eventsBlock, renderEventElements} from './events';
 import {renderMoneyChart, renderTransportChart} from './statistic';
 import {API} from './api';
 
-const AUTHORIZATION = `Basic eo0w590ik299a=${Math.random()}`;
+const AUTHORIZATION = `Basic eo0w590ik299a=20`;
 const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
 
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
@@ -14,7 +14,6 @@ let offersData = [];
 
 const tableBlock = document.querySelector(`#table`);
 const statsBlock = document.querySelector(`#stats`);
-const menuButtons = document.querySelectorAll(`.view-switch__item`);
 const tableButton = document.querySelector(`.view-switch__item[href="#table"]`);
 const statsButton = document.querySelector(`.view-switch__item[href="#stats"]`);
 
@@ -44,7 +43,6 @@ statsButton.addEventListener(`click`, function (evt) {
 api.getEvents()
   .then((events) => {
     eventsData = events;
-    console.log(eventsData);
     renderEventElements(eventsData, eventsBlock);
   });
 

@@ -4,7 +4,6 @@ import {eventsBlock, renderEventElements} from './events';
 import {eventsData} from './main';
 
 // Блок фильтров
-const controlsBlock = document.querySelector(`.trip-controls`);
 const controlsMenu = document.querySelector(`.trip-controls__menus`);
 const filtersBlock = document.querySelector(`.trip-filter`);
 // Фильтры
