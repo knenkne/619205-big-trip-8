@@ -9,6 +9,32 @@
   <link rel="stylesheet" type="text/css" media="screen" href="./css/normalize.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="./css/main.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="./css/flatpickr.min.css" />
+  <style>
+    @keyframes shake {
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+  
+      10%,
+      30%,
+      50%,
+      70%,
+      90% {
+        transform: translateX(-5px);
+      }
+  
+      20%,
+      40%,
+      60%,
+      80% {
+        transform: translateX(5px);
+      }
+    }
+    .shake {
+      animation: shake 0.6s;
+    }
+  </style>
 </head>
 <body>
 
@@ -35,8 +61,7 @@
     </section>
   </div>
 </header>
-
-
+<div class="trip-error visually-hidden" style="text-align: center; margin: 0 auto; width: 1000px; padding: 25px; font-size: 24px;"></div>
 <main class="main content-wrap" id="table">
   <form class="trip-sorting">
     <input type="radio" name="trip-sorting" id="sorting-event" value="event" checked>

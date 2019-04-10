@@ -3,30 +3,34 @@ import moment from 'moment';
 
 import {Component} from './component';
 import {eventTypes} from './events';
+import {destinationsData} from './main';
 
 class EventEdit extends Component {
   constructor(data) {
     super();
+    this._id = data.id;
     this._type = data.type;
     this._destination = data.destination;
     this._offers = data.offers;
     this._description = data.description;
     this._price = data.price;
-    this._image = data.image;
+    this._pictures = data.pictures;
     this._startDate = data.startDate;
     this._endDate = data.endDate;
+    this._isFavorite = data.isFavorite;
 
     this._onSubmit = null;
     this._onDelete = null;
   }
 
   _getOffersHtml() {
-    const offers = Object.keys(this._offers);
+    let counter = 0;
     const offersHtml = [];
-    for (const offer of offers) {
-      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="${offer}" name="offer" value="${offer}" ${this._offers[offer].isAdded ? `checked` : ``}>
-        <label for="add-luggage" class="point__offers-label">
-          <span class="point__offer-service">${offer}</span> + €<span class="point__offer-price">${this._offers[offer].price}</span>
+    for (const offer of this._offers) {
+      counter++;
+      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.title}" ${offer.accepted ? `checked` : ``}>
+        <label for="offer-${this._id}-${counter}" class="point__offers-label">
+          <span class="point__offer-service">${offer.title}</span> + €<span class="point__offer-price">${offer.price}</span>
         </label>
         `;
       offersHtml.push(offerHtml);
@@ -45,8 +49,29 @@ class EventEdit extends Component {
     return typesHtml.join(``);
   }
 
+  _getPicturesHtml(pictures) {
+    const picturesHtml = [];
+    for (const picture of pictures) {
+      const pictureHtml = `<img src="${picture.src}" alt="${picture.description}" class="point__destination-image">`;
+      picturesHtml.push(pictureHtml);
+    }
+    return picturesHtml.join(``);
+  }
+
+  _getDestinationsDataListHtml() {
+    const dataListHtml = [];
+
+    for (const destination of destinationsData) {
+      const dataItemHtml = `<option value="${destination.name}"></option>`;
+      dataListHtml.push(dataItemHtml);
+    }
+
+    return dataListHtml.join(``);
+  }
+
   _processForm(formData) {
     const event = {
+      id: this._id,
       type: this._type,
       destination: this._destination,
       offers: this._offers,
@@ -54,19 +79,20 @@ class EventEdit extends Component {
       price: this._price,
       image: this._image,
       startDate: this._startDate,
-      endDate: this._endDate
+      endDate: this._endDate,
+      isFavorite: this._isFavorite
     };
 
-    const offers = Object.keys(event.offers);
-    for (let offer of offers) {
-      event.offers[offer].isAdded = false;
+    event.isFavorite = false;
+
+    for (let offer of event.offers) {
+      offer.accepted = false;
     }
 
     const eventEditMapper = EventEdit.createMapper(event);
 
     for (const pair of formData.entries()) {
       const [property, value] = pair;
-      console.log(pair);
       if (eventEditMapper[property]) {
         eventEditMapper[property](value);
       }
@@ -79,7 +105,7 @@ class EventEdit extends Component {
     evt.preventDefault();
 
     if (typeof this._onSubmit === `function`) {
-      this._onDelete();
+      this._onDelete({id: this._id});
     }
 
   }
@@ -127,13 +153,10 @@ class EventEdit extends Component {
       </div>
 
       <div class="point__destination-wrap">
-        <label class="point__destination-label" for="destination">${this._type} to</label>
+        <label class="point__destination-label" for="destination">${this._type.charAt(0).toUpperCase() + this._type.slice(1)} to</label>
         <input class="point__destination-input" list="destination-select" id="destination" value="${this._destination}" name="destination">
         <datalist id="destination-select">
-          <option value="airport"></option>
-          <option value="Geneva"></option>
-          <option value="Chamonix"></option>
-          <option value="hotel"></option>
+          ${this._getDestinationsDataListHtml()}
         </datalist>
       </div>
 
@@ -155,7 +178,7 @@ class EventEdit extends Component {
       </div>
 
       <div class="paint__favorite-wrap">
-        <input type="checkbox" class="point__favorite-input visually-hidden" id="favorite" name="favorite">
+        <input type="checkbox" class="point__favorite-input visually-hidden" id="favorite" name="favorite" ${this._isFavorite ? `checked` : ``}>
         <label class="point__favorite" for="favorite">favorite</label>
       </div>
     </header>
@@ -173,13 +196,22 @@ class EventEdit extends Component {
         <h3 class="point__details-title">Destination</h3>
         <p class="point__destination-text">${this._description}</p>
         <div class="point__destination-images">
-          <img src="${this._image}" alt="picture from place" class="point__destination-image">
+          ${this._getPicturesHtml(this._pictures)}
         </div>
       </section>
       <input type="hidden" class="point__total-price" name="total-price" value="">
     </section>
   </form>
 </article>`.trim();
+  }
+  shake() {
+    const ANIMATION_TIMEOUT = 600;
+    this._element.style.boxShadow = `0 0 20px 0 rgba(255,0,0,0.75)`;
+    this._element.style.animation = `shake ${ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._element.style.animation = ``;
+    }, ANIMATION_TIMEOUT);
   }
 
   unbind() {
@@ -188,27 +220,37 @@ class EventEdit extends Component {
   }
 
   bind() {
+    const destinationChoice = this._element.querySelector(`#destination`);
+    const destinationDescription = this._element.querySelector(`.point__destination-text`);
+    const destinationImages = this._element.querySelector(`.point__destination-images`);
     const typeChoice = this._element.querySelector(`.travel-way__label`);
+    const typeOffers = this.element.querySelector(`.point__offers-wrap`);
     const destinationLabel = this._element.querySelector(`.point__destination-label`);
     this._element.querySelector(`.point__button--save`).addEventListener(`click`, this._onSubmitButtonClick.bind(this));
     this._element.querySelector(`button[type="reset"]`).addEventListener(`click`, this._onDeleteButtonClick.bind(this));
     for (const label of this._element.querySelectorAll(`.travel-way__select-label`)) {
     // Обработчик для каждого типа точки маршрута
-      label.addEventListener(`click`, function () {
+      label.addEventListener(`click`, () => {
         // Получаем инпут относящийся к выбранному селекту
         const input = label.previousElementSibling;
         input.setAttribute(`checked`, `checked`);
         typeChoice.textContent = eventTypes[input.value];
-        destinationLabel.textContent = `${input.value} to`;
+        destinationLabel.textContent = `${input.value.charAt(0).toUpperCase() + input.value.slice(1)} to`;
+        typeOffers.innerHTML = ``;
       });
     }
 
-    for (const label of this._element.querySelectorAll(`.point__offers-label`)) {
-      label.addEventListener(`click`, function () {
-        const input = label.previousElementSibling;
-        input.toggleAttribute(`checked`);
-      });
-    }
+    destinationChoice.addEventListener(`change`, () => {
+      let destinationIndex;
+      // Проверяем есть ли город в списке, а затем узнаем его индекс
+      if (destinationsData.some((destination) => destination.name === destinationChoice.value)) {
+        destinationIndex = destinationsData.findIndex((desination) => desination.name === destinationChoice.value);
+        this._description = destinationsData[destinationIndex].description;
+        destinationDescription.textContent = this._description;
+        this._pictures = destinationsData[destinationIndex].pictures;
+        destinationImages.innerHTML = `${this._getPicturesHtml(this._pictures)}`;
+      }
+    });
 
     flatpickr(this._element.querySelector(`input[name=date-start]`), {
       "enableTime": true,
@@ -238,12 +280,14 @@ class EventEdit extends Component {
     this._image = data.image;
     this._startDate = data.startDate;
     this._endDate = data.endDate;
+    this._isFavorite = data.isFavorite;
   }
 
   static createMapper(target) {
     return {
       "offer": (value) => {
-        target.offers[value].isAdded = true;
+        const offerIndex = target.offers.findIndex((offer) => offer.title === value);
+        target.offers[offerIndex].accepted = true;
       },
       "price": (value) => {
         target.price = value;
@@ -263,6 +307,9 @@ class EventEdit extends Component {
         if (value.length !== 5) {
           target.endDate = moment(value, `YYYY MMMM DD HH mm`);
         }
+      },
+      "favorite": () => {
+        target.isFavorite = true;
       }
     };
   }

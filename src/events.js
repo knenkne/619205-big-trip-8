@@ -3,19 +3,20 @@ import moment from 'moment';
 import {getRandomNumber, getRandomElement, getRandomLengthArray, getShuffledArray, getRandomBoolean} from './utils';
 import {Event} from './event';
 import {EventEdit} from './eventEdit';
+import {eventsData, api} from './main';
 
 const EVENT_DESTINATIONS = [`Paris`, `Rome`, `Tokio`, `Munich`, `New York`];
 const EVENT_DESCRIPTIONS = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`, `Cras aliquet varius magna, non porta ligula feugiat eget.`, `Fusce tristique felis at fermentum pharetra.`, `Aliquam id orci ut lectus varius viverra.`, `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`, `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`, `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`, `Sed sed nisi sed augue convallis suscipit in sed felis.`, `Aliquam erat volutpat.`, `Nunc fermentum tortor ac porta dapibus.`, `In rutrum ac purus sit amet tempus.`];
 const eventTypes = {
-  "Taxi": `🚕`,
-  "Bus": `🚌`,
-  "Ship": `🛳️`,
-  "Transport": `🚊`,
-  "Drive": `🚗`,
-  "Flight": `✈️`,
-  "Check-in": `🏨`,
-  "Sightseeing": `🏛️`,
-  "Restaurant": `🍴`
+  "taxi": `🚕`,
+  "bus": `🚌`,
+  "ship": `🛳️`,
+  "train": `🚊`,
+  "drive": `🚗`,
+  "flight": `✈️`,
+  "check-in": `🏨`,
+  "sightseeing": `🏛️`,
+  "restaurant": `🍴`
 };
 const eventOffers = [
   `Add lugage`,
@@ -99,23 +100,94 @@ const createEventElement = (event) => {
   };
 
   // Меняем состояние
-  editEventComponent.onDelete = () => {
-    editEventComponent.unrender();
-    const index = eventsData.indexOf(event);
-    eventsData.splice(index, 1);
+  editEventComponent.onDelete = ({id}) => {
+    const saveButton = editEventComponent.element.querySelector(`.point__button[type="submit"]`);
+    const deleteButton = editEventComponent.element.querySelector(`.point__button[type="reset"]`);
+    const inputs = editEventComponent.element.querySelectorAll(`input`);
+
+    const block = () => {
+      for (const input of inputs) {
+        input.disabled = true;
+      }
+
+      saveButton.disabled = true;
+      deleteButton.textContent = `Deleting...`;
+      deleteButton.disabled = true;
+      editEventComponent.element.style.boxShadow = `0 11px 20px 0 rgba(0,0,0,0.22)`;
+    };
+
+    const unblock = () => {
+      for (const input of inputs) {
+        input.disabled = false;
+      }
+
+      saveButton.disabled = false;
+      deleteButton.textContent = `Delete`;
+      deleteButton.disabled = false;
+    };
+
+    block();
+
+    api.deleteEvent({id})
+    .then(() => {
+      unblock();
+      editEventComponent.unrender();
+      eventsData.splice(id, 1);
+    })
+    .catch(() => {
+      editEventComponent.shake();
+      unblock();
+    });
   };
 
   // Меняем состояние
   editEventComponent.onSubmit = (newObject) => {
-    event.price = newObject.price;
+    event.price = Number.parseInt(newObject.price, 10);
     event.destination = newObject.destination;
     event.type = newObject.type;
     event.startDate = newObject.startDate;
     event.endDate = newObject.endDate;
-    eventComponent.update(event);
-    eventComponent.render();
-    eventsBlock.replaceChild(eventComponent.element, editEventComponent.element);
-    editEventComponent.unrender();
+    event.isFavorite = newObject.isFavorite;
+
+    const saveButton = editEventComponent.element.querySelector(`.point__button[type="submit"]`);
+    const deleteButton = editEventComponent.element.querySelector(`.point__button[type="reset"]`);
+    const inputs = editEventComponent.element.querySelectorAll(`input`);
+
+    const block = () => {
+      for (const input of inputs) {
+        input.disabled = true;
+      }
+
+      saveButton.disabled = true;
+      saveButton.textContent = `Saving...`;
+      deleteButton.disabled = true;
+      editEventComponent.element.style.boxShadow = `0 11px 20px 0 rgba(0,0,0,0.22)`;
+    };
+
+    const unblock = () => {
+      for (const input of inputs) {
+        input.disabled = false;
+      }
+
+      saveButton.disabled = false;
+      saveButton.textContent = `Save`;
+      deleteButton.disabled = false;
+    };
+
+    block();
+
+    api.updateEvent({id: event.id, data: event.toRAW()})
+    .then(() => {
+      unblock();
+      eventComponent.update(event);
+      eventComponent.render();
+      eventsBlock.replaceChild(eventComponent.element, editEventComponent.element);
+      editEventComponent.unrender();
+    })
+    .catch(() => {
+      editEventComponent.shake();
+      unblock();
+    });
   };
 
   // Создаем карточку
@@ -125,18 +197,18 @@ const createEventElement = (event) => {
 };
 
 // Создаем несколько элементов
-const createEventElements = (eventsData) => {
+const createEventElements = (events) => {
   const fragment = document.createDocumentFragment();
-  for (const eventData of eventsData) {
-    const eventElement = createEventElement(eventData);
+  for (const event of events) {
+    const eventElement = createEventElement(event);
     fragment.appendChild(eventElement);
   }
   return fragment;
 };
 
 // Рендрим элементы в нужном месте
-const renderEventElements = (eventsData, container) => {
-  const eventElements = createEventElements(eventsData);
+const renderEventElements = (events, container) => {
+  const eventElements = createEventElements(events);
   container.appendChild(eventElements);
 };
 // Удаляем точки маршрута и вставляем новые
@@ -145,9 +217,7 @@ const filtersBlockClickHandler = () => {
   renderEventElements(eventsBlock);
 };
 
-const eventsData = getEvents(getRandomNumber(0, 7));
 
-export {eventsData};
 export {eventTypes};
 export {eventOffers};
 export {fillEventsBlock};

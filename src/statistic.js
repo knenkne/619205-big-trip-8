@@ -1,8 +1,9 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {eventsData, eventTypes} from './events';
+import {eventTypes} from './events';
+import {eventsData} from './main';
 
-const transportTypes = [`Taxi`, `Bus`, `Ship`, `Transport`, `Drive`, `Flight`];
+const transportTypes = [`taxi`, `bus`, `ship`, `train`, `drive`, `flight`];
 const moneyCtx = document.querySelector(`.statistic__money`);
 const transportCtx = document.querySelector(`.statistic__transport`);
 const timeSpendCtx = document.querySelector(`.statistic__time-spend`);

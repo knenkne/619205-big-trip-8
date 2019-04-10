@@ -6,6 +6,7 @@ import {eventTypes} from './events';
 class Event extends Component {
   constructor(data) {
     super();
+    this._id = data.id;
     this._type = data.type;
     this._destination = data.destination;
     this._offers = data.offers;
@@ -14,18 +15,19 @@ class Event extends Component {
     this._image = data.image;
     this._startDate = data.startDate;
     this._endDate = data.endDate;
+    this._isFavorite = data.isFavorite;
 
     this._onEdit = null;
   }
 
   _getOffersHtml() {
-    const offers = Object.keys(this._offers);
+    const offers = this._offers;
     let offerElements = [];
     for (let offer of offers) {
-      if (this._offers[offer].isAdded) {
+      if (offer.accepted) {
         const newOfferElement = `
         <li>
-       <button class="trip-point__offer">${offer} +&euro; ${this._offers[offer].price}</button>
+       <button class="trip-point__offer">${offer.title}</button>
        </li>
       `;
         offerElements.push(newOfferElement);
@@ -39,7 +41,7 @@ class Event extends Component {
     ${moment(this._startDate).format(`HH:mm`)} &nbsp;&mdash; ${moment(this._endDate).format(`HH:mm`)}
     </span>
     <span class="trip-point__duration">
-    ${moment.utc(this._endDate.diff(this._startDate)).format(`D`) - 1}D ${moment.utc(this._endDate.diff(this._startDate)).format(`H`)}H ${moment.utc(this._endDate.diff(this._startDate)).format(`m`)}M
+    ${moment.utc(moment(this._endDate).diff(this._startDate)).format(`D`) - 1}D ${moment.utc(moment(this._endDate).diff(this._startDate)).format(`H`)}H ${moment.utc(moment(this._endDate).diff(this._startDate)).format(`m`)}M  
     </span>
     `;
   }
@@ -57,7 +59,7 @@ class Event extends Component {
   get template() {
     return `<article class="trip-point">
       <i class="trip-icon">${eventTypes[this._type]}</i>
-      <h3 class="trip-point__title">${this._type} to ${this._destination}</h3>
+      <h3 class="trip-point__title">${this._type.charAt(0).toUpperCase() + this._type.slice(1)} to ${this._destination}</h3>
        <p class="trip-point__schedule">
           ${this._getDateHtml()}
        </p>
