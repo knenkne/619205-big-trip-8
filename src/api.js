@@ -70,10 +70,12 @@ const API = class {
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
-
+    document.querySelector(`.trip-error`).textContent = `Loading route...`;
+    document.querySelector(`.trip-error`).classList.remove(`visually-hidden`);
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})
         .then(checkStatus)
         .catch((err) => {
+          document.querySelector(`.trip-error`).textContent = `Something went wrong while loading your route info. Check your connection or try again later`;
           throw err;
         });
   }

@@ -43,6 +43,7 @@ statsButton.addEventListener(`click`, function (evt) {
 api.getEvents()
   .then((events) => {
     eventsData = events;
+    document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
     renderEventElements(eventsData, eventsBlock);
   });
 
