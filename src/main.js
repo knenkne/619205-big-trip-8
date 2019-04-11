@@ -1,4 +1,5 @@
 import {renderFilterBlockElement, controlsMenu} from './filters';
+import {renderSorterBlockElement} from './sorters';
 import {eventsBlock, renderEventElements} from './events';
 import {renderMoneyChart, renderTransportChart} from './statistic';
 import {API} from './api';
@@ -19,6 +20,9 @@ const statsButton = document.querySelector(`.view-switch__item[href="#stats"]`);
 
 // Вставляем блок фильтров
 renderFilterBlockElement(controlsMenu);
+
+// Вставляем блок сортировки
+renderSorterBlockElement(document.querySelector(`main`));
 
 // Переключаем состояния страницы
 tableButton.addEventListener(`click`, function (evt) {
@@ -43,8 +47,8 @@ statsButton.addEventListener(`click`, function (evt) {
 api.getEvents()
   .then((events) => {
     eventsData = events;
-    document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
     renderEventElements(eventsData, eventsBlock);
+    document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
   });
 
 api.getDestinations()
