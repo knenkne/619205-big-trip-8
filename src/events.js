@@ -99,6 +99,12 @@ const createEventElement = (event) => {
     eventComponent.unrender();
   };
 
+  editEventComponent.onEsc = () => {
+    eventComponent.render();
+    eventsBlock.replaceChild(eventComponent.element, editEventComponent.element);
+    editEventComponent.unrender();
+  };
+
   // Меняем состояние
   editEventComponent.onDelete = ({id}) => {
     const saveButton = editEventComponent.element.querySelector(`.point__button[type="submit"]`);

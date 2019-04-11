@@ -70,6 +70,10 @@ class Event extends Component {
       </article>`.trim();
   }
 
+  unbind() {
+    this._element.removeEventListener(`click`, this._onEventClick.bind(this));
+  }
+
   bind() {
     this._element.addEventListener(`click`, this._onEventClick.bind(this));
   }

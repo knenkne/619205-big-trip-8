@@ -21,6 +21,7 @@ class EventEdit extends Component {
 
     this._onSubmit = null;
     this._onDelete = null;
+    this._onEsc = null;
   }
 
   _getOffersHtml() {
@@ -100,6 +101,13 @@ class EventEdit extends Component {
 
     return event;
   }
+  _onEscButtonClick(evt) {
+    evt.preventDefault();
+
+    if (typeof this._onEsc === `function` && evt.keyCode === 27) {
+      this._onEsc();
+    }
+  }
 
   _onDeleteButtonClick(evt) {
     evt.preventDefault();
@@ -129,6 +137,10 @@ class EventEdit extends Component {
 
   set onDelete(fn) {
     this._onDelete = fn;
+  }
+
+  set onEsc(fn) {
+    this._onEsc = fn;
   }
 
   get template() {
@@ -217,6 +229,7 @@ class EventEdit extends Component {
   unbind() {
     this._element.querySelector(`.point__button--save`).removeEventListener(`click`, this._onSubmitButtonClick.bind(this));
     this._element.querySelector(`button[type="reset"]`).removeEventListener(`click`, this._onDeleteButtonClick.bind(this));
+    document.removeEventListener(`keydown`, this._onEscButtonClick.bind(this));
   }
 
   bind() {
@@ -226,6 +239,7 @@ class EventEdit extends Component {
     const typeChoice = this._element.querySelector(`.travel-way__label`);
     const typeOffers = this.element.querySelector(`.point__offers-wrap`);
     const destinationLabel = this._element.querySelector(`.point__destination-label`);
+    document.addEventListener(`keydown`, this._onEscButtonClick.bind(this));
     this._element.querySelector(`.point__button--save`).addEventListener(`click`, this._onSubmitButtonClick.bind(this));
     this._element.querySelector(`button[type="reset"]`).addEventListener(`click`, this._onDeleteButtonClick.bind(this));
     for (const label of this._element.querySelectorAll(`.travel-way__select-label`)) {
