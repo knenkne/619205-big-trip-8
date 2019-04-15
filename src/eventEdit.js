@@ -24,6 +24,8 @@ class EventEdit extends Component {
     this._onEsc = null;
 
     this._onEscButtonClick = this._onEscButtonClick.bind(this);
+    this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
+    this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
   }
 
   _getOffersHtml() {
@@ -229,8 +231,8 @@ class EventEdit extends Component {
   }
 
   unbind() {
-    this._element.querySelector(`.point__button--save`).removeEventListener(`click`, this._onSubmitButtonClick.bind(this));
-    this._element.querySelector(`button[type="reset"]`).removeEventListener(`click`, this._onDeleteButtonClick.bind(this));
+    this._element.querySelector(`.point__button--save`).removeEventListener(`click`, this._onSubmitButtonClick);
+    this._element.querySelector(`button[type="reset"]`).removeEventListener(`click`, this._onDeleteButtonClick);
     document.removeEventListener(`keydown`, this._onEscButtonClick);
   }
 
@@ -242,8 +244,8 @@ class EventEdit extends Component {
     const typeOffers = this.element.querySelector(`.point__offers-wrap`);
     const destinationLabel = this._element.querySelector(`.point__destination-label`);
     document.addEventListener(`keydown`, this._onEscButtonClick);
-    this._element.querySelector(`.point__button--save`).addEventListener(`click`, this._onSubmitButtonClick.bind(this));
-    this._element.querySelector(`button[type="reset"]`).addEventListener(`click`, this._onDeleteButtonClick.bind(this));
+    this._element.querySelector(`.point__button--save`).addEventListener(`click`, this._onSubmitButtonClick);
+    this._element.querySelector(`button[type="reset"]`).addEventListener(`click`, this._onDeleteButtonClick);
     for (const label of this._element.querySelectorAll(`.travel-way__select-label`)) {
     // Обработчик для каждого типа точки маршрута
       label.addEventListener(`click`, () => {

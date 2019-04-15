@@ -4,13 +4,15 @@ class Sorter extends Component {
   constructor(data) {
     super();
     this._sorters = data.sorters;
+
+    this._onSorter = this._onSorter.bind(this);
   }
 
   _getSorters(sorters) {
     const sortersHtml = [];
     for (const sorter of sorters) {
       const sorterHtml = `
-        <input type="radio" name="trip-sorting" id="sorting-${sorter.name.toLowerCase()}" value="${sorter.name.toLowerCase()}">
+        <input type="radio" name="trip-sorting" id="sorting-${sorter.name.toLowerCase()}" value="${sorter.name.toLowerCase()}" ${sorter.isChecked ? `checked` : ``}>
         <label class="trip-sorting__item trip-sorting__item--${sorter.name.toLowerCase()}" for="sorting-${sorter.name.toLowerCase()}">${sorter.name}</label>
     `.trim();
       sortersHtml.push(sorterHtml);
@@ -39,8 +41,12 @@ class Sorter extends Component {
   `.trim();
   }
 
+  unbind() {
+    this._element.addEventListener(`change`, this._onSorter);
+  }
+
   bind() {
-    this._element.addEventListener(`change`, this._onSorter.bind(this));
+    this._element.addEventListener(`change`, this._onSorter);
   }
 }
 
