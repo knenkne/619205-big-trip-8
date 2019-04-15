@@ -1,6 +1,7 @@
 import {renderFilterBlockElement, controlsMenu} from './filters';
 import {renderSorterBlockElement} from './sorters';
-import {renderEventsViaDays} from './events';
+import {renderEventsViaDays, getTotaslCost} from './events';
+import {TotalCost} from './total-cost';
 import {renderMoneyChart, renderTransportChart} from './statistic';
 import {API} from './api';
 
@@ -23,6 +24,12 @@ renderFilterBlockElement(controlsMenu);
 
 // Вставляем блок сортировки
 renderSorterBlockElement(document.querySelector(`main`));
+
+// Вставляем блок цены
+const totalCostElement = new TotalCost().render();
+const priceBlock = totalCostElement.querySelector(`.trip__total-cost`);
+const totaslCostBlock = document.querySelector(`.trip`);
+totaslCostBlock.appendChild(totalCostElement);
 
 // Переключаем состояния страницы
 tableButton.addEventListener(`click`, function (evt) {
@@ -47,6 +54,7 @@ statsButton.addEventListener(`click`, function (evt) {
 api.getEvents()
   .then((events) => {
     eventsData = events;
+    getTotaslCost(events);
     renderEventsViaDays(eventsData);
     document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
   });
@@ -65,3 +73,4 @@ export {eventsData};
 export {destinationsData};
 export {offersData};
 export {api};
+export {priceBlock};

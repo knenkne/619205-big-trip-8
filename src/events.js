@@ -3,7 +3,7 @@ import moment from 'moment';
 import {getRandomNumber, getRandomElement, getRandomLengthArray, getShuffledArray, getRandomBoolean} from './utils';
 import {Event} from './event';
 import {EventEdit} from './eventEdit';
-import {eventsData, api} from './main';
+import {eventsData, api, priceBlock} from './main';
 import {EventDay} from './event-day';
 
 const EVENT_DESTINATIONS = [`Paris`, `Rome`, `Tokio`, `Munich`, `New York`];
@@ -44,11 +44,9 @@ const generateOffers = (offers) => {
 
 // Блок эвентов
 const eventsBlock = document.querySelector(`.trip-points`);
-const priceBlock = document.querySelector(`.trip__total-cost`);
 
 // Итоговая стоимость
 const getTotaslCost = (events) => {
-  priceBlock.innerHTML = ``;
   let updatedPrice = 0;
 
   for (let event of events) {
@@ -131,7 +129,6 @@ const fillEventsBlock = (eventsHtml) => {
 
 // Создаем карточку на основании данных
 const createEventElement = (event, day) => {
-  console.log(event);
   // Создаем классы на основе данных
   const eventComponent = new Event(event);
   const editEventComponent = new EventEdit(event);
@@ -287,4 +284,4 @@ export {filtersBlockClickHandler};
 export {eventsBlock};
 export {renderEventElements};
 export {renderEventsViaDays};
-
+export {getTotaslCost};
