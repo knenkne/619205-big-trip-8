@@ -44,6 +44,19 @@ const generateOffers = (offers) => {
 
 // Блок эвентов
 const eventsBlock = document.querySelector(`.trip-points`);
+const priceBlock = document.querySelector(`.trip__total-cost`);
+
+// Итоговая стоимость
+const getTotaslCost = (events) => {
+  priceBlock.innerHTML = ``;
+  let updatedPrice = 0;
+
+  for (let event of events) {
+    updatedPrice += event[`price`];
+  }
+
+  priceBlock.textContent = `€ ${updatedPrice}`;
+};
 
 // Получаем дни и соответсвующие им эвенты
 const getSortedEventsByDays = (events) => {
@@ -71,6 +84,7 @@ const renderEventsViaDays = (days) => {
     eventsBlock.appendChild(eventDay);
     renderEventElements(events, eventsList);
   });
+  getTotaslCost(eventsData);
 };
 
 // Получаем данные об одной точке маршрута
@@ -117,6 +131,7 @@ const fillEventsBlock = (eventsHtml) => {
 
 // Создаем карточку на основании данных
 const createEventElement = (event, day) => {
+  console.log(event);
   // Создаем классы на основе данных
   const eventComponent = new Event(event);
   const editEventComponent = new EventEdit(event);
@@ -162,12 +177,18 @@ const createEventElement = (event, day) => {
     };
 
     block();
-
     api.deleteEvent({id})
     .then(() => {
       unblock();
       editEventComponent.unrender();
-      eventsData.splice(id, 1);
+      if (!day.firstChild) {
+        day.parentNode.remove();
+      }
+      api.getEvents()
+      .then((events) => {
+        getTotaslCost(events);
+        document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
+      });
     })
     .catch(() => {
       editEventComponent.shake();
@@ -218,6 +239,11 @@ const createEventElement = (event, day) => {
       eventComponent.render();
       day.replaceChild(eventComponent.element, editEventComponent.element);
       editEventComponent.unrender();
+      api.getEvents()
+      .then((events) => {
+        getTotaslCost(events);
+        document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
+      });
     })
     .catch(() => {
       editEventComponent.shake();
@@ -251,7 +277,6 @@ const filtersBlockClickHandler = () => {
   eventsBlock.innerHTML = ``;
   renderEventElements(eventsBlock);
 };
-
 
 export {eventTypes};
 export {eventOffers};

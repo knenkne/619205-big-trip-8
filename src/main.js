@@ -1,10 +1,10 @@
 import {renderFilterBlockElement, controlsMenu} from './filters';
 import {renderSorterBlockElement} from './sorters';
-import {eventsBlock, renderEventElements, renderEventsViaDays, getSortedEventsByDay} from './events';
+import {renderEventsViaDays} from './events';
 import {renderMoneyChart, renderTransportChart} from './statistic';
 import {API} from './api';
 
-const AUTHORIZATION = `Basic eo0w590ik299a=20`;
+const AUTHORIZATION = `Basic eo0w590ik299a=6123`;
 const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
 
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});

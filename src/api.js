@@ -1,4 +1,5 @@
 import {AdapterEvent} from './adapter-event';
+import {eventsBlock} from './events';
 
 const Method = {
   GET: `GET`,
@@ -33,6 +34,7 @@ const API = class {
     .then(AdapterEvent.parseEvents)
     .catch(() => {
       document.querySelector(`.trip-error`).textContent = `Something went wrong while loading your route info. Check your connection or try again later`;
+      document.querySelector(`.trip-error`).classList.remove(`visually-hidden`);
     });
   }
 

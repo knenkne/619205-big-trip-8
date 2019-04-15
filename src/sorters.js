@@ -1,6 +1,7 @@
 import {Sorter} from './sorter';
-import {eventsData} from './main';
 import {eventsBlock, renderEventsViaDays} from './events';
+import {filteredEvents} from './filters';
+import { eventsData } from './main';
 // Виды сортировки
 const sortersNames = [`Event`, `Time`, `Price`];
 
@@ -45,7 +46,7 @@ const createSorterBlockElement = (sorter) => {
   // Сортируем эвенты
   sorterComponent.onSorter = (evt) => {
     const sorterName = evt.target.id;
-    const sortedEvents = sortEvents(eventsData, sorterName);
+    const sortedEvents = filteredEvents.length === 0 ? sortEvents(eventsData, sorterName) : sortEvents(filteredEvents, sorterName);
     console.log(sortedEvents);
     eventsBlock.innerHTML = ``;
     renderEventsViaDays(sortedEvents);

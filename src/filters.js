@@ -8,7 +8,7 @@ const controlsMenu = document.querySelector(`.trip-controls__menus`);
 const filtersBlock = document.querySelector(`.trip-filter`);
 // Фильтры
 const filtersNames = [`Everything`, `Future`, `Past`];
-
+let filteredEvents = [];
 
 // Генерируем данные о блоке фильтров
 const getFilterBlockData = (names) => {
@@ -34,6 +34,7 @@ const createFilterBlockElement = (filter) => {
     const filterName = evt.target.id;
     const filteredEventsData = filterEvents(eventsData, filterName);
     eventsBlock.innerHTML = ``;
+    filteredEvents = filteredEventsData;
     renderEventsViaDays(filteredEventsData);
   };
 
@@ -65,3 +66,4 @@ const filterEvents = (events, filterName) => {
 export {filtersBlock};
 export {renderFilterBlockElement};
 export {controlsMenu};
+export {filteredEvents};
