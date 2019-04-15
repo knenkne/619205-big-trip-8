@@ -4,6 +4,7 @@ import {getRandomNumber, getRandomElement, getRandomLengthArray, getShuffledArra
 import {Event} from './event';
 import {EventEdit} from './eventEdit';
 import {eventsData, api} from './main';
+import {EventDay} from './event-day';
 
 const EVENT_DESTINATIONS = [`Paris`, `Rome`, `Tokio`, `Munich`, `New York`];
 const EVENT_DESCRIPTIONS = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`, `Cras aliquet varius magna, non porta ligula feugiat eget.`, `Fusce tristique felis at fermentum pharetra.`, `Aliquam id orci ut lectus varius viverra.`, `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`, `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`, `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`, `Sed sed nisi sed augue convallis suscipit in sed felis.`, `Aliquam erat volutpat.`, `Nunc fermentum tortor ac porta dapibus.`, `In rutrum ac purus sit amet tempus.`];
@@ -42,7 +43,35 @@ const generateOffers = (offers) => {
 };
 
 // Блок эвентов
-const eventsBlock = document.querySelector(`.trip-day__items`);
+const eventsBlock = document.querySelector(`.trip-points`);
+
+// Получаем дни и соответсвующие им эвенты
+const getSortedEventsByDays = (events) => {
+  let result = {};
+  for (let event of events) {
+    const eventDay = moment(event.startDate).format(`D MMM YY`);
+
+    if (!result[eventDay]) {
+      result[eventDay] = [];
+    }
+    result[eventDay].push(event);
+  }
+
+  return result;
+};
+
+// Рендрим эвенты в соответсвующие дни
+const renderEventsViaDays = (days) => {
+  const eventsSortedByDays = getSortedEventsByDays(days);
+
+  Object.entries(eventsSortedByDays).forEach((eventSortedByDay) => {
+    const [day, events] = eventSortedByDay;
+    const eventDay = new EventDay(day).render();
+    const eventsList = eventDay.querySelector(`.trip-day__items`);
+    eventsBlock.appendChild(eventDay);
+    renderEventElements(events, eventsList);
+  });
+};
 
 // Получаем данные об одной точке маршрута
 const getEvent = () => {
@@ -87,7 +116,7 @@ const fillEventsBlock = (eventsHtml) => {
 };
 
 // Создаем карточку на основании данных
-const createEventElement = (event) => {
+const createEventElement = (event, day) => {
   // Создаем классы на основе данных
   const eventComponent = new Event(event);
   const editEventComponent = new EventEdit(event);
@@ -95,13 +124,13 @@ const createEventElement = (event) => {
   // Меняем состояние
   eventComponent.onEdit = () => {
     editEventComponent.render();
-    eventsBlock.replaceChild(editEventComponent.element, eventComponent.element);
+    day.replaceChild(editEventComponent.element, eventComponent.element);
     eventComponent.unrender();
   };
 
   editEventComponent.onEsc = () => {
     eventComponent.render();
-    eventsBlock.replaceChild(eventComponent.element, editEventComponent.element);
+    day.replaceChild(eventComponent.element, editEventComponent.element);
     editEventComponent.unrender();
   };
 
@@ -187,7 +216,7 @@ const createEventElement = (event) => {
       unblock();
       eventComponent.update(event);
       eventComponent.render();
-      eventsBlock.replaceChild(eventComponent.element, editEventComponent.element);
+      day.replaceChild(eventComponent.element, editEventComponent.element);
       editEventComponent.unrender();
     })
     .catch(() => {
@@ -203,19 +232,19 @@ const createEventElement = (event) => {
 };
 
 // Создаем несколько элементов
-const createEventElements = (events) => {
+const createEventElements = (events, day) => {
   const fragment = document.createDocumentFragment();
   for (const event of events) {
-    const eventElement = createEventElement(event);
+    const eventElement = createEventElement(event, day);
     fragment.appendChild(eventElement);
   }
   return fragment;
 };
 
 // Рендрим элементы в нужном месте
-const renderEventElements = (events, container) => {
-  const eventElements = createEventElements(events);
-  container.appendChild(eventElements);
+const renderEventElements = (events, day) => {
+  const eventElements = createEventElements(events, day);
+  day.appendChild(eventElements);
 };
 // Удаляем точки маршрута и вставляем новые
 const filtersBlockClickHandler = () => {
@@ -232,3 +261,5 @@ export {getEvents};
 export {filtersBlockClickHandler};
 export {eventsBlock};
 export {renderEventElements};
+export {renderEventsViaDays};
+
