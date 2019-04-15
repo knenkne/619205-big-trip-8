@@ -1,6 +1,6 @@
 import moment from 'moment';
 import {Filter} from './filter';
-import {eventsBlock, renderEventElements} from './events';
+import {eventsBlock, renderEventsViaDays} from './events';
 import {eventsData} from './main';
 
 // Блок фильтров
@@ -34,7 +34,7 @@ const createFilterBlockElement = (filter) => {
     const filterName = evt.target.id;
     const filteredEventsData = filterEvents(eventsData, filterName);
     eventsBlock.innerHTML = ``;
-    renderEventElements(filteredEventsData, eventsBlock);
+    renderEventsViaDays(filteredEventsData);
   };
 
   const filterBlockElement = filterComponent.render();

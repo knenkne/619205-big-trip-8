@@ -36,12 +36,21 @@ class Event extends Component {
     return offerElements.join(``);
   }
 
+  _getDuration() {
+    const getDaysDuration = () => moment.utc(moment(this._endDate).diff(this._startDate)).format(`D`) - 1;
+    const getHoursDuration = () => moment.utc(moment(this._endDate).diff(this._startDate)).format(`H`);
+    const getMinutesDuration = () => moment.utc(moment(this._endDate).diff(this._startDate)).format(`m`);
+
+    const duration = `${getDaysDuration() > 0 ? `${getDaysDuration()}D` : ``} ${getHoursDuration() > 0 ? `${getHoursDuration()}H` : ``} ${getMinutesDuration() > 0 ? `${getMinutesDuration()}M` : ``}`;
+    return duration;
+  }
+
   _getDateHtml() {
     return `<span class="trip-point__timetable">
     ${moment(this._startDate).format(`HH:mm`)} &nbsp;&mdash; ${moment(this._endDate).format(`HH:mm`)}
     </span>
     <span class="trip-point__duration">
-    ${moment.utc(moment(this._endDate).diff(this._startDate)).format(`D`) - 1}D ${moment.utc(moment(this._endDate).diff(this._startDate)).format(`H`)}H ${moment.utc(moment(this._endDate).diff(this._startDate)).format(`m`)}M  
+    ${this._getDuration()}
     </span>
     `;
   }
