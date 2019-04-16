@@ -18,6 +18,8 @@ class Event extends Component {
     this._isFavorite = data.isFavorite;
 
     this._onEdit = null;
+
+    this._onEventClick = this._onEventClick.bind(this);
   }
 
   _getOffersHtml() {
@@ -80,11 +82,11 @@ class Event extends Component {
   }
 
   unbind() {
-    this._element.removeEventListener(`click`, this._onEventClick.bind(this));
+    this._element.removeEventListener(`click`, this._onEventClick);
   }
 
   bind() {
-    this._element.addEventListener(`click`, this._onEventClick.bind(this));
+    this._element.addEventListener(`click`, this._onEventClick);
   }
 
   update(data) {

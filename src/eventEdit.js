@@ -1,6 +1,7 @@
 import flatpickr from 'flatpickr';
 import moment from 'moment';
 
+import {keyCode} from './constants';
 import {Component} from './component';
 import {eventTypes} from './events';
 import {destinationsData} from './main';
@@ -108,7 +109,7 @@ class EventEdit extends Component {
   _onEscButtonClick(evt) {
     evt.stopPropagation();
 
-    if (typeof this._onEsc === `function` && evt.keyCode === 27) {
+    if (typeof this._onEsc === `function` && evt.keyCode === keyCode[`ESC`]) {
       this._onEsc();
     }
   }
