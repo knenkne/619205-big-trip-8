@@ -1,7 +1,7 @@
 import moment from 'moment';
 import {Filter} from './filter';
 import {eventsBlock, renderEventsViaDays} from './events';
-import {eventsData} from './main';
+import {eventsData, eventsToFilter} from './main';
 
 // Блок фильтров
 const controlsMenu = document.querySelector(`.trip-controls__menus`);
@@ -32,7 +32,7 @@ const createFilterBlockElement = (filter) => {
   // Фильтруем эвенты
   filterComponent.onFilter = (evt) => {
     const filterName = evt.target.id;
-    const filteredEventsData = filterEvents(eventsData, filterName);
+    const filteredEventsData = filterEvents(eventsToFilter, filterName);
     eventsBlock.innerHTML = ``;
     filteredEvents = filteredEventsData;
     renderEventsViaDays(filteredEventsData);

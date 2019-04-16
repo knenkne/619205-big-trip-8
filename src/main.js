@@ -1,5 +1,6 @@
-import {renderFilterBlockElement, controlsMenu} from './filters';
+import {renderFilterBlockElement, controlsMenu, filteredEvents} from './filters';
 import {renderSorterBlockElement} from './sorters';
+import {renderNewEvent} from './new-event';
 import {renderEventsViaDays, getTotaslCost} from './events';
 import {TotalCost} from './total-cost';
 import {renderMoneyChart, renderTransportChart} from './statistic';
@@ -11,6 +12,8 @@ const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
 
 let eventsData = [];
+let eventsToSort = [];
+let eventsToFilter = [];
 let destinationsData = [];
 let offersData = [];
 
@@ -54,6 +57,8 @@ statsButton.addEventListener(`click`, function (evt) {
 api.getEvents()
   .then((events) => {
     eventsData = events;
+    eventsToSort = events;
+    eventsToFilter = events;
     getTotaslCost(events);
     renderEventsViaDays(eventsData);
     document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
@@ -61,6 +66,7 @@ api.getEvents()
 
 api.getDestinations()
   .then((destinations) => {
+    console.log(destinations);
     destinationsData = destinations;
   });
 
@@ -69,8 +75,12 @@ api.getOffers()
     offersData = offers;
   });
 
+renderNewEvent();
+
 export {eventsData};
 export {destinationsData};
 export {offersData};
 export {api};
 export {priceBlock};
+export {eventsToSort};
+export {eventsToFilter};

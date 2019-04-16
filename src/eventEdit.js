@@ -154,7 +154,7 @@ class EventEdit extends Component {
     <header class="point__header">
       <label class="point__date">
         choose day
-        <input class="point__input" type="text" placeholder="MAR 18" name="day">
+        <input class="point__input point__input--day" type="text" placeholder="${moment(this._startDate).format(`MMM`)} ${moment(this._startDate).format(`DD`)}" name="day">
       </label>
 
       <div class="travel-way">
@@ -191,7 +191,7 @@ class EventEdit extends Component {
 
       <div class="point__buttons">
         <button class="point__button point__button--save" type="submit">Save</button>
-        <button class="point__button" type="reset">Delete</button>
+        <button class="point__button point__button--reset" type="reset">Delete</button>
       </div>
 
       <div class="paint__favorite-wrap">
@@ -246,7 +246,7 @@ class EventEdit extends Component {
     const destinationLabel = this._element.querySelector(`.point__destination-label`);
     document.addEventListener(`keydown`, this._onEscButtonClick);
     this._element.querySelector(`.point__button--save`).addEventListener(`click`, this._onSubmitButtonClick);
-    this._element.querySelector(`button[type="reset"]`).addEventListener(`click`, this._onDeleteButtonClick);
+    this._element.querySelector(`.point__button--reset`).addEventListener(`click`, this._onDeleteButtonClick);
     for (const label of this._element.querySelectorAll(`.travel-way__select-label`)) {
     // Обработчик для каждого типа точки маршрута
       label.addEventListener(`click`, () => {
@@ -271,22 +271,31 @@ class EventEdit extends Component {
       }
     });
 
+    flatpickr(this._element.querySelector(`.point__input--day`), {
+      "noCalendar": false,
+      "altInput": true,
+      "altFormat": `M j`,
+      "dateFormat": `Y F d H i`
+    });
+
     flatpickr(this._element.querySelector(`input[name=date-start]`), {
       "enableTime": true,
       "time_24hr": true,
-      "noCalendar": false,
+      "noCalendar": true,
       "altInput": true,
       "altFormat": `H:i`,
-      "dateFormat": `Y F d H i`
+      "dateFormat": `Y F d H i`,
+      "defaultDate": this._startDate
     });
 
     flatpickr(this._element.querySelector(`input[name=date-end]`), {
       "enableTime": true,
       "time_24hr": true,
-      "noCalendar": false,
+      "noCalendar": true,
       "altInput": true,
       "altFormat": `H:i`,
-      "dateFormat": `Y F d H i`
+      "dateFormat": `Y F d H i`,
+      "defaultDate": this._endDate
     });
   }
 
