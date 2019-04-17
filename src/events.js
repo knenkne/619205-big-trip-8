@@ -75,6 +75,7 @@ const getSortedEventsByDays = (events) => {
 const renderEventsViaDays = (days) => {
   const eventsSortedByDays = getSortedEventsByDays(days);
 
+  eventsBlock.innerHTML = ``;
   Object.entries(eventsSortedByDays).forEach((eventSortedByDay) => {
     const [day, events] = eventSortedByDay;
     const eventDay = new EventDay(day).render();
@@ -201,10 +202,6 @@ const createEventElement = (event, day) => {
     event.startDate = newObject.startDate;
     event.endDate = newObject.endDate;
     event.isFavorite = newObject.isFavorite;
-
-    console.log(moment(event.startDate).toDate());
-    console.log(moment(event.endDate).toDate());
-
 
     const saveButton = editEventComponent.element.querySelector(`.point__button[type="submit"]`);
     const deleteButton = editEventComponent.element.querySelector(`.point__button[type="reset"]`);

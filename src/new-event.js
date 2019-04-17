@@ -27,7 +27,7 @@ const renderNewEvent = () => {
       {src: `http://picsum.photos/300/200?r=0.5789777919312467`, description: `Moscow kindergarten`},
       {src: `http://picsum.photos/300/200?r=0.06836592836900102`, description: `Moscow street market`},
       {src: `http://picsum.photos/300/200?r=0.11891128464543965`, description: `Moscow parliament building`},
-      {src: `http://picsum.photos/300/200?r=0.883970917530243`, description: `Moscow parliament building`},
+      {src: `http://picsum.photos/300/200?r=0.883970917530243`, description: `Moscow parliament building`}
     ],
     startDate: moment(),
     endDate: moment(),
@@ -36,13 +36,17 @@ const renderNewEvent = () => {
 
   const parseNewEventData = (data) => {
     return {
-      'type': data.type,
-      'base_price': data.price,
-      'destination': data.destination,
-      'date_from': data.startDate,
-      'date_to': data.endDate,
-      'offers': data.offers,
+      'base_price': parseInt(data.price, 10),
+      'date_from': moment(data.startDate).toDate().getTime(),
+      'date_to': moment(data.endDate).toDate().getTime(),
+      'destination': {
+        'name': data.destination,
+        'description': data.description,
+        'pictures': data.pictures
+      },
       'is_favorite': data.isFavorite,
+      'type': data.type,
+      'offers': data.offers
     };
   };
 
@@ -54,6 +58,10 @@ const renderNewEvent = () => {
     const saveButton = newEventEditComponent.element.querySelector(`.point__button[type="submit"]`);
     const deleteButton = newEventEditComponent.element.querySelector(`.point__button[type="reset"]`);
     const inputs = newEventEditComponent.element.querySelectorAll(`input`);
+    const priceInput = newEventEditComponent.element.querySelector(`input[name="price"]`);
+    const dateInitInputs = newEventEditComponent.element.querySelectorAll(`.point__date input`);
+    const timeInitInputs = newEventEditComponent.element.querySelectorAll(`.point__time input`);
+    const requiredFields = [priceInput, ...dateInitInputs, ...timeInitInputs];
 
     const block = () => {
       for (const input of inputs) {
@@ -76,9 +84,41 @@ const renderNewEvent = () => {
       deleteButton.disabled = false;
     };
 
-    block();
+    const checkFieldValues = () => {
+      let isPriceValid = true;
+      let isDateValid = true;
+      let isTimeValid = true;
 
-    api.createEvent({event: parseNewEventData(newData)})
+      for (const requiredField of requiredFields) {
+        requiredField.style.borderBottom = `1px solid #0D8AE4`;
+      }
+
+      if (priceInput.value.length === 0) {
+        priceInput.style.borderBottom = `1px solid red`;
+        isPriceValid = false;
+      }
+
+      for (const timeInitInput of timeInitInputs) {
+        if (timeInitInput.value.length === 0) {
+          timeInitInput.style.borderBottom = `1px solid red`;
+          isDateValid = false;
+        }
+      }
+
+      for (const dateInitInput of dateInitInputs) {
+        if (dateInitInput.value.length === 0) {
+          dateInitInput.style.borderBottom = `1px solid red`;
+          isTimeValid = false;
+        }
+      }
+
+      const isEventValid = isPriceValid && isDateValid && isTimeValid;
+      return isEventValid;
+    };
+
+    if (checkFieldValues()) {
+      block();
+      api.createEvent({event: parseNewEventData(newData)})
       .then((newEvent) => {
         unblock();
         console.log(eventsData);
@@ -93,6 +133,7 @@ const renderNewEvent = () => {
         newEventEditComponent.shake();
         unblock();
       });
+    }
   };
 
   newEventEditComponent.onEsc = () => {

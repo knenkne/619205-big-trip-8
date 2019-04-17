@@ -83,7 +83,7 @@ class EventEdit extends Component {
       offers: this._offers,
       description: this._description,
       price: this._price,
-      image: this._image,
+      pictures: this._pictures,
       startDate: this._startDate,
       endDate: this._endDate,
       isFavorite: this._isFavorite
@@ -99,7 +99,6 @@ class EventEdit extends Component {
 
     for (const pair of formData.entries()) {
       const [property, value] = pair;
-      console.log(pair);
       if (eventEditMapper[property]) {
         eventEditMapper[property](value);
       }
@@ -276,7 +275,7 @@ class EventEdit extends Component {
       "noCalendar": false,
       "altInput": true,
       "altFormat": `M j`,
-      "dateFormat": `U`
+      "dateFormat": `Y M d`
     });
 
     flatpickr(this._element.querySelector(`input[name=date-start]`), {
@@ -285,8 +284,7 @@ class EventEdit extends Component {
       "noCalendar": true,
       "altInput": true,
       "altFormat": `H:i`,
-      "dateFormat": `H i`,
-      "defaultDate": this._startDate
+      "dateFormat": `H i`
     });
 
     flatpickr(this._element.querySelector(`input[name=date-end]`), {
@@ -295,8 +293,7 @@ class EventEdit extends Component {
       "noCalendar": true,
       "altInput": true,
       "altFormat": `H:i`,
-      "dateFormat": `H i`,
-      "defaultDate": this._endDate
+      "dateFormat": `H i`
     });
   }
 
@@ -326,6 +323,12 @@ class EventEdit extends Component {
       },
       "travel-way": (value) => {
         target.type = value;
+      },
+      "day": (value) => {
+        if (value) {
+          target.endDate = moment(value, `YYYY MMM DD`);
+          target.startDate = moment(value, `YYYY MMM DD`);
+        }
       },
       "date-start": (value) => {
         const newStartDate = moment(value, `HH mm`);

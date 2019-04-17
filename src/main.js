@@ -1,4 +1,4 @@
-import {renderFilterBlockElement, controlsMenu, filteredEvents} from './filters';
+import {renderFilterBlockElement, controlsMenu} from './filters';
 import {renderSorterBlockElement} from './sorters';
 import {renderNewEvent} from './new-event';
 import {renderEventsViaDays, getTotaslCost} from './events';
@@ -6,7 +6,7 @@ import {TotalCost} from './total-cost';
 import {renderMoneyChart, renderTransportChart} from './statistic';
 import {API} from './api';
 
-const AUTHORIZATION = `Basic eo0w590ik299a=12312`;
+const AUTHORIZATION = `Basic eo0w590ik299a=89`;
 const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
 
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
