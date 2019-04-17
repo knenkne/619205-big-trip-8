@@ -1,12 +1,12 @@
 import {renderFilterBlockElement, controlsMenu} from './filters';
 import {renderSorterBlockElement} from './sorters';
 import {renderNewEvent} from './new-event';
-import {renderEventsViaDays, getTotaslCost} from './events';
+import {renderEventsViaDays, getTotaslCost, eventTypes} from './events';
 import {TotalCost} from './total-cost';
-import {renderMoneyChart, renderTransportChart} from './statistic';
+import {renderMoneyChart, renderTransportChart, getPriceCount, getTransportCount, transportTypes} from './statistic';
 import {API} from './api';
 
-const AUTHORIZATION = `Basic eo0w590ik299a=89`;
+const AUTHORIZATION = `Basic eo0w590ik299a=aaaa`;
 const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
 
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
@@ -36,6 +36,8 @@ const totaslCostBlock = document.querySelector(`.trip`);
 totaslCostBlock.appendChild(totalCostElement);
 
 // Переключаем состояния страницы
+
+// Точки маршрута
 tableButton.addEventListener(`click`, function (evt) {
   evt.preventDefault();
   statsBlock.classList.add(`visually-hidden`);
@@ -45,14 +47,20 @@ tableButton.addEventListener(`click`, function (evt) {
   tableButton.classList.add(`view-switch__item--active`);
 });
 
+// Статистика
+const transportChart = renderTransportChart();
+const moneyChart = renderMoneyChart();
 statsButton.addEventListener(`click`, function (evt) {
   evt.preventDefault();
   statsBlock.classList.remove(`visually-hidden`);
   tableBlock.classList.add(`visually-hidden`);
   statsButton.classList.add(`view-switch__item--active`);
   tableButton.classList.remove(`view-switch__item--active`);
-  renderMoneyChart();
-  renderTransportChart();
+  console.log(eventsData);
+  moneyChart.data.datasets[0].data = Object.values(getPriceCount(eventsData, Object.keys(eventTypes)));
+  transportChart.data.datasets[0].data = Object.values(getTransportCount(eventsData, transportTypes));
+  transportChart.update();
+  moneyChart.update();
 });
 
 api.getEvents()

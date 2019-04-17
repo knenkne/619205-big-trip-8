@@ -182,11 +182,10 @@ const createEventElement = (event, day) => {
       if (!day.firstChild) {
         day.parentNode.remove();
       }
-      api.getEvents()
-      .then((events) => {
-        getTotaslCost(events);
-        document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
-      });
+      console.log(eventsData);
+      const eventToDeleteIndex = eventsData.findIndex((eventToDelete) => eventToDelete.id === id);
+      eventsData.splice(eventToDeleteIndex, 1);
+      console.log(eventsData);
     })
     .catch(() => {
       editEventComponent.shake();

@@ -1,7 +1,7 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {eventTypes} from './events';
-import {eventsData} from './main';
+import {eventsData, api} from './main';
 
 const transportTypes = [`taxi`, `bus`, `ship`, `train`, `drive`, `flight`];
 const moneyCtx = document.querySelector(`.statistic__money`);
@@ -53,7 +53,7 @@ const renderMoneyChart = () => new Chart(moneyCtx, {
   plugins: [ChartDataLabels],
   type: `horizontalBar`,
   data: {
-    labels: [`🚕 TAXI`, `🚌 BUS`, `🛳️ SHIP`, `🚊 TRANSPORT`, `🚗 DRIVE`, `✈️ FLIGHT`, `🏨 CHECK-IN`, `🏛️ SIGHTSEEING`, `🍴 RESTAURANT`],
+    labels: [`🚕 TAXI`, `🚌 BUS`, `🛳️ SHIP`, `🚊 TRAIN`, `🚗 DRIVE`, `✈️ FLIGHT`, `🏨 CHECK-IN`, `🏛️ SIGHTSEEING`, `🍴 RESTAURANT`],
     datasets: [{
       data: Object.values(getPriceCount(eventsData, Object.keys(eventTypes))),
       backgroundColor: `#ffffff`,
@@ -118,7 +118,7 @@ const renderTransportChart = () => new Chart(transportCtx, {
   plugins: [ChartDataLabels],
   type: `horizontalBar`,
   data: {
-    labels: [`🚕 TAXI`, `🚌 BUS`, `🛳️ SHIP`, `🚊 TRANSPORT`, `🚗 DRIVE`, `✈️ FLIGHT`],
+    labels: [`🚕 TAXI`, `🚌 BUS`, `🛳️ SHIP`, `🚊 TRAIN`, `🚗 DRIVE`, `✈️ FLIGHT`],
     datasets: [{
       data: Object.values(getTransportCount(eventsData, transportTypes)),
       backgroundColor: `#ffffff`,
@@ -181,3 +181,6 @@ const renderTransportChart = () => new Chart(transportCtx, {
 
 export {renderMoneyChart};
 export {renderTransportChart};
+export {getPriceCount};
+export {getTransportCount};
+export {transportTypes};

@@ -121,9 +121,7 @@ const renderNewEvent = () => {
       api.createEvent({event: parseNewEventData(newData)})
       .then((newEvent) => {
         unblock();
-        console.log(eventsData);
         eventsData.push(newEvent);
-        console.log(eventsData);
         getTotaslCost(eventsData);
         renderEventsViaDays(eventsData);
         newEventEditComponent.unrender();
