@@ -284,7 +284,8 @@ class EventEdit extends Component {
       "noCalendar": true,
       "altInput": true,
       "altFormat": `H:i`,
-      "dateFormat": `H i`
+      "dateFormat": `H i`,
+      "defaultDate": moment(this._startDate).toDate().getTime()
     });
 
     flatpickr(this._element.querySelector(`input[name=date-end]`), {
@@ -293,7 +294,8 @@ class EventEdit extends Component {
       "noCalendar": true,
       "altInput": true,
       "altFormat": `H:i`,
-      "dateFormat": `H i`
+      "dateFormat": `H i`,
+      "defaultDate": moment(this._endDate).toDate().getTime()
     });
   }
 

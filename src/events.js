@@ -49,7 +49,6 @@ const eventsBlock = document.querySelector(`.trip-points`);
 const getTotalCost = (events) => {
   let totalCost = 0;
 
-  console.log(events);
   for (const event of events) {
     totalCost += event[`price`];
 
