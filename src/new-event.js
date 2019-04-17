@@ -26,17 +26,13 @@ const renderNewEvent = () => {
       {src: `http://picsum.photos/300/200?r=0.883970917530243`, description: `Moscow parliament building`},
     ],
     startDate: moment(),
-    endDate: moment()
+    endDate: moment(),
+    isFavorite: false
   };
 
 
   const newEventEditComponent = new EventEdit(newEentMockData);
   eventsBlock.prepend(newEventEditComponent.render());
-
-  newEventEditComponent.onDelete = () => {
-    newEventEditComponent.unrender();
-    console.log(`asdasd`);
-  };
 };
 
 export {renderNewEvent};
