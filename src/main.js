@@ -6,7 +6,7 @@ import {TotalCost} from './total-cost';
 import {renderMoneyChart, renderTransportChart, renderTimeSpendChart, getPriceCount, getTransportCount, getTimeSpendCount, transportTypes} from './statistic';
 import {API} from './api';
 
-const AUTHORIZATION = `Basic eo0w590ik299a=aaaa`;
+const AUTHORIZATION = `Basic eo0w590ik299a=aad`;
 const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
 
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
@@ -82,6 +82,7 @@ api.getDestinations()
 api.getOffers()
   .then((offers) => {
     offersData = offers;
+    console.log(offersData);
   });
 
 // Открываем форму создания таска

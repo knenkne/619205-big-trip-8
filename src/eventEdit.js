@@ -4,7 +4,7 @@ import moment from 'moment';
 import {keyCode} from './constants';
 import {Component} from './component';
 import {eventTypes} from './events';
-import {destinationsData} from './main';
+import {destinationsData, offersData} from './main';
 
 class EventEdit extends Component {
   constructor(data) {
@@ -27,6 +27,21 @@ class EventEdit extends Component {
     this._onEscButtonClick = this._onEscButtonClick.bind(this);
     this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
+  }
+
+  _getOffersByTypeHtml(type) {
+    let counter = 0;
+    const offersHtml = [];
+    for (const offer of type.offers) {
+      counter++;
+      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.name}}">
+        <label for="offer-${this._id}-${counter}" class="point__offers-label">
+          <span class="point__offer-service">${offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
+        </label>
+        `;
+      offersHtml.push(offerHtml);
+    }
+    return offersHtml.join(``);
   }
 
   _getOffersHtml() {
@@ -255,7 +270,12 @@ class EventEdit extends Component {
         input.setAttribute(`checked`, `checked`);
         typeChoice.textContent = eventTypes[input.value];
         destinationLabel.textContent = `${input.value.charAt(0).toUpperCase() + input.value.slice(1)} to`;
+        const offerIndex = offersData.findIndex((offer) => offer.type === input.value);
         typeOffers.innerHTML = ``;
+        if (offerIndex !== -1) {
+          typeOffers.innerHTML = this._getOffersByTypeHtml(offersData[offerIndex]);
+        }
+        this._element.querySelector(`.travel-way__toggle`).checked = false;
       });
     }
 
