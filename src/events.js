@@ -1,13 +1,12 @@
 import moment from 'moment';
 
-import {getRandomNumber, getRandomElement, getRandomLengthArray, getShuffledArray, getRandomBoolean} from './utils';
 import {Event} from './event';
 import {EventEdit} from './eventEdit';
 import {eventsData, api, priceBlock} from './main';
 import {EventDay} from './event-day';
 
-const EVENT_DESTINATIONS = [`Paris`, `Rome`, `Tokio`, `Munich`, `New York`];
-const EVENT_DESCRIPTIONS = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`, `Cras aliquet varius magna, non porta ligula feugiat eget.`, `Fusce tristique felis at fermentum pharetra.`, `Aliquam id orci ut lectus varius viverra.`, `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`, `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`, `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`, `Sed sed nisi sed augue convallis suscipit in sed felis.`, `Aliquam erat volutpat.`, `Nunc fermentum tortor ac porta dapibus.`, `In rutrum ac purus sit amet tempus.`];
+let isEventOpened = false;
+
 const eventTypes = {
   "taxi": `🚕`,
   "bus": `🚌`,
@@ -25,22 +24,6 @@ const eventOffers = [
   `Add meal`,
   `Choose seats`,
 ];
-
-const generateOffers = (offers) => {
-  const filledOffers = {};
-  for (let offer of offers) {
-    filledOffers[offer] = {};
-    filledOffers[offer].price = getRandomNumber(0, 50);
-    filledOffers[offer].isAdded = getRandomBoolean();
-  }
-
-  const slicedOffers = getShuffledArray(Object.keys(filledOffers)).slice(0, getRandomNumber(0, 3)).reduce((result, key) => {
-    result[key] = filledOffers[key];
-
-    return result;
-  }, {});
-  return slicedOffers;
-};
 
 // Блок эвентов
 const eventsBlock = document.querySelector(`.trip-points`);
@@ -105,15 +88,19 @@ const createEventElement = (event, day) => {
 
   // Меняем состояние
   eventComponent.onEdit = () => {
-    editEventComponent.render();
-    day.replaceChild(editEventComponent.element, eventComponent.element);
-    eventComponent.unrender();
+    if (!isEventOpened) {
+      editEventComponent.render();
+      day.replaceChild(editEventComponent.element, eventComponent.element);
+      eventComponent.unrender();
+      isEventOpened = true;
+    }
   };
 
   editEventComponent.onEsc = () => {
     eventComponent.render();
     day.replaceChild(eventComponent.element, editEventComponent.element);
     editEventComponent.unrender();
+    isEventOpened = false;
   };
 
   // Меняем состояние

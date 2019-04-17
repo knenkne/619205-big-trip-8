@@ -24,7 +24,7 @@ class Event extends Component {
   }
 
   _getOffersHtml() {
-    const offers = this._offers.slice(0, offersSetting[`max`]);
+    const offers = this._offers.slice(0, offersSetting.max);
     let offerElements = [];
     for (let offer of offers) {
       if (offer.accepted) {

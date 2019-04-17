@@ -39,6 +39,12 @@ const getPriceCount = (events, types) => {
 
   for (const event of events) {
     counter[event.type] += event.price;
+
+    for (const offer of event.offers) {
+      if (offer.accepted) {
+        counter[event.type] += offer.price;
+      }
+    }
   }
 
   return counter;

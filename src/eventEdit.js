@@ -124,7 +124,7 @@ class EventEdit extends Component {
   _onEscButtonClick(evt) {
     evt.stopPropagation();
 
-    if (typeof this._onEsc === `function` && evt.keyCode === keyCode[`ESC`]) {
+    if (typeof this._onEsc === `function` && evt.keyCode === keyCode.ESC) {
       this._onEsc();
     }
   }
