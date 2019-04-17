@@ -3,7 +3,7 @@ import {renderSorterBlockElement} from './sorters';
 import {renderNewEvent} from './new-event';
 import {renderEventsViaDays, eventTypes} from './events';
 import {TotalCost} from './total-cost';
-import {renderMoneyChart, renderTransportChart, getPriceCount, getTransportCount, transportTypes} from './statistic';
+import {renderMoneyChart, renderTransportChart, renderTimeSpendChart, getPriceCount, getTransportCount, getTimeSpendCount, transportTypes} from './statistic';
 import {API} from './api';
 
 const AUTHORIZATION = `Basic eo0w590ik299a=aaaa`;
@@ -50,6 +50,7 @@ tableButton.addEventListener(`click`, function (evt) {
 // Статистика
 const transportChart = renderTransportChart();
 const moneyChart = renderMoneyChart();
+const timeSpendChart = renderTimeSpendChart();
 statsButton.addEventListener(`click`, function (evt) {
   evt.preventDefault();
   statsBlock.classList.remove(`visually-hidden`);
@@ -58,8 +59,10 @@ statsButton.addEventListener(`click`, function (evt) {
   tableButton.classList.remove(`view-switch__item--active`);
   moneyChart.data.datasets[0].data = Object.values(getPriceCount(eventsData, Object.keys(eventTypes)));
   transportChart.data.datasets[0].data = Object.values(getTransportCount(eventsData, transportTypes));
+  timeSpendChart.data.datasets[0].data = Object.values(getTimeSpendCount(eventsData, Object.keys(eventTypes)));
   transportChart.update();
   moneyChart.update();
+  timeSpendChart.update();
 });
 
 api.getEvents()
