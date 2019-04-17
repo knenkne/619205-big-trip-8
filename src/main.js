@@ -1,7 +1,7 @@
 import {renderFilterBlockElement, controlsMenu} from './filters';
 import {renderSorterBlockElement} from './sorters';
 import {renderNewEvent} from './new-event';
-import {renderEventsViaDays, getTotaslCost, eventTypes} from './events';
+import {renderEventsViaDays, eventTypes} from './events';
 import {TotalCost} from './total-cost';
 import {renderMoneyChart, renderTransportChart, getPriceCount, getTransportCount, transportTypes} from './statistic';
 import {API} from './api';
@@ -56,7 +56,6 @@ statsButton.addEventListener(`click`, function (evt) {
   tableBlock.classList.add(`visually-hidden`);
   statsButton.classList.add(`view-switch__item--active`);
   tableButton.classList.remove(`view-switch__item--active`);
-  console.log(eventsData);
   moneyChart.data.datasets[0].data = Object.values(getPriceCount(eventsData, Object.keys(eventTypes)));
   transportChart.data.datasets[0].data = Object.values(getTransportCount(eventsData, transportTypes));
   transportChart.update();
@@ -68,8 +67,6 @@ api.getEvents()
     eventsData = events;
     eventsToSort = events;
     eventsToFilter = events;
-    console.log(events);
-    getTotaslCost(eventsData);
     renderEventsViaDays(eventsData);
     document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
   });

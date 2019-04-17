@@ -46,14 +46,21 @@ const generateOffers = (offers) => {
 const eventsBlock = document.querySelector(`.trip-points`);
 
 // Итоговая стоимость
-const getTotaslCost = (events) => {
-  let updatedPrice = 0;
+const getTotalCost = (events) => {
+  let totalCost = 0;
 
-  for (let event of events) {
-    updatedPrice += event[`price`];
+  console.log(events);
+  for (const event of events) {
+    totalCost += event[`price`];
+
+    for (const offer of event.offers) {
+      if (offer.accepted) {
+        totalCost += offer[`price`];
+      }
+    }
   }
 
-  priceBlock.textContent = `€ ${updatedPrice}`;
+  priceBlock.textContent = `€ ${totalCost}`;
 };
 
 // Получаем дни и соответсвующие им эвенты
@@ -83,44 +90,7 @@ const renderEventsViaDays = (days) => {
     eventsBlock.appendChild(eventDay);
     renderEventElements(events, eventsList);
   });
-  getTotaslCost(eventsData);
-};
-
-// Получаем данные об одной точке маршрута
-const getEvent = () => {
-  const event = {
-    type: getRandomElement(Object.keys(eventTypes)),
-    destination: getRandomElement(EVENT_DESTINATIONS),
-    offers: generateOffers(eventOffers),
-    description: getRandomLengthArray(getShuffledArray(EVENT_DESCRIPTIONS)).slice(1, getRandomNumber(2, 5)).join(` `),
-    price: getRandomNumber(10, 500),
-    image: `http://picsum.photos/300/150?r=${Math.random()}`,
-    startDate: moment(),
-    endDate: moment()
-  };
-
-  event.startDate.add({
-    day: getRandomNumber(-2, 2),
-    hour: getRandomNumber(-24, 24),
-    minute: getRandomNumber(-60, 24)
-  });
-
-  event.endDate.add({
-    day: getRandomNumber(2, 4),
-    hour: getRandomNumber(0, 24),
-    minute: getRandomNumber(0, 60)
-  });
-
-  return event;
-};
-
-// Получаем данные о нескольких точках марщрута
-const getEvents = (number) => {
-  const events = [];
-  for (let i = 0; i < number; i++) {
-    events.push(getEvent());
-  }
-  return events;
+  getTotalCost(eventsData);
 };
 
 // Вставляем разметку точек маршрута
@@ -182,10 +152,9 @@ const createEventElement = (event, day) => {
       if (!day.firstChild) {
         day.parentNode.remove();
       }
-      console.log(eventsData);
       const eventToDeleteIndex = eventsData.findIndex((eventToDelete) => eventToDelete.id === id);
       eventsData.splice(eventToDeleteIndex, 1);
-      console.log(eventsData);
+      getTotalCost(eventsData);
     })
     .catch(() => {
       editEventComponent.shake();
@@ -238,7 +207,7 @@ const createEventElement = (event, day) => {
       editEventComponent.unrender();
       api.getEvents()
       .then((events) => {
-        getTotaslCost(events);
+        getTotalCost(events);
         document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
       });
     })
@@ -278,10 +247,8 @@ const filtersBlockClickHandler = () => {
 export {eventTypes};
 export {eventOffers};
 export {fillEventsBlock};
-export {getEvent};
-export {getEvents};
 export {filtersBlockClickHandler};
 export {eventsBlock};
 export {renderEventElements};
 export {renderEventsViaDays};
-export {getTotaslCost};
+export {getTotalCost};

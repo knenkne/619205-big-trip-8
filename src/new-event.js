@@ -1,5 +1,5 @@
 import {EventEdit} from './eventEdit';
-import {eventsBlock, renderEventsViaDays, getTotaslCost} from './events';
+import {eventsBlock, renderEventsViaDays, getTotalCost} from './events';
 import {api, eventsData} from './main';
 
 import moment from 'moment';
@@ -122,7 +122,7 @@ const renderNewEvent = () => {
       .then((newEvent) => {
         unblock();
         eventsData.push(newEvent);
-        getTotaslCost(eventsData);
+        getTotalCost(eventsData);
         renderEventsViaDays(eventsData);
         newEventEditComponent.unrender();
         newEventButton.disabled = false;
