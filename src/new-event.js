@@ -1,6 +1,10 @@
 import {EventEdit} from './eventEdit';
-import {eventsBlock} from './events';
+import {eventsBlock, renderEventsViaDays, getTotaslCost} from './events';
+import {api, eventsData} from './main';
+
 import moment from 'moment';
+
+const newEventButton = document.querySelector(`.trip-controls__new-event`);
 
 const renderNewEvent = () => {
   const newEentMockData = {
@@ -30,9 +34,74 @@ const renderNewEvent = () => {
     isFavorite: false
   };
 
+  const parseNewEventData = (data) => {
+    return {
+      'type': data.type,
+      'base_price': data.price,
+      'destination': data.destination,
+      'date_from': data.startDate,
+      'date_to': data.endDate,
+      'offers': data.offers,
+      'is_favorite': data.isFavorite,
+    };
+  };
+
+  newEventButton.disabled = true;
 
   const newEventEditComponent = new EventEdit(newEentMockData);
+
+  newEventEditComponent.onSubmit = (newData) => {
+    const saveButton = newEventEditComponent.element.querySelector(`.point__button[type="submit"]`);
+    const deleteButton = newEventEditComponent.element.querySelector(`.point__button[type="reset"]`);
+    const inputs = newEventEditComponent.element.querySelectorAll(`input`);
+
+    const block = () => {
+      for (const input of inputs) {
+        input.disabled = true;
+      }
+
+      saveButton.disabled = true;
+      saveButton.textContent = `Saving...`;
+      deleteButton.disabled = true;
+      newEventEditComponent.element.style.boxShadow = `0 11px 20px 0 rgba(0,0,0,0.22)`;
+    };
+
+    const unblock = () => {
+      for (const input of inputs) {
+        input.disabled = false;
+      }
+
+      saveButton.disabled = false;
+      saveButton.textContent = `Save`;
+      deleteButton.disabled = false;
+    };
+
+    block();
+
+    api.createEvent({event: parseNewEventData(newData)})
+      .then((newEvent) => {
+        unblock();
+        console.log(eventsData);
+        eventsData.push(newEvent);
+        console.log(eventsData);
+        getTotaslCost(eventsData);
+        renderEventsViaDays(eventsData);
+        newEventEditComponent.unrender();
+        newEventButton.disabled = false;
+      })
+      .catch(() => {
+        newEventEditComponent.shake();
+        unblock();
+      });
+  };
+
+  newEventEditComponent.onEsc = () => {
+    newEventEditComponent.unrender();
+    newEventButton.disabled = false;
+  };
+
   eventsBlock.prepend(newEventEditComponent.render());
 };
 
 export {renderNewEvent};
+export {newEventButton};

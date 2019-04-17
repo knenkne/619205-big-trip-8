@@ -43,13 +43,11 @@ const sortEvents = (events, sorterName) => {
 // Создаем блок сортировки
 const createSorterBlockElement = (sorter) => {
   const sorterComponent = new Sorter(sorter);
-  console.log(filteredEvents);
 
   // Сортируем эвенты
   sorterComponent.onSorter = (evt) => {
     const sorterName = evt.target.id;
     const sortedEvents = !filteredEvents.length === 0 ? sortEvents(filteredEvents, sorterName) : sortEvents(eventsData, sorterName);
-    console.log(filteredEvents);
     eventsBlock.innerHTML = ``;
     renderEventsViaDays(sortedEvents);
   };

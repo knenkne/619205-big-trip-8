@@ -1,5 +1,4 @@
 import {AdapterEvent} from './adapter-event';
-import {eventsBlock} from './events';
 
 const Method = {
   GET: `GET`,

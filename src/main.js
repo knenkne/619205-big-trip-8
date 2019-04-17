@@ -6,7 +6,7 @@ import {TotalCost} from './total-cost';
 import {renderMoneyChart, renderTransportChart} from './statistic';
 import {API} from './api';
 
-const AUTHORIZATION = `Basic eo0w590ik299a=6123`;
+const AUTHORIZATION = `Basic eo0w590ik299a=12312`;
 const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
 
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
@@ -21,6 +21,7 @@ const tableBlock = document.querySelector(`#table`);
 const statsBlock = document.querySelector(`#stats`);
 const tableButton = document.querySelector(`.view-switch__item[href="#table"]`);
 const statsButton = document.querySelector(`.view-switch__item[href="#stats"]`);
+const newEventButton = document.querySelector(`.trip-controls__new-event`);
 
 // Вставляем блок фильтров
 renderFilterBlockElement(controlsMenu);
@@ -59,14 +60,14 @@ api.getEvents()
     eventsData = events;
     eventsToSort = events;
     eventsToFilter = events;
-    getTotaslCost(events);
+    console.log(events);
+    getTotaslCost(eventsData);
     renderEventsViaDays(eventsData);
     document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
   });
 
 api.getDestinations()
   .then((destinations) => {
-    console.log(destinations);
     destinationsData = destinations;
   });
 
@@ -75,7 +76,8 @@ api.getOffers()
     offersData = offers;
   });
 
-renderNewEvent();
+// Открываем форму создания таска
+newEventButton.addEventListener(`click`, renderNewEvent);
 
 export {eventsData};
 export {destinationsData};

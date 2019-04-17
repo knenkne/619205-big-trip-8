@@ -99,6 +99,7 @@ class EventEdit extends Component {
 
     for (const pair of formData.entries()) {
       const [property, value] = pair;
+      console.log(pair);
       if (eventEditMapper[property]) {
         eventEditMapper[property](value);
       }
@@ -275,7 +276,7 @@ class EventEdit extends Component {
       "noCalendar": false,
       "altInput": true,
       "altFormat": `M j`,
-      "dateFormat": `Y F d H i`
+      "dateFormat": `U`
     });
 
     flatpickr(this._element.querySelector(`input[name=date-start]`), {
@@ -284,7 +285,7 @@ class EventEdit extends Component {
       "noCalendar": true,
       "altInput": true,
       "altFormat": `H:i`,
-      "dateFormat": `Y F d H i`,
+      "dateFormat": `H i`,
       "defaultDate": this._startDate
     });
 
@@ -294,7 +295,7 @@ class EventEdit extends Component {
       "noCalendar": true,
       "altInput": true,
       "altFormat": `H:i`,
-      "dateFormat": `Y F d H i`,
+      "dateFormat": `H i`,
       "defaultDate": this._endDate
     });
   }
@@ -327,14 +328,12 @@ class EventEdit extends Component {
         target.type = value;
       },
       "date-start": (value) => {
-        if (value.length !== 5) {
-          target.startDate = moment(value, `YYYY MMMM DD HH mm`);
-        }
+        const newStartDate = moment(value, `HH mm`);
+        target.startDate = moment(target.startDate).hour(newStartDate.format(`HH`)).minute(newStartDate.format(`mm`));
       },
       "date-end": (value) => {
-        if (value.length !== 5) {
-          target.endDate = moment(value, `YYYY MMMM DD HH mm`);
-        }
+        const newEndDate = moment(value, `HH mm`);
+        target.endDate = moment(target.endDate).hour(newEndDate.format(`HH`)).minute(newEndDate.format(`mm`));
       },
       "favorite": () => {
         target.isFavorite = true;

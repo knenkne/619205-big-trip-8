@@ -202,6 +202,10 @@ const createEventElement = (event, day) => {
     event.endDate = newObject.endDate;
     event.isFavorite = newObject.isFavorite;
 
+    console.log(moment(event.startDate).toDate());
+    console.log(moment(event.endDate).toDate());
+
+
     const saveButton = editEventComponent.element.querySelector(`.point__button[type="submit"]`);
     const deleteButton = editEventComponent.element.querySelector(`.point__button[type="reset"]`);
     const inputs = editEventComponent.element.querySelectorAll(`input`);
