@@ -2,6 +2,7 @@ import moment from 'moment';
 
 import {Component} from './component';
 import {eventTypes} from './events';
+import {offersSetting} from './constants';
 
 class Event extends Component {
   constructor(data) {
@@ -23,7 +24,7 @@ class Event extends Component {
   }
 
   _getOffersHtml() {
-    const offers = this._offers;
+    const offers = this._offers.slice(0, offersSetting[`max`]);
     let offerElements = [];
     for (let offer of offers) {
       if (offer.accepted) {
