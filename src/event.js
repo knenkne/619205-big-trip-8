@@ -24,13 +24,13 @@ class Event extends Component {
   }
 
   _getOffersHtml() {
-    const offers = this._offers.slice(0, offersSetting.max);
+    const selectedOffers = (this._offers.filter((selectedOffer) => selectedOffer.accepted)).slice(0, offersSetting.max);
     let offerElements = [];
-    for (let offer of offers) {
+    for (let offer of selectedOffers) {
       if (offer.accepted) {
         const newOfferElement = `
         <li>
-       <button class="trip-point__offer">${offer.title}</button>
+       <button class="trip-point__offer">${offer.title} +€ ${offer.price}</button>
        </li>
       `;
         offerElements.push(newOfferElement);

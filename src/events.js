@@ -33,11 +33,11 @@ const getTotalCost = (events) => {
   let totalCost = 0;
 
   for (const event of events) {
-    totalCost += event[`price`];
+    totalCost += event.price;
 
     for (const offer of event.offers) {
       if (offer.accepted) {
-        totalCost += offer[`price`];
+        totalCost += offer.price;
       }
     }
   }
@@ -141,6 +141,7 @@ const createEventElement = (event, day) => {
       const eventToDeleteIndex = eventsData.findIndex((eventToDelete) => eventToDelete.id === id);
       eventsData.splice(eventToDeleteIndex, 1);
       getTotalCost(eventsData);
+      isEventOpened = false;
     })
     .catch(() => {
       editEventComponent.shake();
@@ -195,6 +196,7 @@ const createEventElement = (event, day) => {
       .then((events) => {
         getTotalCost(events);
         document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
+        isEventOpened = false;
       });
     })
     .catch(() => {
