@@ -1,7 +1,8 @@
 import EventEdit from './event-edit';
 import {eventsBlock, renderEventsViaDays, getTotalCost} from './events';
-import {api, eventsData} from './main';
-
+import {api, eventsData, eventsToFilter} from './main';
+import {filterEvents, filterName} from './filters';
+import {sortEvents, sorterNameToFilter} from './sorters';
 import moment from 'moment';
 
 const newEventButton = document.querySelector(`.trip-controls__new-event`);
@@ -123,7 +124,9 @@ const renderNewEvent = () => {
         unblock();
         eventsData.push(newEvent);
         getTotalCost(eventsData);
-        renderEventsViaDays(eventsData);
+        const filteredEventsData = filterEvents(eventsData, filterName);
+        const filteredEventsWithSort = sortEvents(filteredEventsData, sorterNameToFilter);
+        renderEventsViaDays(filteredEventsWithSort);
         newEventEditComponent.unrender();
         newEventButton.disabled = false;
       })
