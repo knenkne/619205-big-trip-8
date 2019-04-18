@@ -1,5 +1,5 @@
 import moment from 'moment';
-import {Filter} from './filter';
+import Filter from './filter';
 import {eventsBlock, renderEventsViaDays} from './events';
 import {eventsData, eventsToFilter} from './main';
 import {sortEvents, sorterNameToFilter} from './sorters';

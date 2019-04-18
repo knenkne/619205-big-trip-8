@@ -1,9 +1,9 @@
 import moment from 'moment';
 
-import {Event} from './event';
-import {EventEdit} from './event-edit';
+import Event from './event';
+import EventEdit from './event-edit';
 import {eventsData, api, priceBlock} from './main';
-import {EventDay} from './event-day';
+import EventDay from './event-day';
 
 const eventTypes = {
   "taxi": `🚕`,
@@ -63,13 +63,13 @@ const renderEventsViaDays = (days) => {
   const eventsSortedByDays = getSortedEventsByDays(days);
 
   eventsBlock.innerHTML = ``;
-  Object.entries(eventsSortedByDays).forEach((eventSortedByDay) => {
+  for (const eventSortedByDay of Object.entries(eventsSortedByDays)) {
     const [day, events] = eventSortedByDay;
     const eventDay = new EventDay(day).render();
     const eventsList = eventDay.querySelector(`.trip-day__items`);
     eventsBlock.appendChild(eventDay);
     renderEventElements(events, eventsList);
-  });
+  }
   getTotalCost(eventsData);
 };
 

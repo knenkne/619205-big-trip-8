@@ -1,10 +1,10 @@
 import moment from 'moment';
 
-import {Component} from './component';
+import Component from './component';
 import {eventTypes} from './events';
 import {OffersSettings} from './constants';
 
-class Event extends Component {
+export default class Event extends Component {
   constructor(data) {
     super();
     this._id = data.id;
@@ -102,5 +102,3 @@ class Event extends Component {
   }
 
 }
-
-export {Event};

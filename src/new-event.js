@@ -1,4 +1,4 @@
-import {EventEdit} from './event-edit';
+import EventEdit from './event-edit';
 import {eventsBlock, renderEventsViaDays, getTotalCost} from './events';
 import {api, eventsData} from './main';
 

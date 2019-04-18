@@ -1,6 +1,6 @@
-import {Component} from './component';
+import Component from './component';
 
-class EventDay extends Component {
+export default class EventDay extends Component {
   constructor(data) {
     super();
     this._date = data.split(` `);
@@ -18,4 +18,3 @@ class EventDay extends Component {
   }
 }
 
-export {EventDay};

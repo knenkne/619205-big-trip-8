@@ -2,11 +2,11 @@ import flatpickr from 'flatpickr';
 import moment from 'moment';
 
 import {KeyCodes, ANIMATION} from './constants';
-import {Component} from './component';
+import Component from './component';
 import {eventTypes} from './events';
 import {destinationsData, offersData} from './main';
 
-class EventEdit extends Component {
+export default class EventEdit extends Component {
   constructor(data) {
     super();
     this._id = data.id;
@@ -365,5 +365,3 @@ class EventEdit extends Component {
     };
   }
 }
-
-export {EventEdit};

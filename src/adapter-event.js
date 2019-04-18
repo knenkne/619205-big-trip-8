@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-class AdapterEvent {
+export default class AdapterEvent {
   constructor(data) {
     this.id = data[`id`];
     this.price = data[`base_price`];
@@ -40,5 +40,3 @@ class AdapterEvent {
   }
 }
 
-
-export {AdapterEvent};

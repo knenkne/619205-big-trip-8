@@ -1,4 +1,4 @@
-import {Sorter} from './sorter';
+import Sorter from './sorter';
 import {eventsBlock, renderEventsViaDays} from './events';
 import {filteredEvents} from './filters';
 import {eventsToSort} from './main';

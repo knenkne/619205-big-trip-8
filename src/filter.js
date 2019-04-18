@@ -1,6 +1,6 @@
-import {Component} from './component';
+import Component from './component';
 
-class Filter extends Component {
+export default class Filter extends Component {
   constructor(data) {
     super();
     this._filters = data.filters;
@@ -48,5 +48,3 @@ class Filter extends Component {
     this._element.addEventListener(`change`, this._onFilter);
   }
 }
-
-export {Filter};

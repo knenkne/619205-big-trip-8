@@ -2,7 +2,7 @@ import {renderFilterBlockElement, controlsMenu} from './filters';
 import {renderSorterBlockElement} from './sorters';
 import {renderNewEvent} from './new-event';
 import {renderEventsViaDays, eventTypes} from './events';
-import {TotalCost} from './total-cost';
+import TotalCost from './total-cost';
 import {renderMoneyChart, renderTransportChart, renderTimeSpendChart, getPriceCount, getTransportCount, getTimeSpendCount, transportTypes} from './statistic';
 import {API} from './api';
 import {AUTHORIZATION, END_POINT} from './constants';

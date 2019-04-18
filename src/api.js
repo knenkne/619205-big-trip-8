@@ -1,4 +1,4 @@
-import {AdapterEvent} from './adapter-event';
+import AdapterEvent from './adapter-event';
 import {SuccessStatusCodes} from './constants';
 import {Method} from './constants';
 

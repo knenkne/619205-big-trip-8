@@ -1,6 +1,6 @@
-import {Component} from './component';
+import Component from './component';
 
-class TotalCost extends Component {
+export default class TotalCost extends Component {
   constructor(updatedPrice) {
     super();
     this._totalPrice = updatedPrice;
@@ -11,4 +11,3 @@ class TotalCost extends Component {
   }
 }
 
-export {TotalCost};

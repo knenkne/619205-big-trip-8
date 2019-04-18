@@ -1,6 +1,6 @@
-import {Component} from './component';
+import Component from './component';
 
-class Sorter extends Component {
+export default class Sorter extends Component {
   constructor(data) {
     super();
     this._sorters = data.sorters;
@@ -49,5 +49,3 @@ class Sorter extends Component {
     this._element.addEventListener(`change`, this._onSorter);
   }
 }
-
-export {Sorter};
