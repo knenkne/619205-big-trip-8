@@ -1,14 +1,9 @@
 import {AdapterEvent} from './adapter-event';
-
-const Method = {
-  GET: `GET`,
-  POST: `POST`,
-  PUT: `PUT`,
-  DELETE: `DELETE`
-};
+import {SuccessStatusCodes} from './constants';
+import {Method} from './constants';
 
 const checkStatus = (response) => {
-  if (response.status >= 200 && response.status < 300) {
+  if (response.status >= SuccessStatusCodes.MIN && response.status < SuccessStatusCodes.MAX) {
     return response;
   } else {
     throw new Error(`${response.status}: ${response.statusText}`);

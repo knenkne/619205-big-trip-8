@@ -1,7 +1,7 @@
 import flatpickr from 'flatpickr';
 import moment from 'moment';
 
-import {keyCode} from './constants';
+import {KeyCodes, ANIMATION} from './constants';
 import {Component} from './component';
 import {eventTypes} from './events';
 import {destinationsData, offersData} from './main';
@@ -124,7 +124,7 @@ class EventEdit extends Component {
   _onEscButtonClick(evt) {
     evt.stopPropagation();
 
-    if (typeof this._onEsc === `function` && evt.keyCode === keyCode.ESC) {
+    if (typeof this._onEsc === `function` && evt.keyCode === KeyCodes.ESC) {
       this._onEsc();
     }
   }
@@ -237,13 +237,12 @@ class EventEdit extends Component {
 </article>`.trim();
   }
   shake() {
-    const ANIMATION_TIMEOUT = 600;
     this._element.style.boxShadow = `0 0 20px 0 rgba(255,0,0,0.75)`;
-    this._element.style.animation = `shake ${ANIMATION_TIMEOUT / 1000}s`;
+    this._element.style.animation = `shake ${ANIMATION.duration}s`;
 
     setTimeout(() => {
       this._element.style.animation = ``;
-    }, ANIMATION_TIMEOUT);
+    }, ANIMATION.timeout);
   }
 
   unbind() {

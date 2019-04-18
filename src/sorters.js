@@ -1,10 +1,11 @@
 import {Sorter} from './sorter';
 import {eventsBlock, renderEventsViaDays} from './events';
 import {filteredEvents} from './filters';
-import {eventsData} from './main';
+import {eventsToSort} from './main';
 
 // Виды сортировки
 const sortersNames = [`Event`, `Time`, `Price`];
+let sorterNameToFilter = `sorting-event`;
 
 // Генерируем данные о блоке сортировки
 const getSorterBlockData = (names) => {
@@ -25,17 +26,17 @@ const getSorterBlockData = (names) => {
 
 const sortEvents = (events, sorterName) => {
   let sortedEvents = null;
-  let eventsToSort = events;
+  let eventsCopy = events;
 
   switch (sorterName) {
     case `sorting-price`:
-      sortedEvents = eventsToSort.sort((a, b) => b.price - a.price);
+      sortedEvents = eventsCopy.sort((a, b) => b.price - a.price);
       break;
     case `sorting-time`:
-      sortedEvents = eventsToSort.sort((a, b) => b.startDate - a.startDate);
+      sortedEvents = eventsCopy.sort((a, b) => b.startDate - a.startDate);
       break;
     default:
-      sortedEvents = eventsToSort.sort((a, b) => a.id - b.id);
+      sortedEvents = eventsCopy.sort((a, b) => a.id - b.id);
   }
 
   return sortedEvents;
@@ -47,7 +48,8 @@ const createSorterBlockElement = (sorter) => {
   // Сортируем эвенты
   sorterComponent.onSorter = (evt) => {
     const sorterName = evt.target.id;
-    const sortedEvents = !filteredEvents.length === 0 ? sortEvents(filteredEvents, sorterName) : sortEvents(eventsData, sorterName);
+    sorterNameToFilter = sorterName;
+    const sortedEvents = filteredEvents.length === 0 ? sortEvents(eventsToSort, sorterName) : sortEvents(filteredEvents, sorterName);
     eventsBlock.innerHTML = ``;
     renderEventsViaDays(sortedEvents);
   };
@@ -64,3 +66,5 @@ const renderSorterBlockElement = (container) => {
 };
 
 export {renderSorterBlockElement};
+export {sortEvents};
+export {sorterNameToFilter};

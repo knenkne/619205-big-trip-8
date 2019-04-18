@@ -1,11 +1,9 @@
 import moment from 'moment';
 
 import {Event} from './event';
-import {EventEdit} from './eventEdit';
+import {EventEdit} from './event-edit';
 import {eventsData, api, priceBlock} from './main';
 import {EventDay} from './event-day';
-
-let isEventOpened = false;
 
 const eventTypes = {
   "taxi": `🚕`,
@@ -231,6 +229,8 @@ const filtersBlockClickHandler = () => {
   eventsBlock.innerHTML = ``;
   renderEventElements(eventsBlock);
 };
+
+let isEventOpened = false;
 
 export {eventTypes};
 export {eventOffers};

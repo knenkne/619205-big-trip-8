@@ -4,6 +4,8 @@ class Filter extends Component {
   constructor(data) {
     super();
     this._filters = data.filters;
+
+    this._onFilter = this._onFilter.bind(this);
   }
 
   _getFilters(filters) {
@@ -38,8 +40,12 @@ class Filter extends Component {
   `.trim();
   }
 
+  unbind() {
+    this._element.removeEventListener(`change`, this._onFilter);
+  }
+
   bind() {
-    this._element.addEventListener(`change`, this._onFilter.bind(this));
+    this._element.addEventListener(`change`, this._onFilter);
   }
 }
 

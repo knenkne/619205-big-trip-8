@@ -5,23 +5,28 @@ import {renderEventsViaDays, eventTypes} from './events';
 import {TotalCost} from './total-cost';
 import {renderMoneyChart, renderTransportChart, renderTimeSpendChart, getPriceCount, getTransportCount, getTimeSpendCount, transportTypes} from './statistic';
 import {API} from './api';
-
-const AUTHORIZATION = `Basic eo0w590ik299a=aad`;
-const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
+import {AUTHORIZATION, END_POINT} from './constants';
 
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
 
+// Элементы управления
+const tableBlock = document.querySelector(`#table`);
+const statsBlock = document.querySelector(`#stats`);
+const tableButton = document.querySelector(`.view-switch__item[href="#table"]`);
+const statsButton = document.querySelector(`.view-switch__item[href="#stats"]`);
+const newEventButton = document.querySelector(`.trip-controls__new-event`);
+
+// Массивы для дальнейшей работы с данными
 let eventsData = [];
 let eventsToSort = [];
 let eventsToFilter = [];
 let destinationsData = [];
 let offersData = [];
 
-const tableBlock = document.querySelector(`#table`);
-const statsBlock = document.querySelector(`#stats`);
-const tableButton = document.querySelector(`.view-switch__item[href="#table"]`);
-const statsButton = document.querySelector(`.view-switch__item[href="#stats"]`);
-const newEventButton = document.querySelector(`.trip-controls__new-event`);
+// Шкалы статистики
+const transportChart = renderTransportChart();
+const moneyChart = renderMoneyChart();
+const timeSpendChart = renderTimeSpendChart();
 
 // Вставляем блок фильтров
 renderFilterBlockElement(controlsMenu);
@@ -48,9 +53,6 @@ tableButton.addEventListener(`click`, function (evt) {
 });
 
 // Статистика
-const transportChart = renderTransportChart();
-const moneyChart = renderMoneyChart();
-const timeSpendChart = renderTimeSpendChart();
 statsButton.addEventListener(`click`, function (evt) {
   evt.preventDefault();
   statsBlock.classList.remove(`visually-hidden`);
@@ -64,6 +66,9 @@ statsButton.addEventListener(`click`, function (evt) {
   moneyChart.update();
   timeSpendChart.update();
 });
+
+// Создаем эвент
+newEventButton.addEventListener(`click`, renderNewEvent);
 
 api.getEvents()
   .then((events) => {
@@ -82,11 +87,7 @@ api.getDestinations()
 api.getOffers()
   .then((offers) => {
     offersData = offers;
-    console.log(offersData);
   });
-
-// Открываем форму создания таска
-newEventButton.addEventListener(`click`, renderNewEvent);
 
 export {eventsData};
 export {destinationsData};

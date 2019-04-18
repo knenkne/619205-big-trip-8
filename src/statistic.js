@@ -2,7 +2,8 @@ import moment from 'moment';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {eventTypes} from './events';
-import {eventsData, api} from './main';
+import {eventsData} from './main';
+import {BAR_HEIGHT} from './constants';
 
 const transportTypes = [`taxi`, `bus`, `ship`, `train`, `drive`, `flight`];
 const moneyCtx = document.querySelector(`.statistic__money`);
@@ -68,7 +69,6 @@ const getTimeSpendCount = (events, types) => {
 };
 
 // Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
-const BAR_HEIGHT = 55;
 moneyCtx.height = BAR_HEIGHT * 8;
 transportCtx.height = BAR_HEIGHT * 5.5;
 timeSpendCtx.height = BAR_HEIGHT * 8;

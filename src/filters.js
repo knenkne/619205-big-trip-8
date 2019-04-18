@@ -2,13 +2,14 @@ import moment from 'moment';
 import {Filter} from './filter';
 import {eventsBlock, renderEventsViaDays} from './events';
 import {eventsData, eventsToFilter} from './main';
+import {sortEvents, sorterNameToFilter} from './sorters';
 
 // Блок фильтров
 const controlsMenu = document.querySelector(`.trip-controls__menus`);
 const filtersBlock = document.querySelector(`.trip-filter`);
+
 // Фильтры
 const filtersNames = [`Everything`, `Future`, `Past`];
-let filteredEvents = [];
 
 // Генерируем данные о блоке фильтров
 const getFilterBlockData = (names) => {
@@ -31,11 +32,15 @@ const createFilterBlockElement = (filter) => {
 
   // Фильтруем эвенты
   filterComponent.onFilter = (evt) => {
+    if (filteredEvents.length === 0) {
+      filteredEvents = eventsData;
+    }
     const filterName = evt.target.id;
     const filteredEventsData = filterEvents(eventsToFilter, filterName);
     eventsBlock.innerHTML = ``;
     filteredEvents = filteredEventsData;
-    renderEventsViaDays(filteredEventsData);
+    const filteredEventsWithSort = sortEvents(filteredEvents, sorterNameToFilter);
+    renderEventsViaDays(filteredEventsWithSort);
   };
 
   const filterBlockElement = filterComponent.render();
@@ -62,6 +67,8 @@ const filterEvents = (events, filterName) => {
   }
   return events;
 };
+
+let filteredEvents = [];
 
 export {filtersBlock};
 export {renderFilterBlockElement};
