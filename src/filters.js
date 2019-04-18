@@ -1,16 +1,28 @@
 import moment from 'moment';
 import Filter from './filter';
-import {eventsBlock, renderEventsViaDays} from './events';
-import {eventsData, eventsToFilter} from './main';
-import {sortEvents, sorterNameToFilter} from './sorters';
+import {renderEventsViaDays} from './events';
+import {eventsToFilter} from './main';
+import {sortEvents, getSorterName} from './sorters';
 
 // Блок фильтров
 const controlsMenu = document.querySelector(`.trip-controls__menus`);
 const filtersBlock = document.querySelector(`.trip-filter`);
 
+// Массив с отфильтрованными эвентами
+const filteredEvents = [];
+
 // Фильтры
 const filtersNames = [`Everything`, `Future`, `Past`];
-let filterName = `filter-everything`;
+
+const getFilterName = (filters) => {
+  let filterName = ``;
+  for (const filter of filters) {
+    if (filter.checked) {
+      filterName = filter.id;
+    }
+  }
+  return filterName;
+};
 
 // Генерируем данные о блоке фильтров
 const getFilterBlockData = (names) => {
@@ -33,13 +45,15 @@ const createFilterBlockElement = (filter) => {
 
   // Фильтруем эвенты
   filterComponent.onFilter = (evt) => {
-    if (filteredEvents.length === 0) {
-      filteredEvents = eventsData;
-    }
-    filterName = evt.target.id;
+    const filterName = evt.target.id;
     const filteredEventsData = filterEvents(eventsToFilter, filterName);
-    filteredEvents = filteredEventsData;
-    const filteredEventsWithSort = sortEvents(filteredEvents, sorterNameToFilter);
+    filteredEvents.splice(0, filteredEvents.length);
+    for (const filteredEvent of filteredEventsData) {
+      filteredEvents.push(filteredEvent);
+    }
+    const sorters = document.querySelectorAll(`.trip-sorting input`);
+    const sorterName = getSorterName(sorters);
+    const filteredEventsWithSort = sortEvents(filteredEvents, sorterName);
     renderEventsViaDays(filteredEventsWithSort);
   };
 
@@ -68,11 +82,9 @@ const filterEvents = (events, filter) => {
   return events;
 };
 
-let filteredEvents = [];
-
 export {filtersBlock};
 export {renderFilterBlockElement};
 export {controlsMenu};
 export {filteredEvents};
 export {filterEvents};
-export {filterName};
+export {getFilterName};

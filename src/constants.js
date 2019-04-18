@@ -23,7 +23,7 @@ const Method = {
   DELETE: `DELETE`
 };
 
-const AUTHORIZATION = `Basic eo0w590ik299a=ojghg`;
+const AUTHORIZATION = `Basic eo0w590ik299a=nfg`;
 
 const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
 

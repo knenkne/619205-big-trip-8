@@ -6,7 +6,6 @@ import TotalCost from './total-cost';
 import {renderMoneyChart, renderTransportChart, renderTimeSpendChart, getPriceCount, getTransportCount, getTimeSpendCount, transportTypes} from './statistic';
 import {API} from './api';
 import {AUTHORIZATION, END_POINT} from './constants';
-
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
 
 // Элементы управления
@@ -17,11 +16,11 @@ const statsButton = document.querySelector(`.view-switch__item[href="#stats"]`);
 const newEventButton = document.querySelector(`.trip-controls__new-event`);
 
 // Массивы для дальнейшей работы с данными
-let eventsData = [];
-let eventsToSort = [];
-let eventsToFilter = [];
-let destinationsData = [];
-let offersData = [];
+const eventsData = [];
+const eventsToSort = [];
+const eventsToFilter = [];
+const destinationsData = [];
+const offersData = [];
 
 // Шкалы статистики
 const transportChart = renderTransportChart();
@@ -72,21 +71,27 @@ newEventButton.addEventListener(`click`, renderNewEvent);
 
 api.getEvents()
   .then((events) => {
-    eventsData = events;
-    eventsToSort = events;
-    eventsToFilter = events;
+    for (const event of events) {
+      eventsData.push(event);
+      eventsToSort.push(event);
+      eventsToFilter.push(event);
+    }
     renderEventsViaDays(eventsData);
     document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
   });
 
 api.getDestinations()
   .then((destinations) => {
-    destinationsData = destinations;
+    for (const destination of destinations) {
+      destinationsData.push(destination);
+    }
   });
 
 api.getOffers()
   .then((offers) => {
-    offersData = offers;
+    for (const offer of offers) {
+      offersData.push(offer);
+    }
   });
 
 export {eventsData};

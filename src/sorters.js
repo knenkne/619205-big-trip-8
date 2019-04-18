@@ -5,7 +5,16 @@ import {eventsToSort} from './main';
 
 // Виды сортировки
 const sortersNames = [`Event`, `Time`, `Price`];
-let sorterNameToFilter = `sorting-event`;
+
+const getSorterName = (sorters) => {
+  let sorterName = ``;
+  for (const sorter of sorters) {
+    if (sorter.checked) {
+      sorterName = sorter.id;
+    }
+  }
+  return sorterName;
+};
 
 // Генерируем данные о блоке сортировки
 const getSorterBlockData = (names) => {
@@ -48,7 +57,6 @@ const createSorterBlockElement = (sorter) => {
   // Сортируем эвенты
   sorterComponent.onSorter = (evt) => {
     const sorterName = evt.target.id;
-    sorterNameToFilter = sorterName;
     const sortedEvents = filteredEvents.length === 0 ? sortEvents(eventsToSort, sorterName) : sortEvents(filteredEvents, sorterName);
     eventsBlock.innerHTML = ``;
     renderEventsViaDays(sortedEvents);
@@ -67,4 +75,4 @@ const renderSorterBlockElement = (container) => {
 
 export {renderSorterBlockElement};
 export {sortEvents};
-export {sorterNameToFilter};
+export {getSorterName};
