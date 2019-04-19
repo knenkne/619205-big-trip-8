@@ -3,6 +3,8 @@ import moment from 'moment';
 import Event from './event';
 import EventEdit from './event-edit';
 import {eventsData, api, priceBlock} from './main';
+import {getFilterName, filterEvents} from './filters';
+import {getSorterName, sortEvents} from './sorters';
 import EventDay from './event-day';
 
 const eventTypes = {
@@ -193,6 +195,13 @@ const createEventElement = (event, day) => {
       api.getEvents()
       .then((events) => {
         getTotalCost(events);
+        const filters = document.querySelectorAll(`.trip-filter input`);
+        const filterName = getFilterName(filters);
+        const filteredEventsData = filterEvents(events, filterName);
+        const sorters = document.querySelectorAll(`.trip-sorting input`);
+        const sorterName = getSorterName(sorters);
+        const filteredEventsWithSorting = sortEvents(filteredEventsData, sorterName);
+        renderEventsViaDays(filteredEventsWithSorting);
         document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
         isEventOpened = false;
       });
