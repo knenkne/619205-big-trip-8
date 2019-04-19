@@ -1,11 +1,12 @@
 import flatpickr from 'flatpickr';
 import moment from 'moment';
 
-import {Component} from './component';
+import {KeyCodes, ANIMATION} from './constants';
+import Component from './component';
 import {eventTypes} from './events';
-import {destinationsData} from './main';
+import {destinationsData, offersData} from './main';
 
-class EventEdit extends Component {
+export default class EventEdit extends Component {
   constructor(data) {
     super();
     this._id = data.id;
@@ -21,6 +22,26 @@ class EventEdit extends Component {
 
     this._onSubmit = null;
     this._onDelete = null;
+    this._onEsc = null;
+
+    this._onEscButtonClick = this._onEscButtonClick.bind(this);
+    this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
+    this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
+  }
+
+  _getOffersByTypeHtml(type) {
+    let counter = 0;
+    const offersHtml = [];
+    for (const offer of type.offers) {
+      counter++;
+      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.name}}">
+        <label for="offer-${this._id}-${counter}" class="point__offers-label">
+          <span class="point__offer-service">${offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
+        </label>
+        `;
+      offersHtml.push(offerHtml);
+    }
+    return offersHtml.join(``);
   }
 
   _getOffersHtml() {
@@ -77,7 +98,7 @@ class EventEdit extends Component {
       offers: this._offers,
       description: this._description,
       price: this._price,
-      image: this._image,
+      pictures: this._pictures,
       startDate: this._startDate,
       endDate: this._endDate,
       isFavorite: this._isFavorite
@@ -99,6 +120,13 @@ class EventEdit extends Component {
     }
 
     return event;
+  }
+  _onEscButtonClick(evt) {
+    evt.stopPropagation();
+
+    if (typeof this._onEsc === `function` && evt.keyCode === KeyCodes.ESC) {
+      this._onEsc();
+    }
   }
 
   _onDeleteButtonClick(evt) {
@@ -131,13 +159,17 @@ class EventEdit extends Component {
     this._onDelete = fn;
   }
 
+  set onEsc(fn) {
+    this._onEsc = fn;
+  }
+
   get template() {
     return `<article class="point">
   <form action="" method="get">
     <header class="point__header">
       <label class="point__date">
         choose day
-        <input class="point__input" type="text" placeholder="MAR 18" name="day">
+        <input class="point__input point__input--day" type="text" placeholder="${moment(this._startDate).format(`MMM`)} ${moment(this._startDate).format(`DD`)}" name="day">
       </label>
 
       <div class="travel-way">
@@ -174,7 +206,7 @@ class EventEdit extends Component {
 
       <div class="point__buttons">
         <button class="point__button point__button--save" type="submit">Save</button>
-        <button class="point__button" type="reset">Delete</button>
+        <button class="point__button point__button--reset" type="reset">Delete</button>
       </div>
 
       <div class="paint__favorite-wrap">
@@ -205,18 +237,18 @@ class EventEdit extends Component {
 </article>`.trim();
   }
   shake() {
-    const ANIMATION_TIMEOUT = 600;
     this._element.style.boxShadow = `0 0 20px 0 rgba(255,0,0,0.75)`;
-    this._element.style.animation = `shake ${ANIMATION_TIMEOUT / 1000}s`;
+    this._element.style.animation = `shake ${ANIMATION.duration}s`;
 
     setTimeout(() => {
       this._element.style.animation = ``;
-    }, ANIMATION_TIMEOUT);
+    }, ANIMATION.timeout);
   }
 
   unbind() {
-    this._element.querySelector(`.point__button--save`).removeEventListener(`click`, this._onSubmitButtonClick.bind(this));
-    this._element.querySelector(`button[type="reset"]`).removeEventListener(`click`, this._onDeleteButtonClick.bind(this));
+    this._element.querySelector(`.point__button--save`).removeEventListener(`click`, this._onSubmitButtonClick);
+    this._element.querySelector(`button[type="reset"]`).removeEventListener(`click`, this._onDeleteButtonClick);
+    document.removeEventListener(`keydown`, this._onEscButtonClick);
   }
 
   bind() {
@@ -226,8 +258,9 @@ class EventEdit extends Component {
     const typeChoice = this._element.querySelector(`.travel-way__label`);
     const typeOffers = this.element.querySelector(`.point__offers-wrap`);
     const destinationLabel = this._element.querySelector(`.point__destination-label`);
-    this._element.querySelector(`.point__button--save`).addEventListener(`click`, this._onSubmitButtonClick.bind(this));
-    this._element.querySelector(`button[type="reset"]`).addEventListener(`click`, this._onDeleteButtonClick.bind(this));
+    document.addEventListener(`keydown`, this._onEscButtonClick);
+    this._element.querySelector(`.point__button--save`).addEventListener(`click`, this._onSubmitButtonClick);
+    this._element.querySelector(`.point__button--reset`).addEventListener(`click`, this._onDeleteButtonClick);
     for (const label of this._element.querySelectorAll(`.travel-way__select-label`)) {
     // Обработчик для каждого типа точки маршрута
       label.addEventListener(`click`, () => {
@@ -236,7 +269,12 @@ class EventEdit extends Component {
         input.setAttribute(`checked`, `checked`);
         typeChoice.textContent = eventTypes[input.value];
         destinationLabel.textContent = `${input.value.charAt(0).toUpperCase() + input.value.slice(1)} to`;
+        const offerIndex = offersData.findIndex((offer) => offer.type === input.value);
         typeOffers.innerHTML = ``;
+        if (offerIndex !== -1) {
+          typeOffers.innerHTML = this._getOffersByTypeHtml(offersData[offerIndex]);
+        }
+        this._element.querySelector(`.travel-way__toggle`).checked = false;
       });
     }
 
@@ -252,22 +290,31 @@ class EventEdit extends Component {
       }
     });
 
+    flatpickr(this._element.querySelector(`.point__input--day`), {
+      "noCalendar": false,
+      "altInput": true,
+      "altFormat": `M j`,
+      "dateFormat": `Y M d`
+    });
+
     flatpickr(this._element.querySelector(`input[name=date-start]`), {
       "enableTime": true,
       "time_24hr": true,
-      "noCalendar": false,
+      "noCalendar": true,
       "altInput": true,
       "altFormat": `H:i`,
-      "dateFormat": `Y F d H i`
+      "dateFormat": `H i`,
+      "defaultDate": moment(this._startDate).toDate().getTime()
     });
 
     flatpickr(this._element.querySelector(`input[name=date-end]`), {
       "enableTime": true,
       "time_24hr": true,
-      "noCalendar": false,
+      "noCalendar": true,
       "altInput": true,
       "altFormat": `H:i`,
-      "dateFormat": `Y F d H i`
+      "dateFormat": `H i`,
+      "defaultDate": moment(this._endDate).toDate().getTime()
     });
   }
 
@@ -298,15 +345,19 @@ class EventEdit extends Component {
       "travel-way": (value) => {
         target.type = value;
       },
-      "date-start": (value) => {
-        if (value.length !== 5) {
-          target.startDate = moment(value, `YYYY MMMM DD HH mm`);
+      "day": (value) => {
+        if (value) {
+          target.endDate = moment(value, `YYYY MMM DD`);
+          target.startDate = moment(value, `YYYY MMM DD`);
         }
       },
+      "date-start": (value) => {
+        const newStartDate = moment(value, `HH mm`);
+        target.startDate = moment(target.startDate).hour(newStartDate.format(`HH`)).minute(newStartDate.format(`mm`));
+      },
       "date-end": (value) => {
-        if (value.length !== 5) {
-          target.endDate = moment(value, `YYYY MMMM DD HH mm`);
-        }
+        const newEndDate = moment(value, `HH mm`);
+        target.endDate = moment(target.endDate).hour(newEndDate.format(`HH`)).minute(newEndDate.format(`mm`));
       },
       "favorite": () => {
         target.isFavorite = true;
@@ -314,5 +365,3 @@ class EventEdit extends Component {
     };
   }
 }
-
-export {EventEdit};

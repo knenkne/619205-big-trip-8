@@ -1,9 +1,10 @@
 import moment from 'moment';
 
-import {Component} from './component';
+import Component from './component';
 import {eventTypes} from './events';
+import {OffersSettings} from './constants';
 
-class Event extends Component {
+export default class Event extends Component {
   constructor(data) {
     super();
     this._id = data.id;
@@ -18,16 +19,18 @@ class Event extends Component {
     this._isFavorite = data.isFavorite;
 
     this._onEdit = null;
+
+    this._onEventClick = this._onEventClick.bind(this);
   }
 
   _getOffersHtml() {
-    const offers = this._offers;
+    const selectedOffers = (this._offers.filter((selectedOffer) => selectedOffer.accepted)).slice(0, OffersSettings.MAX);
     let offerElements = [];
-    for (let offer of offers) {
+    for (let offer of selectedOffers) {
       if (offer.accepted) {
         const newOfferElement = `
         <li>
-       <button class="trip-point__offer">${offer.title}</button>
+       <button class="trip-point__offer">${offer.title} +€ ${offer.price}</button>
        </li>
       `;
         offerElements.push(newOfferElement);
@@ -36,12 +39,21 @@ class Event extends Component {
     return offerElements.join(``);
   }
 
+  _getDuration() {
+    const getDaysDuration = () => moment.utc(moment(this._endDate).diff(this._startDate)).format(`D`) - 1;
+    const getHoursDuration = () => moment.utc(moment(this._endDate).diff(this._startDate)).format(`H`);
+    const getMinutesDuration = () => moment.utc(moment(this._endDate).diff(this._startDate)).format(`m`);
+
+    const duration = `${getDaysDuration() > 0 ? `${getDaysDuration()}D` : ``} ${getHoursDuration() > 0 ? `${getHoursDuration()}H` : ``} ${getMinutesDuration() > 0 ? `${getMinutesDuration()}M` : ``}`;
+    return duration;
+  }
+
   _getDateHtml() {
     return `<span class="trip-point__timetable">
     ${moment(this._startDate).format(`HH:mm`)} &nbsp;&mdash; ${moment(this._endDate).format(`HH:mm`)}
     </span>
     <span class="trip-point__duration">
-    ${moment.utc(moment(this._endDate).diff(this._startDate)).format(`D`) - 1}D ${moment.utc(moment(this._endDate).diff(this._startDate)).format(`H`)}H ${moment.utc(moment(this._endDate).diff(this._startDate)).format(`m`)}M  
+    ${this._getDuration()}
     </span>
     `;
   }
@@ -70,8 +82,12 @@ class Event extends Component {
       </article>`.trim();
   }
 
+  unbind() {
+    this._element.removeEventListener(`click`, this._onEventClick);
+  }
+
   bind() {
-    this._element.addEventListener(`click`, this._onEventClick.bind(this));
+    this._element.addEventListener(`click`, this._onEventClick);
   }
 
   update(data) {
@@ -86,5 +102,3 @@ class Event extends Component {
   }
 
 }
-
-export {Event};

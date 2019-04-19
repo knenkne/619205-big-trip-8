@@ -1,6 +1,6 @@
 import {createElement} from './utils';
 
-class Component {
+export default class Component {
   constructor() {
     if (new.target === Component) {
       throw new Error(`Can't instantiate Component, only concrete one.`);
@@ -36,5 +36,3 @@ class Component {
     this._element = null;
   }
 }
-
-export {Component};

@@ -1,9 +1,11 @@
-import {Component} from './component';
+import Component from './component';
 
-class Filter extends Component {
+export default class Filter extends Component {
   constructor(data) {
     super();
     this._filters = data.filters;
+
+    this._onFilter = this._onFilter.bind(this);
   }
 
   _getFilters(filters) {
@@ -38,9 +40,11 @@ class Filter extends Component {
   `.trim();
   }
 
+  unbind() {
+    this._element.removeEventListener(`change`, this._onFilter);
+  }
+
   bind() {
-    this._element.addEventListener(`change`, this._onFilter.bind(this));
+    this._element.addEventListener(`change`, this._onFilter);
   }
 }
-
-export {Filter};

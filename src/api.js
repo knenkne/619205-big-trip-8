@@ -1,14 +1,9 @@
-import {AdapterEvent} from './adapter-event';
-
-const Method = {
-  GET: `GET`,
-  POST: `POST`,
-  PUT: `PUT`,
-  DELETE: `DELETE`
-};
+import AdapterEvent from './adapter-event';
+import {SuccessStatusCodes} from './constants';
+import {Method} from './constants';
 
 const checkStatus = (response) => {
-  if (response.status >= 200 && response.status < 300) {
+  if (response.status >= SuccessStatusCodes.MIN && response.status < SuccessStatusCodes.MAX) {
     return response;
   } else {
     throw new Error(`${response.status}: ${response.statusText}`);
@@ -26,9 +21,15 @@ const API = class {
   }
 
   getEvents() {
+    document.querySelector(`.trip-error`).textContent = `Loading route...`;
+    document.querySelector(`.trip-error`).classList.remove(`visually-hidden`);
     return this._load({url: `points`})
     .then(toJSON)
-    .then(AdapterEvent.parseEvents);
+    .then(AdapterEvent.parseEvents)
+    .catch(() => {
+      document.querySelector(`.trip-error`).textContent = `Something went wrong while loading your route info. Check your connection or try again later`;
+      document.querySelector(`.trip-error`).classList.remove(`visually-hidden`);
+    });
   }
 
 
@@ -70,12 +71,9 @@ const API = class {
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
-    document.querySelector(`.trip-error`).textContent = `Loading route...`;
-    document.querySelector(`.trip-error`).classList.remove(`visually-hidden`);
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})
         .then(checkStatus)
         .catch((err) => {
-          document.querySelector(`.trip-error`).textContent = `Something went wrong while loading your route info. Check your connection or try again later`;
           throw err;
         });
   }

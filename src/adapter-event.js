@@ -1,22 +1,22 @@
 import moment from 'moment';
 
-class AdapterEvent {
+export default class AdapterEvent {
   constructor(data) {
-    this.id = data[`id`];
-    this.price = data[`base_price`];
-    this.startDate = data[`date_from`];
-    this.endDate = data[`date_to`];
-    this.destination = data[`destination`][`name`];
-    this.description = data[`destination`][`description`];
-    this.pictures = data[`destination`][`pictures`];
-    this.isFavorite = Boolean(data[`is_favorite`]);
-    this.type = data[`type`];
-    this.offers = data[`offers`];
+    this.id = data.id || null;
+    this.price = data.base_price;
+    this.startDate = data.date_from || null;
+    this.endDate = data.date_to || null;
+    this.destination = data.destination.name || ``;
+    this.description = data.destination.description || ``;
+    this.pictures = data.destination.pictures || [];
+    this.isFavorite = Boolean(data.is_favorite) || false;
+    this.type = data.type || ``;
+    this.offers = data.offers || [];
   }
 
   toRAW() {
     return {
-      'id': this.id,
+      'id': this.id || null,
       'base_price': this.price,
       'date_from': moment(this.startDate).toDate().getTime(),
       'date_to': moment(this.endDate).toDate().getTime(),
@@ -40,5 +40,3 @@ class AdapterEvent {
   }
 }
 
-
-export {AdapterEvent};
