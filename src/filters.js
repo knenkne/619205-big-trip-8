@@ -3,6 +3,7 @@ import Filter from './filter';
 import {renderEventsViaDays} from './events';
 import {eventsToFilter} from './main';
 import {sortEvents, getSorterName} from './sorters';
+import {newEventButton} from './new-event';
 
 // Блок фильтров
 const controlsMenu = document.querySelector(`.trip-controls__menus`);
@@ -54,6 +55,7 @@ const createFilterBlockElement = (filter) => {
     const sorters = document.querySelectorAll(`.trip-sorting input`);
     const sorterName = getSorterName(sorters);
     const filteredEventsWithSort = sortEvents(filteredEvents, sorterName);
+    newEventButton.disabled = false;
     renderEventsViaDays(filteredEventsWithSort);
   };
 
