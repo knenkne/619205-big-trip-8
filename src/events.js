@@ -2,8 +2,8 @@ import moment from 'moment';
 
 import Event from './event';
 import EventEdit from './event-edit';
-import {eventsData, api, priceBlock} from './main';
-import {getFilterName, filterEvents} from './filters';
+import {eventsData, api, priceBlock, eventsToFilter} from './main';
+import {getFilterName, filterEvents, filteredEvents} from './filters';
 import {getSorterName, sortEvents} from './sorters';
 import EventDay from './event-day';
 
@@ -139,7 +139,10 @@ const createEventElement = (event, day) => {
         day.parentNode.remove();
       }
       const eventToDeleteIndex = eventsData.findIndex((eventToDelete) => eventToDelete.id === id);
+      const filteredEventToDeleteIndex = filteredEvents.findIndex((eventToDelete) => eventToDelete.id === id);
       eventsData.splice(eventToDeleteIndex, 1);
+      filteredEvents.splice(filteredEventToDeleteIndex, 1);
+      eventsToFilter.splice(eventToDeleteIndex, 1);
       getTotalCost(eventsData);
       isEventOpened = false;
     })

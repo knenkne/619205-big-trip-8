@@ -1,7 +1,7 @@
 import EventEdit from './event-edit';
 import {eventsBlock, renderEventsViaDays, getTotalCost} from './events';
 import {api, eventsData, eventsToFilter} from './main';
-import {filterEvents, getFilterName} from './filters';
+import {filterEvents, getFilterName, filteredEvents} from './filters';
 import {sortEvents, getSorterName} from './sorters';
 import moment from 'moment';
 
@@ -123,6 +123,7 @@ const renderNewEvent = () => {
       .then((newEvent) => {
         unblock();
         eventsData.push(newEvent);
+        filteredEvents.push(newEvent);
         eventsToFilter.push(newEvent);
         getTotalCost(eventsData);
         const filters = document.querySelectorAll(`.trip-filter input`);

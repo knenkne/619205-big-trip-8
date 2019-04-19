@@ -61,6 +61,7 @@ const createSorterBlockElement = (sorter) => {
     const sortedEvents = filteredEvents.length === 0 ? sortEvents(eventsToSort, sorterName) : sortEvents(filteredEvents, sorterName);
     eventsBlock.innerHTML = ``;
     newEventButton.disabled = false;
+    console.log(filteredEvents);
     renderEventsViaDays(sortedEvents);
   };
 
