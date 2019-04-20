@@ -71,7 +71,7 @@ export default class Event extends Component {
   get template() {
     return `<article class="trip-point">
       <i class="trip-icon">${eventTypes[this._type]}</i>
-      <h3 class="trip-point__title">${this._type.charAt(0).toUpperCase() + this._type.slice(1)} to ${this._destination}</h3>
+      <h3 class="trip-point__title">${this._type.charAt(0).toUpperCase()}${this._type.slice(1)} to ${this._destination}</h3>
        <p class="trip-point__schedule">
           ${this._getDateHtml()}
        </p>

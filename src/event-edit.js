@@ -253,7 +253,7 @@ export default class EventEdit extends Component {
         const input = label.previousElementSibling;
         input.setAttribute(`checked`, `checked`);
         typeChoice.textContent = eventTypes[input.value];
-        destinationLabel.textContent = `${input.value.charAt(0).toUpperCase() + input.value.slice(1)} to`;
+        destinationLabel.textContent = `${input.value.charAt(0).toUpperCase()}${input.value.slice(1)} to`;
         const offerIndex = offersData.findIndex((offer) => offer.type === input.value);
         typeOffers.innerHTML = ``;
         if (offerIndex !== -1) {
