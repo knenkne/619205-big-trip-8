@@ -2,11 +2,11 @@ import {renderFilterBlockElement, controlsMenu} from './filters';
 import {renderSorterBlockElement} from './sorters';
 import {onNewEventButtonClick} from './new-event';
 import {renderEventsViaDays, eventTypes} from './events';
-import TotalCost from './total-cost';
 import {renderMoneyChart, renderTransportChart, renderTimeSpendChart, getPriceCount, getTransportCount, getTimeSpendCount, transportTypes} from './statistic';
 import API from './api';
+import TotalCost from './total-cost';
 
-const AUTHORIZATION = `Basic eo0w590ik299a=asd`;
+const AUTHORIZATION = `Basic eo0w590ik299a=okjibv`;
 const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
 
 

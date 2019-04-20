@@ -56,8 +56,36 @@ const getSortedEventsByDays = (events) => {
     }
     result[eventDay].push(event);
   }
-
   return result;
+};
+
+// Получаем эвенты не зависимо от дней
+const getSeparatedEventsByDays = (events) => {
+  const result = [];
+  for (const event of events) {
+    const eventDay = moment(event.startDate).format(`D MMM YY`);
+    const eventData = {};
+    eventData[eventDay] = event;
+    result.push(eventData);
+  }
+  return result;
+};
+
+// Рендрим эвенты не объединяя в дни
+const renderSeparateEventsViaDays = (days) => {
+  const separatedEventsByDays = getSeparatedEventsByDays(days);
+
+  eventsBlock.innerHTML = ``;
+  for (const eventSortedByDay of separatedEventsByDays) {
+    // const [day, events] = eventSortedByDay;
+    const day = Object.keys(eventSortedByDay);
+    const events = [eventSortedByDay[day]];
+    const eventDay = new EventDay(day[0]).render();
+    const eventsList = eventDay.querySelector(`.trip-day__items`);
+    eventsBlock.appendChild(eventDay);
+    renderEventElements(events, eventsList);
+  }
+  getTotalCost(eventsData);
 };
 
 // Рендрим эвенты в соответсвующие дни
@@ -253,3 +281,4 @@ export {eventsBlock};
 export {renderEventElements};
 export {renderEventsViaDays};
 export {getTotalCost};
+export {renderSeparateEventsViaDays};

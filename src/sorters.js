@@ -1,5 +1,5 @@
 import Sorter from './sorter';
-import {eventsBlock, renderEventsViaDays} from './events';
+import {eventsBlock, renderEventsViaDays, renderSeparateEventsViaDays} from './events';
 import {filteredEvents} from './filters';
 import {eventsToSort} from './main';
 import {newEventButton} from './new-event';
@@ -61,7 +61,11 @@ const createSorterBlockElement = (sorter) => {
     const sortedEvents = filteredEvents.length === 0 ? sortEvents(eventsToSort, sorterName) : sortEvents(filteredEvents, sorterName);
     eventsBlock.innerHTML = ``;
     newEventButton.disabled = false;
-    renderEventsViaDays(sortedEvents);
+    if (sorterName === `sorting-price`) {
+      renderSeparateEventsViaDays(sortedEvents);
+    } else {
+      renderEventsViaDays(sortedEvents);
+    }
   };
 
   const sorterBlockElement = sorterComponent.render();
