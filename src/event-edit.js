@@ -28,6 +28,8 @@ export default class EventEdit extends Component {
     this._endDate = data.endDate;
     this._isFavorite = data.isFavorite;
 
+    this._state.isOffersChanged = false;
+    this._state.changedType = ``;
     this._onSubmit = null;
     this._onDelete = null;
     this._onEsc = null;
@@ -37,7 +39,23 @@ export default class EventEdit extends Component {
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
   }
 
-  _getOffersHtml(type) {
+  _getOffersHtml() {
+    // Находим оферы в соотвествии с типом
+    let counter = 0;
+    const offersHtml = [];
+    for (const offer of this._offers) {
+      counter++;
+      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.title || offer.name}" ${offer.accepted ? `checked` : ``}>
+          <label for="offer-${this._id}-${counter}" class="point__offers-label">
+            <span class="point__offer-service">${offer.title || offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
+          </label>
+          `;
+      offersHtml.push(offerHtml);
+    }
+    return offersHtml.join(``);
+  }
+
+  _getOffersHtmlByType(type) {
     // Находим оферы в соотвествии с типом
     const offersByTypeIndex = offersData.findIndex((offerData) => offerData.type === type);
     let counter = 0;
@@ -103,6 +121,15 @@ export default class EventEdit extends Component {
 
     event.isFavorite = false;
 
+    if (this._state.isOffersChanged) {
+      const offersByTypeIndex = offersData.findIndex((offerData) => offerData.type === this._state.changedType);
+      if (offersByTypeIndex !== -1) {
+        event.offers = offersData[offersByTypeIndex].offers;
+      } else {
+        event.offers = [];
+      }
+    }
+
     for (const offer of event.offers) {
       offer.accepted = false;
     }
@@ -125,7 +152,7 @@ export default class EventEdit extends Component {
       this._onEsc();
     }
   }
-
+  
   _onDeleteButtonClick(evt) {
     evt.preventDefault();
 
@@ -217,7 +244,7 @@ export default class EventEdit extends Component {
         <h3 class="point__details-title">offers</h3>
 
         <div class="point__offers-wrap">
-          ${this._getOffersHtml(this._type)}
+          ${this._getOffersHtml()}
         </div>
 
       </section>
@@ -266,8 +293,14 @@ export default class EventEdit extends Component {
         input.setAttribute(`checked`, `checked`);
         typeChoice.textContent = eventTypes[input.value];
         destinationLabel.textContent = `${input.value.charAt(0).toUpperCase()}${input.value.slice(1)} to`;
-        typeOffers.innerHTML = ``;
-        typeOffers.innerHTML = this._getOffersHtml(input.value);
+        if (this._type !== input.value) {
+          this._state.isOffersChanged = true;
+          this._state.changedType = input.value;
+          typeOffers.innerHTML = this._getOffersHtmlByType(input.value);
+        } else {
+          this._state.isOffersChanged = false;
+          typeOffers.innerHTML = this._getOffersHtml();
+        }
         this._element.querySelector(`.travel-way__toggle`).checked = false;
       });
     }
@@ -328,20 +361,24 @@ export default class EventEdit extends Component {
     return {
       "offer": (value) => {
         // Находим офер в списке и передаем весь список
-        const offersByTypeIndex = offersData.findIndex((offerData) => {
-          let type = {};
-          for (const offer of offerData.offers) {
-            if (offer.name === value) {
-              type = offerData.type;
-            }
-          }
-          return offerData.type === type;
-        });
-        target.offers = offersData[offersByTypeIndex].offers;
+        // const offersByTypeIndex = offersData.findIndex((offerData) => {
+        //   let type = {};
+        //   for (const offer of offerData.offers) {
+        //     if (offer.name === value) {
+        //       type = offerData.type;
+        //     }
+        //   }
+        //   return offerData.type === type;
+        // });
+        // target.offers = offersData[offersByTypeIndex].offers;
 
-        // Чекаем выбранные значения
+        // // Чекаем выбранные значения
+        console.log(target.offers);
         const offerIndex = target.offers.findIndex((offer) => offer.name === value || offer.title === value);
+        console.log(offerIndex, `offerIndex`);
+        console.log(target.offers);
         target.offers[offerIndex].accepted = true;
+        console.log(target.offers);
       },
       "price": (value) => {
         target.price = value;

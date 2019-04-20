@@ -8,6 +8,18 @@ export default class Filter extends Component {
     this._onFilter = this._onFilter.bind(this);
   }
 
+  set onFilter(fn) {
+    this._onFilter = fn;
+  }
+
+  get template() {
+    return `
+    <form class="trip-filter">
+    ${this._getFilters(this._filters)}
+    </form>
+  `.trim();
+  }
+
   _getFilters(filters) {
     const filtersHtml = [];
     for (const filter of filters) {
@@ -26,18 +38,6 @@ export default class Filter extends Component {
     if (typeof this._onFilter === `function`) {
       this._onFilter();
     }
-  }
-
-  set onFilter(fn) {
-    this._onFilter = fn;
-  }
-
-  get template() {
-    return `
-    <form class="trip-filter">
-    ${this._getFilters(this._filters)}
-    </form>
-  `.trim();
   }
 
   unbind() {
