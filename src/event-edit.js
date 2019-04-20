@@ -37,17 +37,21 @@ export default class EventEdit extends Component {
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
   }
 
-  _getOffersHtml(offers) {
+  _getOffersHtml(type) {
+    // Находим оферы в соотвествии с типом
+    const offersByTypeIndex = offersData.findIndex((offerData) => offerData.type === type);
     let counter = 0;
     const offersHtml = [];
-    for (const offer of offers) {
-      counter++;
-      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.title || offer.name}" ${offer.accepted ? `checked` : ``}>
-        <label for="offer-${this._id}-${counter}" class="point__offers-label">
-          <span class="point__offer-service">${offer.title || offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
-        </label>
-        `;
-      offersHtml.push(offerHtml);
+    if (offersByTypeIndex !== -1) {
+      for (const offer of offersData[offersByTypeIndex].offers) {
+        counter++;
+        const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.title || offer.name}" ${offer.accepted ? `checked` : ``}>
+          <label for="offer-${this._id}-${counter}" class="point__offers-label">
+            <span class="point__offer-service">${offer.title || offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
+          </label>
+          `;
+        offersHtml.push(offerHtml);
+      }
     }
     return offersHtml.join(``);
   }
@@ -213,7 +217,7 @@ export default class EventEdit extends Component {
         <h3 class="point__details-title">offers</h3>
 
         <div class="point__offers-wrap">
-          ${this._getOffersHtml(this._offers)}
+          ${this._getOffersHtml(this._type)}
         </div>
 
       </section>
@@ -262,12 +266,8 @@ export default class EventEdit extends Component {
         input.setAttribute(`checked`, `checked`);
         typeChoice.textContent = eventTypes[input.value];
         destinationLabel.textContent = `${input.value.charAt(0).toUpperCase()}${input.value.slice(1)} to`;
-        const offerIndex = offersData.findIndex((offer) => offer.type === input.value);
         typeOffers.innerHTML = ``;
-        if (offerIndex !== -1) {
-          this._offers = offersData[offerIndex].offers;
-          typeOffers.innerHTML = this._getOffersHtml(this._offers);
-        }
+        typeOffers.innerHTML = this._getOffersHtml(input.value);
         this._element.querySelector(`.travel-way__toggle`).checked = false;
       });
     }
@@ -327,6 +327,19 @@ export default class EventEdit extends Component {
   static createMapper(target) {
     return {
       "offer": (value) => {
+        // Находим офер в списке и передаем весь список
+        const offersByTypeIndex = offersData.findIndex((offerData) => {
+          let type = {};
+          for (const offer of offerData.offers) {
+            if (offer.name === value) {
+              type = offerData.type;
+            }
+          }
+          return offerData.type === type;
+        });
+        target.offers = offersData[offersByTypeIndex].offers;
+
+        // Чекаем выбранные значения
         const offerIndex = target.offers.findIndex((offer) => offer.name === value || offer.title === value);
         target.offers[offerIndex].accepted = true;
       },

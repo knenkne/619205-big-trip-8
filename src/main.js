@@ -6,7 +6,7 @@ import {renderMoneyChart, renderTransportChart, renderTimeSpendChart, getPriceCo
 import API from './api';
 import TotalCost from './total-cost';
 
-const AUTHORIZATION = `Basic eo0w590ik299a=okjibv`;
+const AUTHORIZATION = `Basic eo0w590ik299a=lfjgfdb`;
 const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
 
 
