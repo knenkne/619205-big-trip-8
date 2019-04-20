@@ -29,29 +29,14 @@ export default class EventEdit extends Component {
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
   }
 
-  _getOffersByTypeHtml(type) {
+  _getOffersHtml(offers) {
     let counter = 0;
     const offersHtml = [];
-    for (const offer of type.offers) {
+    for (const offer of offers) {
       counter++;
-      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.name}}">
+      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.title || offer.name}" ${offer.accepted ? `checked` : ``}>
         <label for="offer-${this._id}-${counter}" class="point__offers-label">
-          <span class="point__offer-service">${offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
-        </label>
-        `;
-      offersHtml.push(offerHtml);
-    }
-    return offersHtml.join(``);
-  }
-
-  _getOffersHtml() {
-    let counter = 0;
-    const offersHtml = [];
-    for (const offer of this._offers) {
-      counter++;
-      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.title}" ${offer.accepted ? `checked` : ``}>
-        <label for="offer-${this._id}-${counter}" class="point__offers-label">
-          <span class="point__offer-service">${offer.title}</span> + €<span class="point__offer-price">${offer.price}</span>
+          <span class="point__offer-service">${offer.title || offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
         </label>
         `;
       offersHtml.push(offerHtml);
@@ -185,7 +170,7 @@ export default class EventEdit extends Component {
       </div>
 
       <div class="point__destination-wrap">
-        <label class="point__destination-label" for="destination">${this._type.charAt(0).toUpperCase() + this._type.slice(1)} to</label>
+        <label class="point__destination-label" for="destination">${this._type.charAt(0).toUpperCase()}${this._type.slice(1)} to</label>
         <input class="point__destination-input" list="destination-select" id="destination" value="${this._destination}" name="destination">
         <datalist id="destination-select">
           ${this._getDestinationsDataListHtml()}
@@ -220,7 +205,7 @@ export default class EventEdit extends Component {
         <h3 class="point__details-title">offers</h3>
 
         <div class="point__offers-wrap">
-          ${this._getOffersHtml()}
+          ${this._getOffersHtml(this._offers)}
         </div>
 
       </section>
@@ -272,8 +257,10 @@ export default class EventEdit extends Component {
         const offerIndex = offersData.findIndex((offer) => offer.type === input.value);
         typeOffers.innerHTML = ``;
         if (offerIndex !== -1) {
-          typeOffers.innerHTML = this._getOffersByTypeHtml(offersData[offerIndex]);
+          this._offers = offersData[offerIndex].offers;
+          typeOffers.innerHTML = this._getOffersHtml(offersData[offerIndex].offers);
         }
+        console.log(this._offers);
         this._element.querySelector(`.travel-way__toggle`).checked = false;
       });
     }
@@ -333,9 +320,16 @@ export default class EventEdit extends Component {
   static createMapper(target) {
     return {
       "offer": (value) => {
-        const offerIndex = target.offers.findIndex((offer) => offer.title === value);
-        target.offers[offerIndex].accepted = true;
-        console.log(target.offers[offerIndex]);
+        let correctOffers = [];
+        for (const offerData of offersData) {
+          for (const offer of offerData.offers) {
+            if (offer.name === value) {
+              correctOffers = [...offerData.offers];
+            }
+          }
+        }
+        target.offers = this._offers;
+
       },
       "price": (value) => {
         target.price = value;

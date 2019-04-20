@@ -160,6 +160,7 @@ const createEventElement = (event, day) => {
     event.startDate = newObject.startDate;
     event.endDate = newObject.endDate;
     event.isFavorite = newObject.isFavorite;
+    event.offers = newObject.offers;
 
     const saveButton = editEventComponent.element.querySelector(`.point__button[type="submit"]`);
     const deleteButton = editEventComponent.element.querySelector(`.point__button[type="reset"]`);
