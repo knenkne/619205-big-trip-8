@@ -27,10 +27,10 @@ export default class Event extends Component {
   }
 
   _getOffersHtml() {
-    const selectedOffers = (this._offers.filter((selectedOffer) => selectedOffer.accepted)).slice(0, OffersSettings.MAX);
+    const selectedOffers = (this._offers.filter((selectedOffer) => !selectedOffer.accepted)).slice(0, OffersSettings.MAX);
     const offerElements = [];
     for (const offer of selectedOffers) {
-      if (offer.accepted) {
+      if (!offer.accepted) {
         const newOfferElement = `
         <li>
        <button class="trip-point__offer">${offer.title || offer.name} +€ ${offer.price}</button>
