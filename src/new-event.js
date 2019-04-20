@@ -55,6 +55,11 @@ const renderNewEvent = () => {
 
   const newEventEditComponent = new EventEdit(newEentMockData);
 
+  newEventEditComponent.onDelete = () => {
+    newEventEditComponent.unrender();
+    newEventButton.disabled = false;
+  };
+
   newEventEditComponent.onSubmit = (newData) => {
     const saveButton = newEventEditComponent.element.querySelector(`.point__button[type="submit"]`);
     const deleteButton = newEventEditComponent.element.querySelector(`.point__button[type="reset"]`);

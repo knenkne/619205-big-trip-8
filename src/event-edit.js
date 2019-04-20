@@ -335,6 +335,7 @@ export default class EventEdit extends Component {
       "offer": (value) => {
         const offerIndex = target.offers.findIndex((offer) => offer.title === value);
         target.offers[offerIndex].accepted = true;
+        console.log(target.offers[offerIndex]);
       },
       "price": (value) => {
         target.price = value;

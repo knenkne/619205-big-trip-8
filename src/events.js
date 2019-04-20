@@ -197,7 +197,6 @@ const createEventElement = (event, day) => {
       editEventComponent.unrender();
       api.getEvents()
       .then((events) => {
-        getTotalCost(events);
         const filters = document.querySelectorAll(`.trip-filter input`);
         const filterName = getFilterName(filters);
         const filteredEventsData = filterEvents(events, filterName);
@@ -205,6 +204,7 @@ const createEventElement = (event, day) => {
         const sorterName = getSorterName(sorters);
         const filteredEventsWithSorting = sortEvents(filteredEventsData, sorterName);
         renderEventsViaDays(filteredEventsWithSorting);
+        getTotalCost(events);
         document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
         isEventOpened = false;
       });
