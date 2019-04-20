@@ -30,7 +30,7 @@ export default class Event extends Component {
       if (offer.accepted) {
         const newOfferElement = `
         <li>
-       <button class="trip-point__offer">${offer.title} +€ ${offer.price}</button>
+       <button class="trip-point__offer">${offer.title || offer.name} +€ ${offer.price}</button>
        </li>
       `;
         offerElements.push(newOfferElement);

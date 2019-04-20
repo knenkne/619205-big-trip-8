@@ -258,7 +258,7 @@ export default class EventEdit extends Component {
         typeOffers.innerHTML = ``;
         if (offerIndex !== -1) {
           this._offers = offersData[offerIndex].offers;
-          typeOffers.innerHTML = this._getOffersHtml(offersData[offerIndex].offers);
+          typeOffers.innerHTML = this._getOffersHtml(this._offers);
         }
         console.log(this._offers);
         this._element.querySelector(`.travel-way__toggle`).checked = false;
@@ -320,16 +320,11 @@ export default class EventEdit extends Component {
   static createMapper(target) {
     return {
       "offer": (value) => {
-        let correctOffers = [];
-        for (const offerData of offersData) {
-          for (const offer of offerData.offers) {
-            if (offer.name === value) {
-              correctOffers = [...offerData.offers];
-            }
-          }
-        }
-        target.offers = this._offers;
-
+        const offerIndex = target.offers.findIndex((offer) => offer.name === value || offer.title === value);
+        console.log(target.offers);
+        console.log(offerIndex);
+        target.offers[offerIndex].accepted = true;
+        console.log(target.offers[offerIndex]);
       },
       "price": (value) => {
         target.price = value;
