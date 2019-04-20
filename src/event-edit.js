@@ -34,6 +34,7 @@ export default class EventEdit extends Component {
     this._onDelete = null;
     this._onEsc = null;
 
+    this._onTypeChange = this._onTypeChange.bind(this);
     this._onEscButtonClick = this._onEscButtonClick.bind(this);
     this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
@@ -122,7 +123,9 @@ export default class EventEdit extends Component {
     event.isFavorite = false;
 
     if (this._state.isOffersChanged) {
+      console.log(this._offers);
       const offersByTypeIndex = offersData.findIndex((offerData) => offerData.type === this._state.changedType);
+      console.log(offersByTypeIndex);
       if (offersByTypeIndex !== -1) {
         event.offers = offersData[offersByTypeIndex].offers;
       } else {
@@ -150,9 +153,10 @@ export default class EventEdit extends Component {
 
     if (typeof this._onEsc === `function` && evt.keyCode === KeyCodes.ESC) {
       this._onEsc();
+      this._state.isOffersChanged = false;
     }
   }
-  
+
   _onDeleteButtonClick(evt) {
     evt.preventDefault();
 
@@ -173,6 +177,27 @@ export default class EventEdit extends Component {
     }
 
     this.update(newData);
+  }
+
+  _onTypeChange(evt) {
+    const typeChoice = this._element.querySelector(`.travel-way__label`);
+    const typeOffers = this.element.querySelector(`.point__offers-wrap`);
+    const destinationLabel = this._element.querySelector(`.point__destination-label`);
+    // Получаем инпут относящийся к выбранному селекту
+    const input = evt.target.previousElementSibling;
+    input.setAttribute(`checked`, `checked`);
+    typeChoice.textContent = eventTypes[input.value];
+    destinationLabel.textContent = `${input.value.charAt(0).toUpperCase()}${input.value.slice(1)} to`;
+    if (this._type !== input.value) {
+      this._state.isOffersChanged = true;
+      this._state.changedType = input.value;
+      typeOffers.innerHTML = this._getOffersHtmlByType(input.value);
+      console.log(this._offers);
+    } else {
+      this._state.isOffersChanged = false;
+      typeOffers.innerHTML = this._getOffersHtml();
+    }
+    this._element.querySelector(`.travel-way__toggle`).checked = false;
   }
 
   set onSubmit(fn) {
@@ -270,6 +295,9 @@ export default class EventEdit extends Component {
   }
 
   unbind() {
+    for (const label of this._element.querySelectorAll(`.travel-way__select-label`)) {
+      label.removeEventListener(`click`, this._onTypeChange);
+    }
     this._element.querySelector(`.point__button--save`).removeEventListener(`click`, this._onSubmitButtonClick);
     this._element.querySelector(`button[type="reset"]`).removeEventListener(`click`, this._onDeleteButtonClick);
     document.removeEventListener(`keydown`, this._onEscButtonClick);
@@ -279,30 +307,12 @@ export default class EventEdit extends Component {
     const destinationChoice = this._element.querySelector(`#destination`);
     const destinationDescription = this._element.querySelector(`.point__destination-text`);
     const destinationImages = this._element.querySelector(`.point__destination-images`);
-    const typeChoice = this._element.querySelector(`.travel-way__label`);
-    const typeOffers = this.element.querySelector(`.point__offers-wrap`);
-    const destinationLabel = this._element.querySelector(`.point__destination-label`);
     document.addEventListener(`keydown`, this._onEscButtonClick);
     this._element.querySelector(`.point__button--save`).addEventListener(`click`, this._onSubmitButtonClick);
     this._element.querySelector(`.point__button--reset`).addEventListener(`click`, this._onDeleteButtonClick);
     for (const label of this._element.querySelectorAll(`.travel-way__select-label`)) {
     // Обработчик для каждого типа точки маршрута
-      label.addEventListener(`click`, () => {
-        // Получаем инпут относящийся к выбранному селекту
-        const input = label.previousElementSibling;
-        input.setAttribute(`checked`, `checked`);
-        typeChoice.textContent = eventTypes[input.value];
-        destinationLabel.textContent = `${input.value.charAt(0).toUpperCase()}${input.value.slice(1)} to`;
-        if (this._type !== input.value) {
-          this._state.isOffersChanged = true;
-          this._state.changedType = input.value;
-          typeOffers.innerHTML = this._getOffersHtmlByType(input.value);
-        } else {
-          this._state.isOffersChanged = false;
-          typeOffers.innerHTML = this._getOffersHtml();
-        }
-        this._element.querySelector(`.travel-way__toggle`).checked = false;
-      });
+      label.addEventListener(`click`, this._onTypeChange);
     }
 
     destinationChoice.addEventListener(`change`, () => {
@@ -373,10 +383,9 @@ export default class EventEdit extends Component {
         // target.offers = offersData[offersByTypeIndex].offers;
 
         // // Чекаем выбранные значения
-        console.log(target.offers);
         const offerIndex = target.offers.findIndex((offer) => offer.name === value || offer.title === value);
-        console.log(offerIndex, `offerIndex`);
-        console.log(target.offers);
+        console.log(target);
+        console.log(target.offers[offerIndex]);
         target.offers[offerIndex].accepted = true;
         console.log(target.offers);
       },
