@@ -7,7 +7,7 @@ import moment from 'moment';
 
 const newEventButton = document.querySelector(`.trip-controls__new-event`);
 
-const renderNewEvent = () => {
+const onNewEventButtonClick = () => {
   const newEentMockData = {
     id: null,
     type: `taxi`,
@@ -156,5 +156,5 @@ const renderNewEvent = () => {
   eventsBlock.prepend(newEventEditComponent.render());
 };
 
-export {renderNewEvent};
+export {onNewEventButtonClick};
 export {newEventButton};

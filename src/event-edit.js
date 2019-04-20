@@ -91,7 +91,7 @@ export default class EventEdit extends Component {
 
     event.isFavorite = false;
 
-    for (let offer of event.offers) {
+    for (const offer of event.offers) {
       offer.accepted = false;
     }
 
@@ -260,7 +260,6 @@ export default class EventEdit extends Component {
           this._offers = offersData[offerIndex].offers;
           typeOffers.innerHTML = this._getOffersHtml(this._offers);
         }
-        console.log(this._offers);
         this._element.querySelector(`.travel-way__toggle`).checked = false;
       });
     }
@@ -321,10 +320,7 @@ export default class EventEdit extends Component {
     return {
       "offer": (value) => {
         const offerIndex = target.offers.findIndex((offer) => offer.name === value || offer.title === value);
-        console.log(target.offers);
-        console.log(offerIndex);
         target.offers[offerIndex].accepted = true;
-        console.log(target.offers[offerIndex]);
       },
       "price": (value) => {
         target.price = value;

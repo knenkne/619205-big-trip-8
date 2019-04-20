@@ -1,6 +1,6 @@
 import {renderFilterBlockElement, controlsMenu} from './filters';
 import {renderSorterBlockElement} from './sorters';
-import {renderNewEvent} from './new-event';
+import {onNewEventButtonClick} from './new-event';
 import {renderEventsViaDays, eventTypes} from './events';
 import TotalCost from './total-cost';
 import {renderMoneyChart, renderTransportChart, renderTimeSpendChart, getPriceCount, getTransportCount, getTimeSpendCount, transportTypes} from './statistic';
@@ -67,7 +67,7 @@ statsButton.addEventListener(`click`, function (evt) {
 });
 
 // Создаем эвент
-newEventButton.addEventListener(`click`, renderNewEvent);
+newEventButton.addEventListener(`click`, onNewEventButtonClick);
 
 api.getEvents()
   .then((events) => {

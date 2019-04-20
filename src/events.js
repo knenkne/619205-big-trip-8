@@ -47,8 +47,8 @@ const getTotalCost = (events) => {
 
 // Получаем дни и соответсвующие им эвенты
 const getSortedEventsByDays = (events) => {
-  let result = {};
-  for (let event of events) {
+  const result = {};
+  for (const event of events) {
     const eventDay = moment(event.startDate).format(`D MMM YY`);
 
     if (!result[eventDay]) {

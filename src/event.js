@@ -25,8 +25,8 @@ export default class Event extends Component {
 
   _getOffersHtml() {
     const selectedOffers = (this._offers.filter((selectedOffer) => selectedOffer.accepted)).slice(0, OffersSettings.MAX);
-    let offerElements = [];
-    for (let offer of selectedOffers) {
+    const offerElements = [];
+    for (const offer of selectedOffers) {
       if (offer.accepted) {
         const newOfferElement = `
         <li>
