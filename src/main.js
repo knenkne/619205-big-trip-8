@@ -5,7 +5,11 @@ import {renderEventsViaDays, eventTypes} from './events';
 import TotalCost from './total-cost';
 import {renderMoneyChart, renderTransportChart, renderTimeSpendChart, getPriceCount, getTransportCount, getTimeSpendCount, transportTypes} from './statistic';
 import API from './api';
-import {AUTHORIZATION, END_POINT} from './constants';
+
+const AUTHORIZATION = `Basic eo0w590ik299a=asd`;
+const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
+
+
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
 
 // Элементы управления

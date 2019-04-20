@@ -3,7 +3,8 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {eventTypes} from './events';
 import {eventsData} from './main';
-import {BAR_HEIGHT} from './constants';
+
+const BAR_HEIGHT = 55;
 
 const transportTypes = [`taxi`, `bus`, `ship`, `train`, `drive`, `flight`];
 const moneyCtx = document.querySelector(`.statistic__money`);

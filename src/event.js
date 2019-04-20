@@ -2,7 +2,10 @@ import moment from 'moment';
 
 import Component from './component';
 import {eventTypes} from './events';
-import {OffersSettings} from './constants';
+
+const OffersSettings = {
+  MAX: 3
+};
 
 export default class Event extends Component {
   constructor(data) {

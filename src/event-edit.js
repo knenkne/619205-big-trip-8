@@ -1,10 +1,18 @@
 import flatpickr from 'flatpickr';
 import moment from 'moment';
 
-import {KeyCodes, ANIMATION} from './constants';
 import Component from './component';
 import {eventTypes} from './events';
 import {destinationsData, offersData} from './main';
+
+const ANIMATION = {
+  timeout: 600,
+  duration: 0.6
+};
+
+const KeyCodes = {
+  ESC: 27
+};
 
 export default class EventEdit extends Component {
   constructor(data) {

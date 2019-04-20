@@ -1,13 +1,23 @@
 import AdapterEvent from './adapter-event';
-import {SuccessStatusCodes} from './constants';
-import {Method} from './constants';
+
+const Method = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+};
+
+
+const SuccessStatusCodes = {
+  MIN: 200,
+  MAX: 300
+};
 
 const checkStatus = (response) => {
   if (response.status >= SuccessStatusCodes.MIN && response.status < SuccessStatusCodes.MAX) {
     return response;
-  } else {
-    throw new Error(`${response.status}: ${response.statusText}`);
   }
+  throw new Error(`${response.status}: ${response.statusText}`);
 };
 
 const toJSON = (response) => {
@@ -77,4 +87,5 @@ export default class API {
           throw err;
         });
   }
-};
+}
+
