@@ -42,7 +42,7 @@ export default class Sorter extends Component {
   }
 
   unbind() {
-    this._element.addEventListener(`change`, this._onSorter);
+    this._element.removeEventListener(`change`, this._onSorter);
   }
 
   bind() {
