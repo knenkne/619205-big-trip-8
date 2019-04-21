@@ -230,7 +230,11 @@ const createEventElement = (event, day) => {
         const sorters = document.querySelectorAll(`.trip-sorting input`);
         const sorterName = getSorterName(sorters);
         const filteredEventsWithSorting = sortEvents(filteredEventsData, sorterName);
-        renderEventsViaDays(filteredEventsWithSorting);
+        if (sorterName === `sorting-price`) {
+          renderSeparateEventsViaDays(filteredEventsWithSorting);
+        } else {
+          renderEventsViaDays(filteredEventsWithSorting);
+        }
         getTotalCost(events);
         document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
         isEventOpened = false;
