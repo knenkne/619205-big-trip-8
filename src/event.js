@@ -2,7 +2,6 @@ import moment from 'moment';
 
 import Component from './component';
 import {eventTypes} from './events';
-import {offersData} from './main';
 
 const OffersSettings = {
   MAX: 3

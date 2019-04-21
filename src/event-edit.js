@@ -40,166 +40,6 @@ export default class EventEdit extends Component {
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
   }
 
-  _getOffersHtml() {
-    // Находим оферы в соотвествии с типом
-    let counter = 0;
-    const offersHtml = [];
-    for (const offer of this._offers) {
-      counter++;
-      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.title || offer.name}" ${offer.accepted ? `checked` : ``}>
-          <label for="offer-${this._id}-${counter}" class="point__offers-label">
-            <span class="point__offer-service">${offer.title || offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
-          </label>
-          `;
-      offersHtml.push(offerHtml);
-    }
-    return offersHtml.join(``);
-  }
-
-  _getOffersHtmlByType(type) {
-    // Находим оферы в соотвествии с типом
-    const offersByTypeIndex = offersData.findIndex((offerData) => offerData.type === type);
-    let counter = 0;
-    const offersHtml = [];
-    if (offersByTypeIndex !== -1) {
-      for (const offer of offersData[offersByTypeIndex].offers) {
-        counter++;
-        const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.title || offer.name}" ${offer.accepted ? `checked` : ``}>
-          <label for="offer-${this._id}-${counter}" class="point__offers-label">
-            <span class="point__offer-service">${offer.title || offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
-          </label>
-          `;
-        offersHtml.push(offerHtml);
-      }
-    }
-    return offersHtml.join(``);
-  }
-
-  _getTypesHtml() {
-    const typesHtml = [];
-    const types = Object.keys(eventTypes);
-    for (const type of types) {
-      const typeHtml = `<input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-${type}" name="travel-way" value="${type}" ${this._type === type ? `checked` : ``}>
-      <label class="travel-way__select-label" for="travel-way-${type}">${eventTypes[type]} ${type}</label>`;
-      typesHtml.push(typeHtml);
-    }
-    return typesHtml.join(``);
-  }
-
-  _getPicturesHtml(pictures) {
-    const picturesHtml = [];
-    for (const picture of pictures) {
-      const pictureHtml = `<img src="${picture.src}" alt="${picture.description}" class="point__destination-image">`;
-      picturesHtml.push(pictureHtml);
-    }
-    return picturesHtml.join(``);
-  }
-
-  _getDestinationsDataListHtml() {
-    const dataListHtml = [];
-
-    for (const destination of destinationsData) {
-      const dataItemHtml = `<option value="${destination.name}"></option>`;
-      dataListHtml.push(dataItemHtml);
-    }
-
-    return dataListHtml.join(``);
-  }
-
-  _processForm(formData) {
-    const event = {
-      id: this._id,
-      type: this._type,
-      destination: this._destination,
-      offers: this._offers,
-      description: this._description,
-      price: this._price,
-      pictures: this._pictures,
-      startDate: this._startDate,
-      endDate: this._endDate,
-      isFavorite: this._isFavorite
-    };
-
-    event.isFavorite = false;
-
-    if (this._state.isOffersChanged) {
-      console.log(this._offers);
-      const offersByTypeIndex = offersData.findIndex((offerData) => offerData.type === this._state.changedType);
-      console.log(offersByTypeIndex);
-      if (offersByTypeIndex !== -1) {
-        event.offers = offersData[offersByTypeIndex].offers;
-      } else {
-        event.offers = [];
-      }
-    }
-
-    for (const offer of event.offers) {
-      offer.accepted = false;
-    }
-
-    const eventEditMapper = EventEdit.createMapper(event);
-
-    for (const pair of formData.entries()) {
-      const [property, value] = pair;
-      if (eventEditMapper[property]) {
-        eventEditMapper[property](value);
-      }
-    }
-
-    return event;
-  }
-  _onEscButtonClick(evt) {
-    evt.stopPropagation();
-
-    if (typeof this._onEsc === `function` && evt.keyCode === KeyCodes.ESC) {
-      this._onEsc();
-      this._state.isOffersChanged = false;
-    }
-  }
-
-  _onDeleteButtonClick(evt) {
-    evt.preventDefault();
-
-    if (typeof this._onSubmit === `function`) {
-      this._onDelete({id: this._id});
-    }
-
-  }
-
-  _onSubmitButtonClick(evt) {
-    evt.preventDefault();
-
-    const formData = new FormData(this._element.querySelector(`form`));
-    const newData = this._processForm(formData);
-
-    if (typeof this._onSubmit === `function`) {
-      this._onSubmit(newData);
-    }
-
-    this.update(newData);
-  }
-
-  _onTypeChange(evt) {
-    const typeChoice = this._element.querySelector(`.travel-way__label`);
-    const typeOffers = this.element.querySelector(`.point__offers-wrap`);
-    const destinationLabel = this._element.querySelector(`.point__destination-label`);
-    // Получаем инпут относящийся к выбранному селекту
-    const input = evt.target.previousElementSibling;
-    input.setAttribute(`checked`, `checked`);
-    typeChoice.textContent = eventTypes[input.value];
-    destinationLabel.textContent = `${input.value.charAt(0).toUpperCase()}${input.value.slice(1)} to`;
-    if (this._type !== input.value) {
-      this._state.isOffersChanged = true;
-      this._state.changedType = input.value;
-      typeOffers.innerHTML = this._getOffersHtmlByType(input.value);
-      console.log(this._offers);
-    } else {
-      this._state.isOffersChanged = false;
-      typeOffers.innerHTML = this._getOffersHtml();
-    }
-    this._element.querySelector(`.travel-way__toggle`).checked = false;
-  }
-
   set onSubmit(fn) {
     this._onSubmit = fn;
   }
@@ -285,6 +125,165 @@ export default class EventEdit extends Component {
   </form>
 </article>`.trim();
   }
+
+  _getOffersHtml() {
+    // Находим оферы в соотвествии с типом
+    let counter = 0;
+    const offersHtml = [];
+    for (const offer of this._offers) {
+      counter++;
+      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.title || offer.name}" ${offer.accepted ? `checked` : ``}>
+          <label for="offer-${this._id}-${counter}" class="point__offers-label">
+            <span class="point__offer-service">${offer.title || offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
+          </label>
+          `;
+      offersHtml.push(offerHtml);
+    }
+    return offersHtml.join(``);
+  }
+
+  _getOffersHtmlByType(type) {
+    // Находим оферы в соотвествии с типом
+    const offersByTypeIndex = offersData.findIndex((offerData) => offerData.type === type);
+    let counter = 0;
+    const offersHtml = [];
+    if (offersByTypeIndex !== -1) {
+      for (const offer of offersData[offersByTypeIndex].offers) {
+        counter++;
+        const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.title || offer.name}" ${offer.accepted ? `checked` : ``}>
+          <label for="offer-${this._id}-${counter}" class="point__offers-label">
+            <span class="point__offer-service">${offer.title || offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
+          </label>
+          `;
+        offersHtml.push(offerHtml);
+      }
+    }
+    return offersHtml.join(``);
+  }
+
+  _getTypesHtml() {
+    const typesHtml = [];
+    const types = Object.keys(eventTypes);
+    for (const type of types) {
+      const typeHtml = `<input class="travel-way__select-input visually-hidden" type="radio" id="travel-way-${type}" name="travel-way" value="${type}" ${this._type === type ? `checked` : ``}>
+      <label class="travel-way__select-label" for="travel-way-${type}">${eventTypes[type]} ${type}</label>`;
+      typesHtml.push(typeHtml);
+    }
+    return typesHtml.join(``);
+  }
+
+  _getPicturesHtml(pictures) {
+    const picturesHtml = [];
+    for (const picture of pictures) {
+      const pictureHtml = `<img src="${picture.src}" alt="${picture.description}" class="point__destination-image">`;
+      picturesHtml.push(pictureHtml);
+    }
+    return picturesHtml.join(``);
+  }
+
+  _getDestinationsDataListHtml() {
+    const dataListHtml = [];
+
+    for (const destination of destinationsData) {
+      const dataItemHtml = `<option value="${destination.name}"></option>`;
+      dataListHtml.push(dataItemHtml);
+    }
+
+    return dataListHtml.join(``);
+  }
+
+  _processForm(formData) {
+    const event = {
+      id: this._id,
+      type: this._type,
+      destination: this._destination,
+      offers: this._offers,
+      description: this._description,
+      price: this._price,
+      pictures: this._pictures,
+      startDate: this._startDate,
+      endDate: this._endDate,
+      isFavorite: this._isFavorite
+    };
+
+    event.isFavorite = false;
+
+    if (this._state.isOffersChanged) {
+      const offersByTypeIndex = offersData.findIndex((offerData) => offerData.type === this._state.changedType);
+      if (offersByTypeIndex !== -1) {
+        event.offers = offersData[offersByTypeIndex].offers;
+      } else {
+        event.offers = [];
+      }
+    }
+
+    for (const offer of event.offers) {
+      offer.accepted = false;
+    }
+
+    const eventEditMapper = EventEdit.createMapper(event);
+
+    for (const pair of formData.entries()) {
+      const [property, value] = pair;
+      if (eventEditMapper[property]) {
+        eventEditMapper[property](value);
+      }
+    }
+
+    return event;
+  }
+
+  _onEscButtonClick(evt) {
+    evt.stopPropagation();
+
+    if (typeof this._onEsc === `function` && evt.keyCode === KeyCodes.ESC) {
+      this._onEsc();
+      this._state.isOffersChanged = false;
+    }
+  }
+
+  _onDeleteButtonClick(evt) {
+    evt.preventDefault();
+
+    if (typeof this._onSubmit === `function`) {
+      this._onDelete({id: this._id});
+    }
+
+  }
+
+  _onSubmitButtonClick(evt) {
+    evt.preventDefault();
+
+    const formData = new FormData(this._element.querySelector(`form`));
+    const newData = this._processForm(formData);
+
+    if (typeof this._onSubmit === `function`) {
+      this._onSubmit(newData);
+    }
+
+    this.update(newData);
+  }
+
+  _onTypeChange(evt) {
+    const typeChoice = this._element.querySelector(`.travel-way__label`);
+    const typeOffers = this.element.querySelector(`.point__offers-wrap`);
+    const destinationLabel = this._element.querySelector(`.point__destination-label`);
+    // Получаем инпут относящийся к выбранному селекту
+    const input = evt.target.previousElementSibling;
+    input.setAttribute(`checked`, `checked`);
+    typeChoice.textContent = eventTypes[input.value];
+    destinationLabel.textContent = `${input.value.charAt(0).toUpperCase()}${input.value.slice(1)} to`;
+    if (this._type !== input.value) {
+      this._state.isOffersChanged = true;
+      this._state.changedType = input.value;
+      typeOffers.innerHTML = this._getOffersHtmlByType(input.value);
+    } else {
+      this._state.isOffersChanged = false;
+      typeOffers.innerHTML = this._getOffersHtml();
+    }
+    this._element.querySelector(`.travel-way__toggle`).checked = false;
+  }
+
   shake() {
     this._element.style.boxShadow = `0 0 20px 0 rgba(255,0,0,0.75)`;
     this._element.style.animation = `shake ${ANIMATION.duration}s`;
@@ -370,24 +369,8 @@ export default class EventEdit extends Component {
   static createMapper(target) {
     return {
       "offer": (value) => {
-        // Находим офер в списке и передаем весь список
-        // const offersByTypeIndex = offersData.findIndex((offerData) => {
-        //   let type = {};
-        //   for (const offer of offerData.offers) {
-        //     if (offer.name === value) {
-        //       type = offerData.type;
-        //     }
-        //   }
-        //   return offerData.type === type;
-        // });
-        // target.offers = offersData[offersByTypeIndex].offers;
-
-        // // Чекаем выбранные значения
         const offerIndex = target.offers.findIndex((offer) => offer.name === value || offer.title === value);
-        console.log(target);
-        console.log(target.offers[offerIndex]);
         target.offers[offerIndex].accepted = true;
-        console.log(target.offers);
       },
       "price": (value) => {
         target.price = value;

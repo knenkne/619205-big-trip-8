@@ -37,7 +37,6 @@ const getSorterBlockData = (names) => {
 const sortEvents = (events, sorterName) => {
   let sortedEvents = null;
   let eventsCopy = events;
-
   switch (sorterName) {
     case `sorting-price`:
       sortedEvents = eventsCopy.sort((a, b) => b.price - a.price);
