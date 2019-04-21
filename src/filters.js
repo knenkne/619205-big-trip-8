@@ -54,12 +54,12 @@ const createFilterBlockElement = (filter) => {
     }
     const sorters = document.querySelectorAll(`.trip-sorting input`);
     const sorterName = getSorterName(sorters);
-    const filteredEventsWithSort = sortEvents(filteredEvents, sorterName);
+    const filteredEventsWithSorting = sortEvents(filteredEvents, sorterName);
     newEventButton.disabled = false;
     if (sorterName === `sorting-price`) {
-      renderSeparateEventsViaDays(filteredEventsWithSort);
+      renderSeparateEventsViaDays(filteredEventsWithSorting);
     } else {
-      renderEventsViaDays(filteredEventsWithSort);
+      renderEventsViaDays(filteredEventsWithSorting);
     }
   };
 
