@@ -8,6 +8,19 @@ export default class Sorter extends Component {
     this._onSorter = this._onSorter.bind(this);
   }
 
+  set onSorter(fn) {
+    this._onSorter = fn;
+  }
+
+  get template() {
+    return `
+    <form class="trip-sorting">
+    ${this._getSorters(this._sorters)}
+    <span class="trip-sorting__item trip-sorting__item--offers">Offers</span>
+  </form>
+  `.trim();
+  }
+
   _getSorters(sorters) {
     const sortersHtml = [];
     for (const sorter of sorters) {
@@ -28,21 +41,8 @@ export default class Sorter extends Component {
     }
   }
 
-  set onSorter(fn) {
-    this._onSorter = fn;
-  }
-
-  get template() {
-    return `
-    <form class="trip-sorting">
-    ${this._getSorters(this._sorters)}
-    <span class="trip-sorting__item trip-sorting__item--offers">Offers</span>
-  </form>
-  `.trim();
-  }
-
   unbind() {
-    this._element.addEventListener(`change`, this._onSorter);
+    this._element.removeEventListener(`change`, this._onSorter);
   }
 
   bind() {

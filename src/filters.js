@@ -1,6 +1,6 @@
 import moment from 'moment';
 import Filter from './filter';
-import {renderEventsViaDays} from './events';
+import {renderEventsViaDays, renderSeparateEventsViaDays} from './events';
 import {eventsToFilter} from './main';
 import {sortEvents, getSorterName} from './sorters';
 import {newEventButton} from './new-event';
@@ -56,7 +56,11 @@ const createFilterBlockElement = (filter) => {
     const sorterName = getSorterName(sorters);
     const filteredEventsWithSort = sortEvents(filteredEvents, sorterName);
     newEventButton.disabled = false;
-    renderEventsViaDays(filteredEventsWithSort);
+    if (sorterName === `sorting-price`) {
+      renderSeparateEventsViaDays(filteredEventsWithSort);
+    } else {
+      renderEventsViaDays(filteredEventsWithSort);
+    }
   };
 
   const filterBlockElement = filterComponent.render();

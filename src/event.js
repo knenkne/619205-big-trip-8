@@ -2,7 +2,10 @@ import moment from 'moment';
 
 import Component from './component';
 import {eventTypes} from './events';
-import {OffersSettings} from './constants';
+
+const OffersSettings = {
+  MAX: 3
+};
 
 export default class Event extends Component {
   constructor(data) {
@@ -23,14 +26,32 @@ export default class Event extends Component {
     this._onEventClick = this._onEventClick.bind(this);
   }
 
+  set onEdit(fn) {
+    this._onEdit = fn;
+  }
+
+  get template() {
+    return `<article class="trip-point">
+      <i class="trip-icon">${eventTypes[this._type]}</i>
+      <h3 class="trip-point__title">${this._type.charAt(0).toUpperCase()}${this._type.slice(1)} to ${this._destination}</h3>
+       <p class="trip-point__schedule">
+          ${this._getDateHtml()}
+       </p>
+       <p class="trip-point__price">&euro;&nbsp;${this._price}</p>
+       <ul class="trip-point__offers">
+          ${this._getOffersHtml()}
+      </ul>
+      </article>`.trim();
+  }
+
   _getOffersHtml() {
-    const selectedOffers = (this._offers.filter((selectedOffer) => selectedOffer.accepted)).slice(0, OffersSettings.MAX);
-    let offerElements = [];
-    for (let offer of selectedOffers) {
-      if (offer.accepted) {
+    const selectedOffers = (this._offers.filter((selectedOffer) => !selectedOffer.accepted)).slice(0, OffersSettings.MAX);
+    const offerElements = [];
+    for (const offer of selectedOffers) {
+      if (!offer.accepted) {
         const newOfferElement = `
         <li>
-       <button class="trip-point__offer">${offer.title} +€ ${offer.price}</button>
+       <button class="trip-point__offer">${offer.title || offer.name} +€ ${offer.price}</button>
        </li>
       `;
         offerElements.push(newOfferElement);
@@ -62,24 +83,6 @@ export default class Event extends Component {
     if (typeof this._onEdit === `function`) {
       this._onEdit();
     }
-  }
-
-  set onEdit(fn) {
-    this._onEdit = fn;
-  }
-
-  get template() {
-    return `<article class="trip-point">
-      <i class="trip-icon">${eventTypes[this._type]}</i>
-      <h3 class="trip-point__title">${this._type.charAt(0).toUpperCase() + this._type.slice(1)} to ${this._destination}</h3>
-       <p class="trip-point__schedule">
-          ${this._getDateHtml()}
-       </p>
-       <p class="trip-point__price">&euro;&nbsp;${this._price}</p>
-       <ul class="trip-point__offers">
-          ${this._getOffersHtml()}
-      </ul>
-      </article>`.trim();
   }
 
   unbind() {

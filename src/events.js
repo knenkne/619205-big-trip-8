@@ -2,8 +2,8 @@ import moment from 'moment';
 
 import Event from './event';
 import EventEdit from './event-edit';
-import {eventsData, api, priceBlock, eventsToFilter} from './main';
-import {getFilterName, filterEvents, filteredEvents} from './filters';
+import {eventsData, api, priceBlock, eventsToFilter, eventsToSort} from './main';
+import {getFilterName, filterEvents} from './filters';
 import {getSorterName, sortEvents} from './sorters';
 import EventDay from './event-day';
 
@@ -47,8 +47,8 @@ const getTotalCost = (events) => {
 
 // Получаем дни и соответсвующие им эвенты
 const getSortedEventsByDays = (events) => {
-  let result = {};
-  for (let event of events) {
+  const result = {};
+  for (const event of events) {
     const eventDay = moment(event.startDate).format(`D MMM YY`);
 
     if (!result[eventDay]) {
@@ -56,8 +56,35 @@ const getSortedEventsByDays = (events) => {
     }
     result[eventDay].push(event);
   }
-
   return result;
+};
+
+// Получаем эвенты не зависимо от дней
+const getSeparatedEventsByDays = (events) => {
+  const result = [];
+  for (const event of events) {
+    const eventDay = moment(event.startDate).format(`D MMM YY`);
+    const eventData = {};
+    eventData[eventDay] = event;
+    result.push(eventData);
+  }
+  return result;
+};
+
+// Рендрим эвенты не объединяя в дни
+const renderSeparateEventsViaDays = (days) => {
+  const separatedEventsByDays = getSeparatedEventsByDays(days);
+
+  eventsBlock.innerHTML = ``;
+  for (const eventSortedByDay of separatedEventsByDays) {
+    const day = Object.keys(eventSortedByDay);
+    const events = [eventSortedByDay[day]];
+    const eventDay = new EventDay(day[0]).render();
+    const eventsList = eventDay.querySelector(`.trip-day__items`);
+    eventsBlock.appendChild(eventDay);
+    renderEventElements(events, eventsList);
+  }
+  getTotalCost(eventsData);
 };
 
 // Рендрим эвенты в соответсвующие дни
@@ -139,10 +166,9 @@ const createEventElement = (event, day) => {
         day.parentNode.remove();
       }
       const eventToDeleteIndex = eventsData.findIndex((eventToDelete) => eventToDelete.id === id);
-      const filteredEventToDeleteIndex = filteredEvents.findIndex((eventToDelete) => eventToDelete.id === id);
       eventsData.splice(eventToDeleteIndex, 1);
-      filteredEvents.splice(filteredEventToDeleteIndex, 1);
       eventsToFilter.splice(eventToDeleteIndex, 1);
+      eventsToSort.splice(eventToDeleteIndex, 1);
       getTotalCost(eventsData);
       isEventOpened = false;
     })
@@ -160,6 +186,7 @@ const createEventElement = (event, day) => {
     event.startDate = newObject.startDate;
     event.endDate = newObject.endDate;
     event.isFavorite = newObject.isFavorite;
+    event.offers = newObject.offers;
 
     const saveButton = editEventComponent.element.querySelector(`.point__button[type="submit"]`);
     const deleteButton = editEventComponent.element.querySelector(`.point__button[type="reset"]`);
@@ -197,7 +224,6 @@ const createEventElement = (event, day) => {
       editEventComponent.unrender();
       api.getEvents()
       .then((events) => {
-        getTotalCost(events);
         const filters = document.querySelectorAll(`.trip-filter input`);
         const filterName = getFilterName(filters);
         const filteredEventsData = filterEvents(events, filterName);
@@ -205,6 +231,7 @@ const createEventElement = (event, day) => {
         const sorterName = getSorterName(sorters);
         const filteredEventsWithSorting = sortEvents(filteredEventsData, sorterName);
         renderEventsViaDays(filteredEventsWithSorting);
+        getTotalCost(events);
         document.querySelector(`.trip-error`).classList.add(`visually-hidden`);
         isEventOpened = false;
       });
@@ -252,3 +279,4 @@ export {eventsBlock};
 export {renderEventElements};
 export {renderEventsViaDays};
 export {getTotalCost};
+export {renderSeparateEventsViaDays};

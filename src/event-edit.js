@@ -1,10 +1,18 @@
 import flatpickr from 'flatpickr';
 import moment from 'moment';
 
-import {KeyCodes, ANIMATION} from './constants';
 import Component from './component';
 import {eventTypes} from './events';
 import {destinationsData, offersData} from './main';
+
+const ANIMATION = {
+  timeout: 600,
+  duration: 0.6
+};
+
+const KeyCodes = {
+  ESC: 27
+};
 
 export default class EventEdit extends Component {
   constructor(data) {
@@ -20,41 +28,135 @@ export default class EventEdit extends Component {
     this._endDate = data.endDate;
     this._isFavorite = data.isFavorite;
 
+    this._state.isOffersChanged = false;
+    this._state.changedType = ``;
     this._onSubmit = null;
     this._onDelete = null;
     this._onEsc = null;
 
+    this._onTypeChange = this._onTypeChange.bind(this);
     this._onEscButtonClick = this._onEscButtonClick.bind(this);
     this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
   }
 
-  _getOffersByTypeHtml(type) {
+  set onSubmit(fn) {
+    this._onSubmit = fn;
+  }
+
+  set onDelete(fn) {
+    this._onDelete = fn;
+  }
+
+  set onEsc(fn) {
+    this._onEsc = fn;
+  }
+
+  get template() {
+    return `<article class="point">
+  <form action="" method="get">
+    <header class="point__header">
+      <label class="point__date">
+        choose day
+        <input class="point__input point__input--day" type="text" placeholder="${moment(this._startDate).format(`MMM`)} ${moment(this._startDate).format(`DD`)}" name="day">
+      </label>
+
+      <div class="travel-way">
+        <label class="travel-way__label" for="travel-way__toggle">${eventTypes[this._type]}</label>
+
+        <input type="checkbox" class="travel-way__toggle visually-hidden" id="travel-way__toggle">
+
+        <div class="travel-way__select">
+          <div class="travel-way__select-group">
+          ${this._getTypesHtml()}
+          </div>
+        </div>
+      </div>
+
+      <div class="point__destination-wrap">
+        <label class="point__destination-label" for="destination">${this._type.charAt(0).toUpperCase()}${this._type.slice(1)} to</label>
+        <input class="point__destination-input" list="destination-select" id="destination" value="${this._destination}" name="destination">
+        <datalist id="destination-select">
+          ${this._getDestinationsDataListHtml()}
+        </datalist>
+      </div>
+
+    <div class="point__time">
+      choose time
+      <input class="point__input" type="text" value="${moment(this._startDate).format(`HH:mm`)}" name="date-start" placeholder="${moment(this._startDate).format(`HH:mm`)}">
+      <input class="point__input" type="text" value="${moment(this._endDate).format(`HH:mm`)}" name="date-end" placeholder="${moment(this._endDate).format(`HH:mm`)}">
+    </div>
+
+      <label class="point__price">
+        write price
+        <span class="point__price-currency">€</span>
+        <input class="point__input" type="text" value="${this._price}" name="price">
+      </label>
+
+      <div class="point__buttons">
+        <button class="point__button point__button--save" type="submit">Save</button>
+        <button class="point__button point__button--reset" type="reset">Delete</button>
+      </div>
+
+      <div class="paint__favorite-wrap">
+        <input type="checkbox" class="point__favorite-input visually-hidden" id="favorite" name="favorite" ${this._isFavorite ? `checked` : ``}>
+        <label class="point__favorite" for="favorite">favorite</label>
+      </div>
+    </header>
+
+    <section class="point__details">
+      <section class="point__offers">
+        <h3 class="point__details-title">offers</h3>
+
+        <div class="point__offers-wrap">
+          ${this._getOffersHtml()}
+        </div>
+
+      </section>
+      <section class="point__destination">
+        <h3 class="point__details-title">Destination</h3>
+        <p class="point__destination-text">${this._description}</p>
+        <div class="point__destination-images">
+          ${this._getPicturesHtml(this._pictures)}
+        </div>
+      </section>
+      <input type="hidden" class="point__total-price" name="total-price" value="">
+    </section>
+  </form>
+</article>`.trim();
+  }
+
+  _getOffersHtml() {
+    // Находим оферы в соотвествии с типом
     let counter = 0;
     const offersHtml = [];
-    for (const offer of type.offers) {
+    for (const offer of this._offers) {
       counter++;
-      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.name}}">
-        <label for="offer-${this._id}-${counter}" class="point__offers-label">
-          <span class="point__offer-service">${offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
-        </label>
-        `;
+      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.title || offer.name}" ${offer.accepted ? `checked` : ``}>
+          <label for="offer-${this._id}-${counter}" class="point__offers-label">
+            <span class="point__offer-service">${offer.title || offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
+          </label>
+          `;
       offersHtml.push(offerHtml);
     }
     return offersHtml.join(``);
   }
 
-  _getOffersHtml() {
+  _getOffersHtmlByType(type) {
+    // Находим оферы в соотвествии с типом
+    const offersByTypeIndex = offersData.findIndex((offerData) => offerData.type === type);
     let counter = 0;
     const offersHtml = [];
-    for (const offer of this._offers) {
-      counter++;
-      const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.title}" ${offer.accepted ? `checked` : ``}>
-        <label for="offer-${this._id}-${counter}" class="point__offers-label">
-          <span class="point__offer-service">${offer.title}</span> + €<span class="point__offer-price">${offer.price}</span>
-        </label>
-        `;
-      offersHtml.push(offerHtml);
+    if (offersByTypeIndex !== -1) {
+      for (const offer of offersData[offersByTypeIndex].offers) {
+        counter++;
+        const offerHtml = `<input class="point__offers-input visually-hidden" type="checkbox" id="offer-${this._id}-${counter}" name="offer" value="${offer.title || offer.name}" ${offer.accepted ? `checked` : ``}>
+          <label for="offer-${this._id}-${counter}" class="point__offers-label">
+            <span class="point__offer-service">${offer.title || offer.name}</span> + €<span class="point__offer-price">${offer.price}</span>
+          </label>
+          `;
+        offersHtml.push(offerHtml);
+      }
     }
     return offersHtml.join(``);
   }
@@ -106,7 +208,16 @@ export default class EventEdit extends Component {
 
     event.isFavorite = false;
 
-    for (let offer of event.offers) {
+    if (this._state.isOffersChanged) {
+      const offersByTypeIndex = offersData.findIndex((offerData) => offerData.type === this._state.changedType);
+      if (offersByTypeIndex !== -1) {
+        event.offers = offersData[offersByTypeIndex].offers;
+      } else {
+        event.offers = [];
+      }
+    }
+
+    for (const offer of event.offers) {
       offer.accepted = false;
     }
 
@@ -121,11 +232,13 @@ export default class EventEdit extends Component {
 
     return event;
   }
+
   _onEscButtonClick(evt) {
     evt.stopPropagation();
 
     if (typeof this._onEsc === `function` && evt.keyCode === KeyCodes.ESC) {
       this._onEsc();
+      this._state.isOffersChanged = false;
     }
   }
 
@@ -151,91 +264,26 @@ export default class EventEdit extends Component {
     this.update(newData);
   }
 
-  set onSubmit(fn) {
-    this._onSubmit = fn;
+  _onTypeChange(evt) {
+    const typeChoice = this._element.querySelector(`.travel-way__label`);
+    const typeOffers = this.element.querySelector(`.point__offers-wrap`);
+    const destinationLabel = this._element.querySelector(`.point__destination-label`);
+    // Получаем инпут относящийся к выбранному селекту
+    const input = evt.target.previousElementSibling;
+    input.setAttribute(`checked`, `checked`);
+    typeChoice.textContent = eventTypes[input.value];
+    destinationLabel.textContent = `${input.value.charAt(0).toUpperCase()}${input.value.slice(1)} to`;
+    if (this._type !== input.value) {
+      this._state.isOffersChanged = true;
+      this._state.changedType = input.value;
+      typeOffers.innerHTML = this._getOffersHtmlByType(input.value);
+    } else {
+      this._state.isOffersChanged = false;
+      typeOffers.innerHTML = this._getOffersHtml();
+    }
+    this._element.querySelector(`.travel-way__toggle`).checked = false;
   }
 
-  set onDelete(fn) {
-    this._onDelete = fn;
-  }
-
-  set onEsc(fn) {
-    this._onEsc = fn;
-  }
-
-  get template() {
-    return `<article class="point">
-  <form action="" method="get">
-    <header class="point__header">
-      <label class="point__date">
-        choose day
-        <input class="point__input point__input--day" type="text" placeholder="${moment(this._startDate).format(`MMM`)} ${moment(this._startDate).format(`DD`)}" name="day">
-      </label>
-
-      <div class="travel-way">
-        <label class="travel-way__label" for="travel-way__toggle">${eventTypes[this._type]}</label>
-
-        <input type="checkbox" class="travel-way__toggle visually-hidden" id="travel-way__toggle">
-
-        <div class="travel-way__select">
-          <div class="travel-way__select-group">
-          ${this._getTypesHtml()}
-          </div>
-        </div>
-      </div>
-
-      <div class="point__destination-wrap">
-        <label class="point__destination-label" for="destination">${this._type.charAt(0).toUpperCase() + this._type.slice(1)} to</label>
-        <input class="point__destination-input" list="destination-select" id="destination" value="${this._destination}" name="destination">
-        <datalist id="destination-select">
-          ${this._getDestinationsDataListHtml()}
-        </datalist>
-      </div>
-
-    <div class="point__time">
-      choose time
-      <input class="point__input" type="text" value="${moment(this._startDate).format(`HH:mm`)}" name="date-start" placeholder="${moment(this._startDate).format(`HH:mm`)}">
-      <input class="point__input" type="text" value="${moment(this._endDate).format(`HH:mm`)}" name="date-end" placeholder="${moment(this._endDate).format(`HH:mm`)}">
-    </div>
-
-      <label class="point__price">
-        write price
-        <span class="point__price-currency">€</span>
-        <input class="point__input" type="text" value="${this._price}" name="price">
-      </label>
-
-      <div class="point__buttons">
-        <button class="point__button point__button--save" type="submit">Save</button>
-        <button class="point__button point__button--reset" type="reset">Delete</button>
-      </div>
-
-      <div class="paint__favorite-wrap">
-        <input type="checkbox" class="point__favorite-input visually-hidden" id="favorite" name="favorite" ${this._isFavorite ? `checked` : ``}>
-        <label class="point__favorite" for="favorite">favorite</label>
-      </div>
-    </header>
-
-    <section class="point__details">
-      <section class="point__offers">
-        <h3 class="point__details-title">offers</h3>
-
-        <div class="point__offers-wrap">
-          ${this._getOffersHtml()}
-        </div>
-
-      </section>
-      <section class="point__destination">
-        <h3 class="point__details-title">Destination</h3>
-        <p class="point__destination-text">${this._description}</p>
-        <div class="point__destination-images">
-          ${this._getPicturesHtml(this._pictures)}
-        </div>
-      </section>
-      <input type="hidden" class="point__total-price" name="total-price" value="">
-    </section>
-  </form>
-</article>`.trim();
-  }
   shake() {
     this._element.style.boxShadow = `0 0 20px 0 rgba(255,0,0,0.75)`;
     this._element.style.animation = `shake ${ANIMATION.duration}s`;
@@ -246,6 +294,9 @@ export default class EventEdit extends Component {
   }
 
   unbind() {
+    for (const label of this._element.querySelectorAll(`.travel-way__select-label`)) {
+      label.removeEventListener(`click`, this._onTypeChange);
+    }
     this._element.querySelector(`.point__button--save`).removeEventListener(`click`, this._onSubmitButtonClick);
     this._element.querySelector(`button[type="reset"]`).removeEventListener(`click`, this._onDeleteButtonClick);
     document.removeEventListener(`keydown`, this._onEscButtonClick);
@@ -255,27 +306,12 @@ export default class EventEdit extends Component {
     const destinationChoice = this._element.querySelector(`#destination`);
     const destinationDescription = this._element.querySelector(`.point__destination-text`);
     const destinationImages = this._element.querySelector(`.point__destination-images`);
-    const typeChoice = this._element.querySelector(`.travel-way__label`);
-    const typeOffers = this.element.querySelector(`.point__offers-wrap`);
-    const destinationLabel = this._element.querySelector(`.point__destination-label`);
     document.addEventListener(`keydown`, this._onEscButtonClick);
     this._element.querySelector(`.point__button--save`).addEventListener(`click`, this._onSubmitButtonClick);
     this._element.querySelector(`.point__button--reset`).addEventListener(`click`, this._onDeleteButtonClick);
     for (const label of this._element.querySelectorAll(`.travel-way__select-label`)) {
     // Обработчик для каждого типа точки маршрута
-      label.addEventListener(`click`, () => {
-        // Получаем инпут относящийся к выбранному селекту
-        const input = label.previousElementSibling;
-        input.setAttribute(`checked`, `checked`);
-        typeChoice.textContent = eventTypes[input.value];
-        destinationLabel.textContent = `${input.value.charAt(0).toUpperCase() + input.value.slice(1)} to`;
-        const offerIndex = offersData.findIndex((offer) => offer.type === input.value);
-        typeOffers.innerHTML = ``;
-        if (offerIndex !== -1) {
-          typeOffers.innerHTML = this._getOffersByTypeHtml(offersData[offerIndex]);
-        }
-        this._element.querySelector(`.travel-way__toggle`).checked = false;
-      });
+      label.addEventListener(`click`, this._onTypeChange);
     }
 
     destinationChoice.addEventListener(`change`, () => {
@@ -333,7 +369,7 @@ export default class EventEdit extends Component {
   static createMapper(target) {
     return {
       "offer": (value) => {
-        const offerIndex = target.offers.findIndex((offer) => offer.title === value);
+        const offerIndex = target.offers.findIndex((offer) => offer.name === value || offer.title === value);
         target.offers[offerIndex].accepted = true;
       },
       "price": (value) => {

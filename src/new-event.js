@@ -1,13 +1,13 @@
 import EventEdit from './event-edit';
-import {eventsBlock, renderEventsViaDays, getTotalCost} from './events';
-import {api, eventsData, eventsToFilter} from './main';
-import {filterEvents, getFilterName, filteredEvents} from './filters';
+import {eventsBlock, renderEventsViaDays, renderSeparateEventsViaDays, getTotalCost} from './events';
+import {api, eventsData, eventsToFilter, eventsToSort} from './main';
+import {filterEvents, getFilterName} from './filters';
 import {sortEvents, getSorterName} from './sorters';
 import moment from 'moment';
 
 const newEventButton = document.querySelector(`.trip-controls__new-event`);
 
-const renderNewEvent = () => {
+const onNewEventButtonClick = () => {
   const newEentMockData = {
     id: null,
     type: `taxi`,
@@ -54,6 +54,11 @@ const renderNewEvent = () => {
   newEventButton.disabled = true;
 
   const newEventEditComponent = new EventEdit(newEentMockData);
+
+  newEventEditComponent.onDelete = () => {
+    newEventEditComponent.unrender();
+    newEventButton.disabled = false;
+  };
 
   newEventEditComponent.onSubmit = (newData) => {
     const saveButton = newEventEditComponent.element.querySelector(`.point__button[type="submit"]`);
@@ -123,8 +128,8 @@ const renderNewEvent = () => {
       .then((newEvent) => {
         unblock();
         eventsData.push(newEvent);
-        filteredEvents.push(newEvent);
         eventsToFilter.push(newEvent);
+        eventsToSort.push(newEvent);
         getTotalCost(eventsData);
         const filters = document.querySelectorAll(`.trip-filter input`);
         const filterName = getFilterName(filters);
@@ -132,7 +137,11 @@ const renderNewEvent = () => {
         const sorters = document.querySelectorAll(`.trip-sorting input`);
         const sorterName = getSorterName(sorters);
         const filteredEventsWithSorting = sortEvents(filteredEventsData, sorterName);
-        renderEventsViaDays(filteredEventsWithSorting);
+        if (sorterName === `sorting-price`) {
+          renderSeparateEventsViaDays(filteredEventsWithSorting);
+        } else {
+          renderEventsViaDays(filteredEventsWithSorting);
+        }
         newEventEditComponent.unrender();
         newEventButton.disabled = false;
       })
@@ -151,5 +160,5 @@ const renderNewEvent = () => {
   eventsBlock.prepend(newEventEditComponent.render());
 };
 
-export {renderNewEvent};
+export {onNewEventButtonClick};
 export {newEventButton};

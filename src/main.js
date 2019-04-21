@@ -1,11 +1,15 @@
 import {renderFilterBlockElement, controlsMenu} from './filters';
 import {renderSorterBlockElement} from './sorters';
-import {renderNewEvent} from './new-event';
+import {onNewEventButtonClick} from './new-event';
 import {renderEventsViaDays, eventTypes} from './events';
-import TotalCost from './total-cost';
 import {renderMoneyChart, renderTransportChart, renderTimeSpendChart, getPriceCount, getTransportCount, getTimeSpendCount, transportTypes} from './statistic';
-import {API} from './api';
-import {AUTHORIZATION, END_POINT} from './constants';
+import API from './api';
+import TotalCost from './total-cost';
+
+const AUTHORIZATION = `Basic eo0w590ik299a=victory`;
+const END_POINT = `https://es8-demo-srv.appspot.com/big-trip`;
+
+
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
 
 // Элементы управления
@@ -67,7 +71,7 @@ statsButton.addEventListener(`click`, function (evt) {
 });
 
 // Создаем эвент
-newEventButton.addEventListener(`click`, renderNewEvent);
+newEventButton.addEventListener(`click`, onNewEventButtonClick);
 
 api.getEvents()
   .then((events) => {

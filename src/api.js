@@ -1,20 +1,30 @@
 import AdapterEvent from './adapter-event';
-import {SuccessStatusCodes} from './constants';
-import {Method} from './constants';
+
+const Method = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+};
+
+
+const SuccessStatusCodes = {
+  MIN: 200,
+  MAX: 300
+};
 
 const checkStatus = (response) => {
   if (response.status >= SuccessStatusCodes.MIN && response.status < SuccessStatusCodes.MAX) {
     return response;
-  } else {
-    throw new Error(`${response.status}: ${response.statusText}`);
   }
+  throw new Error(`${response.status}: ${response.statusText}`);
 };
 
 const toJSON = (response) => {
   return response.json();
 };
 
-const API = class {
+export default class API {
   constructor({endPoint, authorization}) {
     this._endPoint = endPoint;
     this._authorization = authorization;
@@ -73,10 +83,9 @@ const API = class {
     headers.append(`Authorization`, this._authorization);
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})
         .then(checkStatus)
-        .catch((err) => {
-          throw err;
+        .catch((error) => {
+          throw error;
         });
   }
-};
+}
 
-export {API};
