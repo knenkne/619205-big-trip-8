@@ -11,7 +11,7 @@ const onNewEventButtonClick = () => {
   const newEentMockData = {
     id: null,
     type: `taxi`,
-    destination: `Moscow`,
+    destination: ``,
     offers: [
       {title: `Upgrade to a business class`, price: 40},
       {title: `Choose the radio station`, price: 170},
@@ -67,7 +67,9 @@ const onNewEventButtonClick = () => {
     const priceInput = newEventEditComponent.element.querySelector(`input[name="price"]`);
     const dateInitInputs = newEventEditComponent.element.querySelectorAll(`.point__date input`);
     const timeInitInputs = newEventEditComponent.element.querySelectorAll(`.point__time input`);
-    const requiredFields = [priceInput, ...dateInitInputs, ...timeInitInputs];
+    const destinationInput = newEventEditComponent.element.querySelector(`.point__destination-input`);
+    const destinationInputWrap = newEventEditComponent.element.querySelector(`.point__destination-wrap`);
+    const requiredFields = [destinationInput, priceInput, ...dateInitInputs, ...timeInitInputs];
 
     const block = () => {
       for (const input of inputs) {
@@ -96,11 +98,20 @@ const onNewEventButtonClick = () => {
       let isTimeValid = true;
 
       for (const requiredField of requiredFields) {
-        requiredField.style.borderBottom = `1px solid #0D8AE4`;
+        if (requiredField === destinationInput) {
+          destinationInputWrap.style.borderBottom = `1px solid #0D8AE4`;
+        } else {
+          requiredField.style.borderBottom = `1px solid #0D8AE4`;
+        }
       }
 
       if (priceInput.value.length === 0) {
         priceInput.style.borderBottom = `1px solid red`;
+        isPriceValid = false;
+      }
+
+      if (destinationInput.value.length === 0) {
+        destinationInputWrap.style.borderBottom = `1px solid red`;
         isPriceValid = false;
       }
 
